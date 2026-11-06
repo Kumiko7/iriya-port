@@ -1,0 +1,771 @@
+# Himawari BGM Catalog & VN Director's Guide
+
+This document contains detailed audio analysis and visual novel (VN) staging recommendations for all BGM tracks in `himawari_bgm`. Generated via native multimodal audio listening.
+
+---
+
+### 102.ogg
+- **Style / Genre**: Upbeat Acoustic Pop / Whimsical Slice-of-Life / Folk Comedy
+- **Key Instruments**: Acoustic rhythm guitar (energetic strumming), recorder/whistle/flute lead, hand percussion, light drum kit, lively bassline.
+- **Tempo**: Fast / Bouncy (~128 BPM), brisk 4/4 meter.
+- **Mood & Atmosphere**: Playful, goofy, high-energy, mischievous, sunny and comedic.
+- **Emotions**: Lighthearted amusement, chaotic enthusiasm, youthful absurdity, cheeky banter.
+- **Recommended VN Usage**:
+  - Comedic banter and character slapstick (e.g. arguing over silly things, clubroom chaos).
+  - High-spirited everyday hijinks, sudden wild misunderstandings, or bizarre antics.
+  - Chasing someone down the school hallway or street in a non-threatening, comedic fashion.
+  - Lighthearted morning preparation or lively daytime slice-of-life scenes.
+
+---
+
+### ambient_001.ogg
+- **Style / Genre**: Dark Ambient / Cinematic Soundscape / Suspense
+- **Key Instruments**: Heavy spatial reverb, resonant metallic chimes/glass bell tones, low sub-bass drone, sparse dissonant echoes.
+- **Tempo**: Free time / Ambient drone (no fixed pulse).
+- **Mood & Atmosphere**: Uncanny, eerie, desolate, cold, suspenseful.
+- **Emotions**: Dread, unease, isolation, creeping suspicion, danger lurking nearby.
+- **Recommended VN Usage**:
+  - Exploring an abandoned facility, dark empty school after hours, or forbidden ruins.
+  - Psychological tension, uncanny discoveries, realization that something is fundamentally wrong.
+  - Stalker/hazard presence, entering an eerie crime scene or restricted military zone.
+
+---
+
+### ambient_003.ogg
+- **Style / Genre**: Cybernetic / Minimal Tech Pulse / Stealth Ambient
+- **Key Instruments**: Filtered electronic synth pulses, subtle rhythmic sequencer clicks, low-end resonant synth bass, subdued digital percussion.
+- **Tempo**: Mid-tempo electronic pulse (~105 BPM), steady and restrained.
+- **Mood & Atmosphere**: Analytical, clandestine, technological, focused, discreetly tense.
+- **Emotions**: Calculating, stealthy focus, mechanical precision, subdued urgency.
+- **Recommended VN Usage**:
+  - Hacking, data analysis, operating complex machinery, or decoding radio frequencies.
+  - Infiltration / stealth scenes where the protagonist must remain undetected.
+  - Secret briefings, military tactical planning, or reviewing classified dossiers.
+
+---
+
+### ambient_009.ogg
+- **Style / Genre**: Ethereal Ambient / Nostalgic Soundscape
+- **Key Instruments**: Warm lush analog/ambient synth pads, delicate crystalline chime arpeggios, soft decaying bells, gentle breathy textures.
+- **Tempo**: Very slow / Flowing free ambient tempo.
+- **Mood & Atmosphere**: Celestial, serene, wistful, expansive, introspective.
+- **Emotions**: Awe, quiet sadness, cosmic wonder, bittersweet reflection, solitude.
+- **Recommended VN Usage**:
+  - Late-night stargazing, looking up at the night sky or summer dusk from a rooftop/breakwater.
+  - Bittersweet confessions or lonely interior monologues about fate and distant dreams.
+  - Scenes immediately following intense drama where characters sit together in quiet contemplation.
+
+---
+
+### ambient2_001.ogg
+- **Style / Genre**: Drone / Atmospheric SFX Ambience
+- **Key Instruments**: Deep rumbling low-frequency drone, subtle pitch modulation, spatial room tone resonance.
+- **Tempo**: Static drone / Continuous texture (~30s loop).
+- **Mood & Atmosphere**: Submerged, oppressive, vast, ominous.
+- **Emotions**: Sensory disorientation, impending dread, physical containment.
+- **Recommended VN Usage**:
+  - Sensory deprivation, waking up in an unfamiliar locked room or cockpit.
+  - Underground shelters, reactor basements, or heavy industrial machinery humming nearby.
+  - Transition cue right after an explosion, blackout, or catastrophic revelation.
+
+---
+### asana-0.ogg
+- **Style / Genre**: Pastoral Acoustic Folk / Morning Slice-of-Life
+- **Key Instruments**: Fingerstyle acoustic guitar, sparkling music box / celesta / glockenspiel, light shaker, warm acoustic bass.
+- **Tempo**: Gentle moderate walking pace (~102 BPM).
+- **Mood & Atmosphere**: Sunny, wholesome, comforting, refreshing, domestic.
+- **Emotions**: Peaceful contentment, morning optimism, tender familiarity, cozy camaraderie.
+- **Recommended VN Usage**:
+  - Waking up on a sunny morning, opening curtains to blue skies.
+  - Breakfast table banter, cooking together, peaceful home routines.
+  - Strolling through a quiet countryside or suburban neighborhood on the way to school.
+
+---
+
+### asanagi.ogg
+- **Style / Genre**: Lyrical Acoustic Ballad / Bittersweet Nostalgia
+- **Key Instruments**: Warm acoustic guitar arpeggios, expressive flute / woodwind lead, glockenspiel accents, soft rhythmic brushed percussion, warm bass.
+- **Tempo**: Slow-moderate flowing pace (~90 BPM).
+- **Mood & Atmosphere**: Bittersweet, serene, twilight, reflective, deeply nostalgic.
+- **Emotions**: Gentle melancholy, quiet longing, fond remembrance, tender intimacy.
+- **Recommended VN Usage**:
+  - Walking home at sunset along the coast or river embankment.
+  - Heart-to-heart conversations where characters open up about their past or worries.
+  - Pausing by the breakwater, watching the sea calm during evening twilight ("asanagi").
+  - Reflective transitions signaling the close of an emotional chapter.
+
+---
+
+### dot_006.ogg
+- **Style / Genre**: Minimal Lo-Fi Acoustic Groove / Chillout Beat
+- **Key Instruments**: Crisp acoustic guitar riff, laid-back tight drum kit (kick/snare groove), subtle Rhodes electric piano chords.
+- **Tempo**: Steady mid-tempo groove (~96 BPM).
+- **Mood & Atmosphere**: Casual, contemporary, relaxed, understated.
+- **Emotions**: Effortless chill, quiet curiosity, focused casual routine.
+- **Recommended VN Usage**:
+  - After-school hangout at a diner, bedroom, or clubroom with nothing pressing to do.
+  - Tinkering with electronics, assembling model kits, or setting up radio equipment.
+  - Neutral dialogue scenes that need rhythm without drawing focus away from the text.
+
+---
+
+### drumn_001.ogg
+- **Style / Genre**: Drum & Bass / Liquid Breakbeat / Action Kinetic
+- **Key Instruments**: Rapid jungle / DnB breakbeat drum patterns, pulsing rolling sub-bass synth, airy ambient pads.
+- **Tempo**: Fast / Driving (~162 BPM).
+- **Mood & Atmosphere**: Dynamic, kinetic, urgent, modern, adrenaline-fueled.
+- **Emotions**: High energy, split-second urgency, competitive drive, racing heartbeat.
+- **Recommended VN Usage**:
+  - Running at top speed to intercept someone or make a deadline.
+  - Chases, evading pursuers through city back-alleys, or quick escapes.
+  - Fast-paced tech operation or dynamic transition montage under time pressure.
+
+---
+### ea2.ogg
+- **Style / Genre**: Cyber Suspense / Electronic Data Pulse
+- **Key Instruments**: 16th-note digital synth sequencer, staccato blips, electronic hi-hats, low filtered synth drone.
+- **Tempo**: Fast electronic pulse (~138 BPM).
+- **Mood & Atmosphere**: High-tech, analytical, clandestine, urgent.
+- **Emotions**: Focused intensity, countdown pressure, digital alarm, imminent interception.
+- **Recommended VN Usage**:
+  - Radar detection, tracking an unidentified flying target or military interceptor.
+  - Hacking into classified databases, decoding an encrypted transmission.
+  - Tense operations room / cockpit HUD monitoring scenes.
+
+---
+
+### free0221.ogg
+- **Style / Genre**: Cinematic Orchestral Ballad / Tearful Climax
+- **Key Instruments**: Expressive grand piano melody, lush sweeping strings (violins & cellos), subtle acoustic guitar, rising orchestral swells.
+- **Tempo**: Slow / Expressive ballad tempo (~78 BPM).
+- **Mood & Atmosphere**: Deeply moving, bittersweet, cinematic, cathartic, poignant.
+- **Emotions**: Heartbreaking sorrow blended with profound love, tearful farewell, sacrificial resolve, beautiful tragedy.
+- **Recommended VN Usage**:
+  - Major emotional climax of a route (e.g. parting ways knowing they may never meet again).
+  - Tragic confession under the setting sun or starry sky.
+  - Epilogue or emotional revelation where the full truth behind a character's sacrifice is revealed.
+
+---
+
+### free0224.ogg
+- **Style / Genre**: Melancholic Solo Piano / Introspective Elegy
+- **Key Instruments**: Grand piano solo with delicate warm synth pad resonance, sustained resonant lower register.
+- **Tempo**: Very slow / Rubato (~62 BPM).
+- **Mood & Atmosphere**: Somber, desolate, intimate, heavyhearted, solitary.
+- **Emotions**: Mourning, unbearable grief, quiet despair, profound isolation.
+- **Recommended VN Usage**:
+  - Aftermath of a tragedy or character death; entering an empty room left behind.
+  - Protagonist sitting alone in despair, confronting their utter powerlessness.
+  - Quiet, devastating realizations that leave the cast speechless.
+
+---
+
+### free0235.ogg
+- **Style / Genre**: Funk / Acid Jazz / Comic Swagger
+- **Key Instruments**: Pumping electric funk bass, brass section stabs (trumpets/horns), wah-wah rhythm guitar, crisp drum groove, retro organ.
+- **Tempo**: Upbeat funky swagger (~118 BPM).
+- **Mood & Atmosphere**: Groovy, stylishly comedic, mischievous, energetic.
+- **Emotions**: Cocky confidence, playful scheming, eccentric charisma, cheeky trouble.
+- **Recommended VN Usage**:
+  - Introduction of an eccentric, boastful, or shady character (e.g. Enomoto or a nosy reporter).
+  - Executing a ridiculous plan or covert scheme that goes comically wrong.
+  - Snappy comedic dialogue, bartering, or fast-talking negotiations.
+
+---
+### free0334.ogg
+- **Style / Genre**: Dramatic Electronic Suspense / Mystery Thriller
+- **Key Instruments**: Driving spiccato/staccato strings, punchy electronic drums, tense synth bass, soaring anxious violin lines.
+- **Tempo**: Fast / Urgently rhythmic (~134 BPM).
+- **Mood & Atmosphere**: High-tension, investigative, perilous, suspenseful.
+- **Emotions**: Apprehension, sharp anxiety, ticking clock, imminent danger.
+- **Recommended VN Usage**:
+  - Uncovering a conspiracy or dangerous military secret.
+  - Infiltration into restricted perimeters while evading patrol guards.
+  - Sudden crisis moments where characters realize they have been trapped or ambushed.
+
+---
+
+### free0335.ogg
+- **Style / Genre**: Upbeat Pop-Rock / Youthful Adventure
+- **Key Instruments**: Punchy electric guitar riffs, bright synthesizer melody hooks, energetic drum kit, driving bass.
+- **Tempo**: Fast / Energetic rock pace (~140 BPM).
+- **Mood & Atmosphere**: Exhilarating, spirited, sunny, confident, anime-action slice-of-life.
+- **Emotions**: Youthful excitement, teamwork, spirited determination, fun rivalry.
+- **Recommended VN Usage**:
+  - Enthusiastic club project execution (e.g. building a rocket, preparing the school festival).
+  - Racing on bicycles across town on a bright summer day.
+  - Triumphant, energetic daily life breakthroughs.
+
+---
+
+### free0337.ogg
+- **Style / Genre**: Pastoral Folk Pop / Sunny Summer Afternoon
+- **Key Instruments**: Acoustic rhythm guitar, sweet flute / recorder lead, sparkling glockenspiel, gentle shaker/drum tap.
+- **Tempo**: Relaxed moderate walk (~106 BPM).
+- **Mood & Atmosphere**: Warm, carefree, pastoral, idyllic, nostalgic.
+- **Emotions**: Wholesome joy, easygoing companionship, comfortable silence, childhood wonder.
+- **Recommended VN Usage**:
+  - Leisurely summer afternoon by the riverbank or school rooftop.
+  - Gentle romance blooming naturally over casual conversations.
+  - Reminiscing about childhood memories while strolling along countryside roads.
+
+---
+
+### free0343.ogg
+- **Style / Genre**: Grand Orchestral Tragedy / Climactic Struggle
+- **Key Instruments**: Sweeping orchestral string sections, heavy dramatic grand piano, booming timpani/percussion, mournful brass.
+- **Tempo**: Dramatic moderato (~88 BPM).
+- **Mood & Atmosphere**: Fatalistic, agonizing, monumental, heroic, heartbreaking.
+- **Emotions**: Desperate resolve in the face of inevitable tragedy, protective anguish, grief-stricken defiance.
+- **Recommended VN Usage**:
+  - Climax of a military conflict or fateful duel.
+  - Protagonist crying out while desperately trying to save someone whose fate is sealed.
+  - The turning point where everything falls apart and the characters must confront irrevocable loss.
+
+---
+
+### free0426.ogg
+- **Style / Genre**: Uplifting J-Pop Ballad / Hopeful Morning
+- **Key Instruments**: Bright acoustic guitar strumming, soaring synthesizer/flute lead, shimmering synth bells, driving pop drum kit with crisp snare.
+- **Tempo**: Energetic mid-tempo (~120 BPM).
+- **Mood & Atmosphere**: Hopeful, invigorating, warm, forward-looking, radiant.
+- **Emotions**: Renewal, optimism, emotional relief after hardship, mutual encouragement.
+- **Recommended VN Usage**:
+  - The morning following a major emotional breakthrough or reconciliation.
+  - Characters setting out on a journey with newfound resolve and clear skies ahead.
+  - Epilogue / true route ending sequence showing the cast moving forward into their futures.
+
+---
+
+### free0428.ogg
+- **Style / Genre**: Quirky Comedic Mystery / Farcical Stealth
+- **Key Instruments**: Playful pizzicato strings, comedic bassoon / bass clarinet stabs, acoustic woodblocks, tipsy low-end acoustic bass walking line.
+- **Tempo**: Sneaky moderate tempo (~110 BPM).
+- **Mood & Atmosphere**: Whimsical, humorous, suspicious yet harmless, cartoonish.
+- **Emotions**: Mischief, bumbling curiosity, playful tension, lighthearted bafflement.
+- **Recommended VN Usage**:
+  - Characters clumsily tailing someone or sneaking through a forbidden room/clubhouse.
+  - Bizarre misunderstandings where someone acts suspiciously over a mundane secret.
+  - Clumsy investigation or comedic detective work by the eccentric members.
+
+---
+
+### free0429.ogg
+- **Style / Genre**: Tender Music Box Lullaby / Nostalgic Acoustic Ballad
+- **Key Instruments**: Delicate music box / celesta chime melody, intimate fingerpicked acoustic guitar, subtle warm synth pad warmth in the background.
+- **Tempo**: Slow, gentle sway (~72 BPM).
+- **Mood & Atmosphere**: Lullaby-like, deeply tender, bittersweet, nostalgic, vulnerable.
+- **Emotions**: Pure innocence, comforting warmth, gentle yearning, sorrowful affection.
+- **Recommended VN Usage**:
+  - Late-night quiet scene where one character watches over another sleeping or recovering.
+  - Revealing a deeply personal childhood memory or keepsake from family.
+  - A quiet tearful embrace before parting, offering unconditional comfort and warmth.
+
+---
+
+### free0466.ogg
+- **Style / Genre**: Desolate Dark Ambient / Mournful Solo Cello
+- **Key Instruments**: Reverb-drenched bowed solo cello/strings, low ominous rumbling sub-drone, hollow metallic atmospheric echoes.
+- **Tempo**: Very slow / Ambient (~58 BPM).
+- **Mood & Atmosphere**: Bleak, barren, haunting, post-apocalyptic, profoundly hollow.
+- **Emotions**: Desolation, visceral loss, numb shock, lingering horror, existential ruin.
+- **Recommended VN Usage**:
+  - Surveying ruins, ash, or a devastated facility after a catastrophic disaster.
+  - The psychological state of total shock and emptiness right after witnessing a brutal truth.
+  - Standing alone at night in an abandoned wasteland where hope has ceased to exist.
+
+---
+
+### free0512.ogg
+- **Style / Genre**: Pastoral Acoustic Ballad / Gentle Everyday
+- **Key Instruments**: Warm fingerpicked acoustic guitar, expressive woodwind/oboe and flute leads, soft chime accents, subtle warm synth pad backdrop, understated brush percussion.
+- **Tempo**: Gentle moderate ballad (~88 BPM).
+- **Mood & Atmosphere**: Tender, comforting, nostalgic, sun-dappled, peaceful.
+- **Emotions**: Warm companionship, peaceful contentment, quiet appreciation of transient everyday life, gentle fondness.
+- **Recommended VN Usage**:
+  - Relaxed after-school strolls where characters open up about mundane but cherished feelings.
+  - Quiet, intimate conversations in a sunlit classroom or kitchen.
+  - Emotional relief following a resolved misunderstanding, restoring everyday normalcy.
+
+---
+
+### free0537.ogg
+- **Style / Genre**: Theatrical Battle March / Cinematic Showdown
+- **Key Instruments**: Thunderous cinematic drums and taiko hits, dramatic low brass stabs (horns/trombones), tense driving string ostinatos, metallic percussion strikes.
+- **Tempo**: Heavy marching battle tempo (~108 BPM).
+- **Mood & Atmosphere**: Imposing, combative, martial, grandiose, theatrically tense.
+- **Emotions**: Fiery competitive resolve, dramatic swagger, mock-serious combat adrenaline.
+- **Recommended VN Usage**:
+  - Over-the-top comedic duels or fierce competitions played dead seriously (e.g. eating contests, club rivalries).
+  - High-stakes tactical maneuvers or dramatic countdowns before an ambitious stunt.
+  - Face-offs between rival factions or sudden standoff challenges.
+
+---
+
+### free0551.ogg
+- **Style / Genre**: Festive Folk Pop / Lively Town Celebration
+- **Key Instruments**: Bouncy acoustic guitar rhythms, spirited accordion and whistle melody, cheerful hand percussion/tambourine, sparkling xylophone/glockenspiel, upbeat bassline.
+- **Tempo**: Sprightly, energetic dance pace (~128 BPM).
+- **Mood & Atmosphere**: Joyous, bustling, festive, celebratory, communal.
+- **Emotions**: Pure celebration, infectious camaraderie, holiday cheer, vibrant optimism.
+- **Recommended VN Usage**:
+  - School festival day (cultural fair, booths, crowds, performances).
+  - Local town festivals, summer fairs, or holiday fireworks celebrations.
+  - Energetic group outings where everyone is caught up in the vibrant communal atmosphere.
+
+---
+
+### free0554.ogg
+- **Style / Genre**: Breezy Bossa Nova / Laid-Back Lounge Groove
+- **Key Instruments**: Crisp nylon-string bossa nova guitar chords, mellow electric piano (Rhodes), playful acoustic flute riffs, warm upright acoustic bass, Latin shaker and rim-shot rhythm.
+- **Tempo**: Breezy, relaxed syncopated groove (~112 BPM).
+- **Mood & Atmosphere**: Easygoing, stylishly casual, nonchalant, sunlit, playful.
+- **Emotions**: Carefree contentment, relaxed curiosity, lighthearted detachment, unwinding after work.
+- **Recommended VN Usage**:
+  - Outdoor casual expeditions (e.g. the newspaper club digging around the mountain for UFO relics).
+  - Leisurely afternoon café chats or hanging out on a shaded veranda with cold drinks.
+  - Playful investigative tinkering or lighthearted planning sessions.
+
+---
+
+### free0557.ogg
+- **Style / Genre**: Urban Downtempo Pop / Smooth Hip-Hop Groove ("18 Town")
+- **Key Instruments**: Warm Rhodes electric piano chords, crisp boom-bap drum groove, punchy bass guitar, subtle vinyl scratch / vocal chop textures, smooth synth lead melody.
+- **Tempo**: Relaxed urban head-nodding groove (~92 BPM).
+- **Mood & Atmosphere**: Stylish, chill, modern, streetwise, laid-back urban afternoon.
+- **Emotions**: Casual confidence, youth hangout energy, street-smart curiosity, relaxed independence.
+- **Recommended VN Usage**:
+  - Roaming downtown commercial districts, arcades, or video rental stores.
+  - Hanging out on street corners or waiting at bus stops on a casual afternoon.
+  - Stylish urban exploration away from the familiar school setting.
+
+---
+
+### free21.ogg
+- **Style / Genre**: Cinematic Orchestral Elegy / Bittersweet Twilight Ballad ("End of Story")
+- **Key Instruments**: Expressive solo violin and cello leads, soaring orchestral string sections, heartfelt grand piano, gentle French horn accents, soft timpani.
+- **Tempo**: Slow, deeply poignant tempo (~66 BPM).
+- **Mood & Atmosphere**: Twilight, sunset, profoundly bittersweet, elegiac, cathartic.
+- **Emotions**: Lingering heartache, profound gratitude through tears, quiet resignation, solemn acceptance of the passage of time.
+- **Recommended VN Usage**:
+  - Sunset farewells at the train station or bus stop where characters know they may never meet again.
+  - Standing alone at dusk looking back on a completed journey or summer that has ended.
+  - Epilogue moments where characters cherish irreplaceable memories of someone who is gone.
+
+---
+
+### free34.ogg
+- **Style / Genre**: Wistful Acoustic Ballad / Lilting Nostalgia ("夢想蝶")
+- **Key Instruments**: Delicate fingerpicked acoustic guitar, intimate acoustic piano, soaring expressive flute/pipe lead, subtle warm synth pad, sparkling glockenspiel accents.
+- **Tempo**: Flowing, gentle lilting tempo (~84 BPM, gentle 6/8 feel).
+- **Mood & Atmosphere**: Wistful, fragile, poetic, nostalgic, quietly poignant.
+- **Emotions**: Unspoken longing, tender vulnerability, fragile hope, bittersweet romantic yearning.
+- **Recommended VN Usage**:
+  - Quiet, hesitant confessions of feelings by the riverbank at sunset.
+  - A character gazing at an old photograph or keepsake, remembering lost innocence.
+  - Vulnerable late-afternoon conversations where emotional barriers begin to lower.
+
+---
+
+### free35.ogg
+- **Style / Genre**: Sunny Morning Acoustic Pop / Energetic Youth ("Morning")
+- **Key Instruments**: Bright acoustic rhythm guitar strumming, bouncy synth lead melody, cheerful driving pop drums with handclap accents, punchy bass, shimmering bells.
+- **Tempo**: Brisk, spirited morning pace (~124 BPM).
+- **Mood & Atmosphere**: Radiant, energetic, crisp, cheerful, optimistic.
+- **Emotions**: Bubbly enthusiasm, morning vitality, carefree camaraderie, eagerness for the day ahead.
+- **Recommended VN Usage**:
+  - Commuting to school on a brilliant sunny morning, running to beat the school bell.
+  - Bubbly, energetic morning introductions and lively locker hallway banter.
+  - Kicking off an exciting weekend adventure or road trip with close friends.
+
+---
+
+### free65.ogg
+- **Style / Genre**: High-Energy Synth Trance / Climactic Showdown ("Shooting Star")
+- **Key Instruments**: Driving four-on-the-floor kick, rapid 16th-note synth arpeggios, piercing synthesizer lead hook, pumping sidechained bassline, dramatic crash cymbals.
+- **Tempo**: High-velocity tempo (~144 BPM).
+- **Mood & Atmosphere**: Adrenaline-charged, climactic, urgent, electrifying, desperate.
+- **Emotions**: All-or-nothing determination, fierce defiance, intense speed, soaring combat thrill.
+- **Recommended VN Usage**:
+  - The final showdown or breakthrough against an overwhelming adversary.
+  - High-speed aerial interception or escape sequence where every split-second counts.
+  - Crucial turning points where characters throw caution to the wind to protect someone.
+
+---
+
+### hakugin.ogg
+- **Style / Genre**: Cinematic Orchestral Epic / Tragic Aerial Clash ("白銀の天空")
+- **Key Instruments**: Swirling spiccato strings, dramatic low brass blasts, thundering orchestral war drums/snares, soaring tragic violin/synth melody, tubular bell strikes.
+- **Tempo**: Fast dramatic battle cadence (~136 BPM).
+- **Mood & Atmosphere**: Majestic, tragic, heroic, catastrophic, sky-bound grandeur.
+- **Emotions**: Desperate heroism, noble sacrifice, sorrowful resolve, defying doomed odds.
+- **Recommended VN Usage**:
+  - Military jets scrambling into dogfights (e.g. Black Wing sorties over Sonohara).
+  - Epic battles where the cost of victory is painfully high.
+  - Emotional climax of a heroine taking to the skies on a one-way mission.
+
+---
+
+### hakuu.ogg
+- **Style / Genre**: Dark Industrial Ambient / Cold Exposition ("覇空")
+- **Key Instruments**: Low ominous sub-bass drone, resonant cold metallic percussive strikes, eerie shifting synth pads, distant sonar-like pings, hollow industrial winds.
+- **Tempo**: Slow ambient drift (~70 BPM, loose pulse).
+- **Mood & Atmosphere**: Sterile, foreboding, chilling, classified, catastrophic aftermath.
+- **Emotions**: Quiet dread, clinical detachment, disturbing revelation, suppressed shock.
+- **Recommended VN Usage**:
+  - Inspecting the wreckage of a military craft or classified disaster site.
+  - Behind-closed-doors government briefings exposing grim military truths.
+  - Discovering horrifying medical or scientific data regarding the heroine.
+
+---
+
+### hiphop_004.ogg
+- **Style / Genre**: Laid-Back 90s Lo-Fi Hip-Hop / Domestic Lounge Groove
+- **Key Instruments**: Dusty boom-bap drum loop with crisp rim-shots, warm Rhodes electric piano chords, mellow walking electric bass, muted horn/guitar accents, playful synth whistle.
+- **Tempo**: Easygoing head-nodding groove (~88 BPM).
+- **Mood & Atmosphere**: Casual, lazy, domestic, comfortable, slightly comical.
+- **Emotions**: Carefree contentment, effortless camaraderie, zero urgency, lazy downtime.
+- **Recommended VN Usage**:
+  - Lounging in the clubroom or living room watching television with snacks.
+  - Casual comedic banter and teasing between friends on a lazy summer afternoon.
+  - Mundane everyday moments when characters are completely at ease.
+
+---
+
+### hiphop_013.ogg
+- **Style / Genre**: 90s Boom-Bap Hip-Hop / Cocky Teasing Swagger
+- **Key Instruments**: Bouncy muted electric rhythm guitar, punchy boom-bap drum groove, sliding electric bass, playful brass stabs, cheeky flute riffs, vinyl scratch accents.
+- **Tempo**: Mid-tempo funky bounce (~96 BPM).
+- **Mood & Atmosphere**: Smug, teasing, playful, mischievous, streetwise.
+- **Emotions**: Cheeky schadenfreude, teasing a friend about a romantic rumor, gloating confidence, lighthearted banter.
+- **Recommended VN Usage**:
+  - Classmates mercilessly grilling the protagonist over an embarrassing secret or girl trouble.
+  - Characters concocting a sneaky scheme with cocky, overblown confidence.
+  - Banter during lunch breaks where characters poke fun at each other's romantic failures.
+
+---
+
+### loop7.ogg
+- **Style / Genre**: High-Speed Industrial Breakbeat / Frantic Racing
+- **Key Instruments**: Relentless distorted breakbeat drums, aggressive buzzing synth bass ostinato, laser/siren FX risers, hyper-compressed rhythmic loops.
+- **Tempo**: Blistering high-speed cadence (~160 BPM).
+- **Mood & Atmosphere**: Frantic, chaotic, breathless, hyperactive, panic-inducing.
+- **Emotions**: Pure panic adrenaline, frantic desperation, unstoppable momentum, over-the-top comedic extremity.
+- **Recommended VN Usage**:
+  - Ridiculous physical challenges played at 200% intensity (e.g. the ramen eating contest, frantic dash to avoid tardiness).
+  - Out-of-control slapstick chases where characters flee in sheer panic.
+  - Absolute chaotic emergencies spiraling beyond anyone's control.
+
+---
+
+### minimal_009.ogg
+- **Style / Genre**: Minimalist Electronic Pulse / Crisis Suspense ("Emergency")
+- **Key Instruments**: Driving syncopated analog synth arpeggio, punchy electronic kick/percussion, resonant filtered sub-bass, cold high-frequency alert accents.
+- **Tempo**: Fast, urgent driving pulse (~132 BPM).
+- **Mood & Atmosphere**: Mechanical, sterile, critical, alarm-driven, impending breach.
+- **Emotions**: Rising panic, sharp alarm, ticking-clock pressure, acute vigilance.
+- **Recommended VN Usage**:
+  - Emergency alarms triggering throughout a base or school building.
+  - System failure countdowns or urgent alerts requiring immediate action.
+  - A covert operation suddenly compromised, forcing an immediate tactical reaction.
+
+---
+
+### minimal_019.ogg
+- **Style / Genre**: Dark Minimalist Ambience / Oppressive Confrontation
+- **Key Instruments**: Deep throbbing sub-bass drone, metallic friction/scrape textures, discordant low-register synth pads, muted heartbeat thuds, distant hollow chimes.
+- **Tempo**: Slow, menacing crawl (~68 BPM).
+- **Mood & Atmosphere**: Claustrophobic, intimidating, sinister, psychologically chilling.
+- **Emotions**: Breathless terror, primal dread, cornered vulnerability, confrontation with ruthless authority.
+- **Recommended VN Usage**:
+  - Direct confrontation with an intimidating antagonist or ruthless authority figure.
+  - Interrogation scenes in a dim room where the protagonist realizes they have zero leverage.
+  - Silent standoffs where any sudden movement could trigger lethal consequences.
+
+---
+
+### minimal_020.ogg
+- **Style / Genre**: Covert Electronic Downtempo / Corporate Mystery ("Conspiracy")
+- **Key Instruments**: Muted acoustic guitar plucks, crisp electronic shaker/downtempo beat, rolling synth bass, airy flute/synth motifs, subtle clockwork clicks.
+- **Tempo**: Cautious mid-tempo groove (~94 BPM).
+- **Mood & Atmosphere**: Suspicious, calculating, secretive, investigative, bureaucratic shadows.
+- **Emotions**: Quiet paranoia, acute alertness, piecing together a hidden web of conspiracy.
+- **Recommended VN Usage**:
+  - Discovering classified government or corporate documents regarding military projects.
+  - Black sedans and shadowy corporate suits tailing characters across town.
+  - Investigative deduction sequences where pieces of a sinister puzzle lock into place.
+
+---
+
+### modulor_019.ogg
+- **Style / Genre**: Ominous Dark Drone / Psychological Dread
+- **Key Instruments**: Subterranean sub-bass hum, slow bowed double bass/cello groans, metallic resonance swells, pitch-bending synth pads, sparse crystalline chimes.
+- **Tempo**: Glacial atmospheric crawl (~54 BPM).
+- **Mood & Atmosphere**: Suffocating, heavy, brooding, inescapable, psychological abyss.
+- **Emotions**: Paralyzing dread, helpless despair, the crushing weight of an irreversible reality.
+- **Recommended VN Usage**:
+  - Confronting a horrific reality outside an intensive care room or quarantine chamber.
+  - The silent aftermath when a character realizes someone they cherish is irrevocably doomed.
+  - Deep psychological breakdowns where all words fail and despair suffocates the scene.
+
+---
+
+### oikaze.ogg
+- **Style / Genre**: Pastoral Folk Ballad / Windswept Nostalgia ("追い風 - Tailwind / Prologue")
+- **Key Instruments**: Dual acoustic guitars (intricate fingerpicking & warm strumming), soaring emotive wooden flute/recorder, warm acoustic bass, delicate brush percussion, gentle string swells.
+- **Tempo**: Flowing moderate ballad (~98 BPM).
+- **Mood & Atmosphere**: Breezy, wistful, poetic, bittersweet, nostalgic summer afternoon.
+- **Emotions**: Quiet yearning, tender recollection, the bittersweet passage of youth, hopeful resolve.
+- **Recommended VN Usage**:
+  - Prologue scenes introducing the setting and themes (e.g. the end of summer vacation, returning to school).
+  - Standing on a hill or riverbank as a summer breeze blows past, reflecting on cherished bonds.
+  - Poignant transitional scenes bridging major emotional story arcs.
+
+---
+
+### omoiwo.ogg
+- **Style / Genre**: Tender Acoustic Pop / Heartfelt Reassurance ("想いを彼方へ")
+- **Key Instruments**: Gentle fingerpicked acoustic guitar, sweet whistle/flute lead, warm grand piano chords, sparkling glockenspiel accents, soft supportive folk drums.
+- **Tempo**: Uplifting moderate tempo (~102 BPM).
+- **Mood & Atmosphere**: Heartwarming, comforting, radiant, emotionally sincere, tender.
+- **Emotions**: Unconditional acceptance, quiet relief after tears, mutual trust, heartfelt warmth.
+- **Recommended VN Usage**:
+  - Emotional reconciliation after a painful misunderstanding or breakdown.
+  - Warm, intimate exchanges where characters promise to protect each other.
+  - Sweet, touching moments of shared comfort under a starlit night sky.
+
+---
+
+### piano2_004.ogg
+- **Style / Genre**: Lighthearted Piano Waltz / Playful Salon ("Girls' Gossip")
+- **Key Instruments**: Bright acoustic grand piano solo, bouncy left-hand waltz accompaniment, crisp right-hand staccato runs, playful trills and grace notes.
+- **Tempo**: Sprightly moderate waltz (~116 BPM, 3/4 meter).
+- **Mood & Atmosphere**: Whimsical, charming, gossipy, bubbly, carefree.
+- **Emotions**: Harmless teasing, youthful feminine camaraderie, giggling over crushes, cheery lunch break banter.
+- **Recommended VN Usage**:
+  - Girls gossiping in the classroom corner or school courtyard during lunch.
+  - Teasing the heroine or protagonist about romantic rumors.
+  - Lighthearted everyday clubroom chatter and feminine banter.
+
+---
+
+### piano2_007.ogg
+- **Style / Genre**: Comedic Ragtime Stride / Slapstick Novelty ("Comic Surprise")
+- **Key Instruments**: Upright piano with exaggerated syncopated ragtime bass, sudden theatrical pauses, chromatic sliding scales, quirky staccato chords.
+- **Tempo**: Fast, eccentric stride tempo (~138 BPM).
+- **Mood & Atmosphere**: Zany, slapstick, startled, farcical, cartoonish.
+- **Emotions**: Comic bewilderment, double-take shock, farcical panic, dumbfounded disbelief.
+- **Recommended VN Usage**:
+  - Someone barging into the room at the most compromising possible moment.
+  - An outrageous claim or absurd revelation that leaves everyone speechless.
+  - Slapstick comedic scrambles to hide contraband or cover up an innocent mistake.
+
+---
+
+### piano2_014.ogg
+- **Style / Genre**: Poignant Solo Piano Ballad / Contemplative Reflection ("UFO Bragging / Suizenji's True Heart")
+- **Key Instruments**: Expressive grand piano solo with warm resonant voicings, delicate fluid arpeggios, sensitive rubato phrasing, deeply emotive melodic contours.
+- **Tempo**: Slow, reflective rubato tempo (~74 BPM).
+- **Mood & Atmosphere**: Bittersweet, contemplative, nostalgic, intimate, quiet sincerity.
+- **Emotions**: Vulnerable honesty beneath eccentric bravado, yearning for the unreachable, gentle wistfulness.
+- **Recommended VN Usage**:
+  - An eccentric character (e.g. Suizenji) dropping their boisterous facade to reveal why they truly search the skies.
+  - Solitary rooftop stargazing at dusk, pondering distant dreams.
+  - Quiet, intimate heart-to-hearts where characters share their real fears and ambitions.
+
+---
+
+### piano2_015.ogg
+- **Style / Genre**: Tipsy Cabaret Swing / Louche Comic Jazz ("Tipsy Adult Barging In / Mayumi")
+- **Key Instruments**: Jazzy piano with a loose stumbling swing bounce, slurred blues inflections, lazy chromatic walking bass, cheeky syncopated comping chords.
+- **Tempo**: Relaxed, swaying swing groove (~104 BPM).
+- **Mood & Atmosphere**: Bohemian, tipsy, cheeky, disheveled, humorous adult candor.
+- **Emotions**: Irresponsible adult cheerfulness, brazen teasing, playful meddling, zero shame.
+- **Recommended VN Usage**:
+  - A quirky adult teacher or guardian (e.g. Shiina Mayumi) barging in slightly drunk or complaining about adult life.
+  - Unconventional, humorous adult advice given over a can of beer or coffee.
+  - Meddlesome adults cheerfully disrupting serious teenage drama with comedic bluntness.
+
+---
+
+### piano2_020.ogg
+- **Style / Genre**: Reflective Solo Piano / Subdued Everyday ("Everyday After a Loss")
+- **Key Instruments**: Warm acoustic grand piano solo, tender left-hand arpeggios, gentle pauses, delicate soft-touch upper register melody.
+- **Tempo**: Slow, gentle pace (~72 BPM).
+- **Mood & Atmosphere**: Subdued, wistful, quiet morning light, resilient yet lonely, living with absence.
+- **Emotions**: Acceptance of loss, moving forward with quiet grief, bittersweet fondness, solemn tenderness.
+- **Recommended VN Usage**:
+  - The first morning returning to school or everyday life after a tragedy or a character's departure.
+  - Staring at an empty desk or empty chair at the breakfast table.
+  - Quiet inner monologues about carrying on someone's memory through ordinary days.
+
+---
+
+### piano3_001.ogg
+- **Style / Genre**: Intimate Romantic Piano Nocturne / Tender Proximity ("Quiet Time Together")
+- **Key Instruments**: Intimate grand piano solo with warm flowing chords, expressive rubato phrasing, deeply lyrical right-hand melody.
+- **Tempo**: Slow, gentle romantic sway (~68 BPM, lilting meter).
+- **Mood & Atmosphere**: Tender, intimate, romantic, serene, moonlit, vulnerable.
+- **Emotions**: Unspoken devotion, deep mutual trust, tranquil safety in each other's presence, gentle romantic warmth.
+- **Recommended VN Usage**:
+  - Two characters alone together under the stars or by the nighttime sea.
+  - Quiet, tender confessions of love and promises to stay together.
+  - Vulnerable moments of physical or emotional closeness where words are barely needed.
+
+---
+
+### piano3_003.ogg
+- **Style / Genre**: Tragic Piano Elegy / Heart-Wrenching Climax ("Main Sad Theme / Aisetsu")
+- **Key Instruments**: Deeply expressive grand piano solo, weeping upper-register melodic lines, rich resonant lower octaves, dynamic swell from fragile pianissimo to anguish.
+- **Tempo**: Very slow, tragic rubato (~58 BPM).
+- **Mood & Atmosphere**: Heartbreaking, devastating, tear-stained, profoundly desolate, solitary grief.
+- **Emotions**: Irreparable loss, unbearable heartbreak, weeping aloud in helpless agony, utter despair.
+- **Recommended VN Usage**:
+  - Climax of a tragic character death, fatal separation, or terminal sacrifice.
+  - A character breaking down in uncontrollable sobs, clutching a keepsake of someone gone.
+  - The most devastating, tearful revelations in the entire story.
+
+---
+
+### piano3_014.ogg
+- **Style / Genre**: Wistful Schoolroom Piano / Nostalgic Reflection ("Hallway Theme Arrangement")
+- **Key Instruments**: Grand piano solo with resonant sustain, rolling arpeggiated figures, poignant melodic cadence evocative of golden hour.
+- **Tempo**: Moderate slow tempo (~76 BPM).
+- **Mood & Atmosphere**: Nostalgic, wistful, golden hour, reflective, echo of empty school corridors.
+- **Emotions**: Cherished memories of youth, bittersweet passage of school days, quiet introspection.
+- **Recommended VN Usage**:
+  - Walking down silent school hallways bathed in orange sunset light after classes have ended.
+  - Looking around an empty clubroom filled with memories before locking up.
+  - Contemplating how much has changed over the course of the semester.
+
+---
+
+### piano3_016.ogg
+- **Style / Genre**: Bittersweet Romantic Piano / Tender Heartache ("Akiho's Theme - Bittersweet Arrangement")
+- **Key Instruments**: Warm acoustic grand piano solo, gentle descending arpeggios, poignant rubato, tender harmonic shifts between minor melancholy and major warmth.
+- **Tempo**: Slow, expressive reflective tempo (~64 BPM).
+- **Mood & Atmosphere**: Bittersweet, vulnerable, tenderly sorrowful, twilight glow, quiet devotion.
+- **Emotions**: Unrequited love, painful yet graceful resignation, cherished memories of friendship, tender longing.
+- **Recommended VN Usage**:
+  - The childhood friend (Akiho) quietly swallowing her unvoiced feelings for the protagonist.
+  - A character looking at the two people they love most from a distance, choosing to support them rather than interfere.
+  - Quiet sunset conversations by the school gate where honest, bittersweet truths are finally acknowledged.
+
+---
+
+### pianodance01.ogg
+- **Style / Genre**: High-Speed Neoclassical Piano Dance / Catastrophic Collapse ("BGM_HOUKAI")
+- **Key Instruments**: Virtuosic rapid-fire piano arpeggios, driving electronic dance percussion, aggressive synth bass pulse, breathless neoclassical urgency.
+- **Tempo**: Blistering fast tempo (~152 BPM).
+- **Mood & Atmosphere**: Catastrophic, apocalyptic, frantic, relentless, world-shattering crisis.
+- **Emotions**: Desperate adrenaline, panic against impending doom, breathless racing against the clock, tragic frenzy.
+- **Recommended VN Usage**:
+  - Catastrophic structural collapse of a base, facility, or containment system.
+  - Desperately sprinting through crumbling corridors while explosions rock the perimeter.
+  - The ultimate critical crisis point where the world as the characters know it falls apart.
+
+---
+
+### piano_007.ogg
+- **Style / Genre**: Analytical Investigative Piano / Cool Deduction ("Piecing Things Together")
+- **Key Instruments**: Cool, thoughtful acoustic piano with subtle chromatic motifs, delicate syncopated phrasing, quiet walking bass undertone, gentle inquisitive chords.
+- **Tempo**: Moderate investigative tempo (~90 BPM).
+- **Mood & Atmosphere**: Inquisitive, analytical, focused, observant, quiet intrigue.
+- **Emotions**: Intellectual focus, deductive clarity, quiet realization, patient problem-solving.
+- **Recommended VN Usage**:
+  - Inspecting clues, reading old newspaper articles, or cross-referencing timeline dates.
+  - Quiet investigative discussions where characters connect disparate pieces of the mystery.
+  - Revealing the logical chain of events behind a baffling supernatural or military occurrence.
+
+---
+
+### piano_010.ogg
+- **Style / Genre**: Chilling Minimalist Piano Suspense / Psychological Dread ("Oppressive Pressure")
+- **Key Instruments**: Stark isolated high-register piano notes echoing into silence, ominous low-register pedal drones, tense discordant intervals, subtle eerie pad resonance.
+- **Tempo**: Very slow, fractured suspense tempo (~50 BPM).
+- **Mood & Atmosphere**: Chilling, claustrophobic, menacing, breathless, hair-raising stillness.
+- **Emotions**: Acute fear, psychological entrapment, sense of being watched or cornered, creeping terror.
+- **Recommended VN Usage**:
+  - Stalking through a dark, locked-down facility or silent nocturnal hallway.
+  - An unseen presence or intruder lingering just behind the door.
+  - Moments of pure suspense where making a single sound would spell instant discovery.
+
+---
+
+### piano_011.ogg
+- **Style / Genre**: Nostalgic Solo Piano / Sentimental Gratitude Ballad ("Thanks / Gratitude")
+- **Key Instruments**: Pure acoustic grand piano solo, warm resonant voicings, delicate singing upper-register melody, gentle sentimental cadence.
+- **Tempo**: Gentle reflective tempo (~70 BPM).
+- **Mood & Atmosphere**: Warm, grateful, tearfully nostalgic, golden sunset glow, peaceful closure.
+- **Emotions**: Sincere gratitude ("thank you for being in my life"), profound appreciation, smiling through tears, peaceful parting.
+- **Recommended VN Usage**:
+  - A character expressing heartfelt gratitude to their friends for giving them a place to belong.
+  - Quiet farewell before leaving for a long journey, leaving behind only warm memories.
+  - Reflective epilogue moments looking at a treasured group photograph.
+
+---
+
+### piano_012.ogg
+- **Style / Genre**: Melancholic Piano Ballad / Fragile Stillness ("Before the Collapse")
+- **Key Instruments**: Sensitive grand piano solo with hesitant melodic notes, lingering resonant chords, poignant harmonic suspensions, delicate dynamic touch.
+- **Tempo**: Slow, quiet reflective tempo (~65 BPM).
+- **Mood & Atmosphere**: The calm before the storm, fragile serenity, bittersweet stillness, looming finality.
+- **Emotions**: Suppressed apprehension, treasuring the final peaceful minutes, quiet resolve before catastrophe strikes.
+- **Recommended VN Usage**:
+  - The final quiet scene together on the eve of a decisive military operation or catastrophe.
+  - Characters watching the evening sky darken as distant storm clouds or alarms begin to assemble.
+  - A tender, whispered promise made right before stepping out into danger.
+
+---
+
+### Robot_Island.ogg
+- **Style / Genre**: Retro Chiptune Synth-Pop / Jaunty Mechanical Dance ("Robot Island")
+- **Key Instruments**: 8-bit/16-bit arcade synth leads, bouncy electronic dance groove, playful robotic bleeps and sound effects, rubbery synth bassline.
+- **Tempo**: Upbeat, jaunty dance pace (~128 BPM).
+- **Mood & Atmosphere**: Playful, quirky, retro-arcade, robotic, comical, infectious.
+- **Emotions**: Childlike silliness, mechanical charm, lighthearted party fun, carefree quirkiness.
+- **Recommended VN Usage**:
+  - Comedic school festival activities (e.g. awkward folk dances, costumed mascot shenanigans).
+  - Tinkering with absurd home-made robots, secret gadgets, or eccentric inventions in the garage.
+  - Retro video game arcade challenges or silly comic side-quests.
+
+---
+
+### techno_006.ogg
+- **Style / Genre**: Cyber Techno Pursuit / Nocturnal Escape ("BGM_TOUSOU")
+- **Key Instruments**: Driving four-on-the-floor electronic kick, rapid 16th-note synth sequencer arpeggios, filtered analog bassline, resonant sweep FX, crisp hi-hat groove.
+- **Tempo**: Fast, focused driving tempo (~134 BPM).
+- **Mood & Atmosphere**: High-stakes, stealthy, urgent, cybernetic, nocturnal chase.
+- **Emotions**: Evasive adrenaline, sharp reflexes, avoiding capture, staying one step ahead of the net.
+- **Recommended VN Usage**:
+  - Nighttime escape through back alleys, evading patrol cars or military searchlights.
+  - Tactical infiltration or retreat under hostile surveillance.
+  - Urgent cyber operations or timed escape sequences before a perimeter is locked down.
+
+---
+
+### teek.ogg
+- **Style / Genre**: Feisty Acoustic Pop / Sassy Tsundere Groove ("Teek Teek Teek / Akiho's Theme")
+- **Key Instruments**: Punchy syncopated acoustic guitar chords, playful woodblock/click percussion ("teek teek"), energetic bouncy bass, cheerful whistling/flute melody, cheeky brass stabs.
+- **Tempo**: Upbeat, energetic bounce (~122 BPM).
+- **Mood & Atmosphere**: Sassy, prickly, spirited, comical, lively schoolyard banter.
+- **Emotions**: Flustered indignation, exasperated scolding, stubborn pride hiding affection, playful irritation.
+- **Recommended VN Usage**:
+  - The feisty heroine or childhood friend (Akiho) loudly scolding the protagonist for doing something boneheaded.
+  - Energetic bickering and slapstick arguments over club duties or homework.
+  - Flustered tsundere reactions when caught off-guard or teased about romance.
+
+---
+
+### y07.ogg
+- **Style / Genre**: Lyrical Nostalgic Ballad / Sunlit School Days ("Corridor Theme")
+- **Key Instruments**: Flowing acoustic piano arpeggios, gentle singing acoustic guitar melody, warm string ensemble accompaniment, soft shimmering chimes.
+- **Tempo**: Slow, poignant and reflective (~66 BPM).
+- **Mood & Atmosphere**: Nostalgic, tender, peaceful, golden afternoon light, poetic school memories.
+- **Emotions**: Cherished friendship, comfortable silence, quiet gratitude for simple days, wistful affection.
+- **Recommended VN Usage**:
+  - Strolling home together after school under the golden glow of the afternoon sun.
+  - Lingering in the classroom after everyone else has gone, sharing quiet thoughts about the future.
+  - Touching scenes highlighting the irreplaceable bond between longtime friends.
+
+---

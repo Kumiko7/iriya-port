@@ -1,0 +1,747 @@
+# Iriya no Sora, UFO no Natsu (Nintendo DS) BGM Catalog & Director's Guide
+
+This document contains a comprehensive audio perception analysis and visual novel (VN) staging guide for all 53 original Nintendo DS soundtrack tracks extracted from *Iriya no Sora, UFO no Natsu I & II*. Generated via native multimodal audio listening directly from the raw game audio streams.
+
+---
+
+### BGM_AISETSU.ogg
+- **Japanese Title / Gloss**: 哀切 (Sorrow / Grief)
+- **Style / Genre**: Poignant Solo Piano / Melancholic Ballad
+- **Key Instruments**: Expressive grand piano solo, gentle descending arpeggios, warm sustained pedal resonance, delicate soft-touch upper register.
+- **Tempo**: Slow, expressive rubato (~62 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Heartbreaking, sorrowful, intimate, quiet despair, solitary.
+- **Emotional Resonance**: Deep grief, vulnerability, helplessness, quiet tears, realization of painful reality.
+- **Recommended VN Usage**:
+  - Asaba witnessing Iriya's physical suffering (wrist metal spheres, sudden nosebleeds) and confronting his own helplessness.
+  - Quiet, devastating confessions where characters confront their emotional limitations.
+  - The somber aftermath of traumatic discoveries or painful arguments.
+
+---
+
+### BGM_AISETSU_ARR.ogg
+- **Japanese Title / Gloss**: 哀切 アレンジ (Sorrow Arrangement)
+- **Style / Genre**: Ethereal Ambient Elegy / Dreamlike Melancholy
+- **Key Instruments**: Crystalline synth chimes / music box bells, warm atmospheric synth pads, deep cello/contrabass drone foundation, glass-like harmonic textures.
+- **Tempo**: Slow ambient drift (~60 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Dreamlike, desolate, ethereal, quiet twilight, vast and lonely.
+- **Emotional Resonance**: Numb grief, lingering heartache, fading memories, poignant resignation.
+- **Recommended VN Usage**:
+  - Stargazing at night while contemplating irreversible fate and impending tragedy.
+  - Reflective flashbacks to lost peaceful days that can never return.
+  - Late-route scenes in *Iriya II* where the weight of sacrifice becomes undeniable.
+
+---
+
+### BGM_AKIHO.ogg
+- **Japanese Title / Gloss**: 晶穂 (Akiho's Theme)
+- **Style / Genre**: Bouncy Acoustic Pop / Sassy School Comedy
+- **Key Instruments**: Strummed acoustic rhythm guitar, bouncy clarinet/recorder melody, crisp woodblocks/percussion, playful walking bassline, cheerful accordion accents.
+- **Tempo**: Upbeat, spirited pace (~126 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Feisty, comical, energetic, sassy, lively schoolyard banter.
+- **Emotional Resonance**: Tsundere irritation, flustered scolding, stubborn pride hiding affection, comedic exasperation.
+- **Recommended VN Usage**:
+  - Sudo Akiho storming in to berate Asaba or Suizenji for ridiculous schemes.
+  - Newspaper club bickering, lunchbox sharing, and heated daily arguments.
+  - High-energy comedic everyday life and school corridor confrontations.
+
+---
+
+### BGM_AKIHO_ARR.ogg
+- **Japanese Title / Gloss**: 晶穂 アレンジ (Akiho Arrangement)
+- **Style / Genre**: Bittersweet Acoustic Ballad / Wistful Reflection
+- **Key Instruments**: Gentle fingerpicked acoustic guitar, expressive flute/pipe lead melody, soft string ensemble warmth, subtle synth pads.
+- **Tempo**: Moderate slow ballad (~78 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Bittersweet, vulnerable, tender, twilight glow, quiet ache.
+- **Emotional Resonance**: Unrequited love, swallowed words, painful realization that someone's heart is elsewhere, enduring loyalty.
+- **Recommended VN Usage**:
+  - Akiho watching Asaba run off to protect Iriya, quietly accepting her role on the sidelines.
+  - Sunset conversations on the school roof where Akiho drops her prickly facade and speaks honestly.
+  - Bittersweet moments between childhood friends confronting the inevitable drift of growing up.
+
+---
+
+### BGM_APPAKU.ogg
+- **Japanese Title / Gloss**: 圧迫 (Oppression / Pressure)
+- **Style / Genre**: Dark Industrial Suspense / Oppressive Psychological Drone
+- **Key Instruments**: Ominous synthetic choir drones, distorted industrial hum, stark metallic percussive hits, deep rhythmic sub-thuds, dissonant swells.
+- **Tempo**: Heavy, menacing pulse (~60 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Suffocating, claustrophobic, terrifying, predatory, cornered.
+- **Emotional Resonance**: Visceral intimidation, primal dread, acute danger, feeling powerless against ruthless forces.
+- **Recommended VN Usage**:
+  - Confrontations with Enomoto or black-suited operatives where the true lethal nature of the military apparatus is revealed.
+  - Being cornered in an isolated location with nowhere left to run.
+  - Psychological intimidation scenes where speaking out could cost someone their life.
+
+---
+
+### BGM_APPAKU_ARR.ogg
+- **Japanese Title / Gloss**: 圧迫 アレンジ (Pressure Arrangement)
+- **Style / Genre**: Cybernetic Ambient Breakbeat / Covert Surveillance
+- **Key Instruments**: Glitchy electronic beat with metallic snap, deep subterranean bass, hollow echoing percussion, tense repeating sequencer loop.
+- **Tempo**: Urgent moderate tempo (~110 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Cold, tactical, covert, watchful, urban manhunt.
+- **Emotional Resonance**: Heightened paranoia, acute survival instinct, evasion under active surveillance.
+- **Recommended VN Usage**:
+  - Tailing government agents through rain-slicked city streets while attempting to evade counter-surveillance.
+  - Slipping past base perimeter checkpoints or hiding behind security fencing.
+  - Tense investigative stealth sequences where characters are one step ahead of interception.
+
+---
+
+### BGM_BONYOU.ogg
+- **Japanese Title / Gloss**: 凡庸 (Mediocre / Slacker Ordinary)
+- **Style / Genre**: Grungy Alternative Pop-Rock / Slacker Teenage Groove
+- **Key Instruments**: Raw overdriven electric guitar riff, steady garage rock drum kit, lazy thumping bassline, unpolished indie texture.
+- **Tempo**: Moderate swagger (~108 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Languid, cynical, bored, gritty, sticky midsummer heat.
+- **Emotional Resonance**: Teenage apathy, boredom with small-town life, restless yearning for purpose, cynical banter.
+- **Recommended VN Usage**:
+  - Asaba and his classmates lethargically enduring sweltering afternoon classes.
+  - Cynical conversations between boys grumbling about girls, summer school, and their mundane future.
+  - Roaming the dusty suburbs on bicycles with nowhere specific to go.
+
+---
+
+### BGM_CITY.ogg
+- **Japanese Title / Gloss**: 街 (The City / Downtown)
+- **Style / Genre**: Funky Urban Pop / Upbeat Street Groove
+- **Key Instruments**: Crisp funky rhythm guitar with wah chops, bouncy slap bassline, bright electric piano chords, lively pop drum kit with tambourine.
+- **Tempo**: Energetic mid-tempo funk (~116 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Breezy, stylish, bustling, sunlit commercial district, weekend freedom.
+- **Emotional Resonance**: Carefree excitement, youthful independence, lively curiosity, metropolitan buzz.
+- **Recommended VN Usage**:
+  - Excursions into downtown Sonohara for shopping, arcades, or fast food.
+  - Date scenes in public areas (e.g. Asaba and Iriya walking through the downtown shopping arcade).
+  - Upbeat weekend activities and casual town discoveries.
+
+---
+
+### BGM_DATURYOKU.ogg
+- **Japanese Title / Gloss**: 脱力 (Comic Deflation / Letdown)
+- **Style / Genre**: Comedic Acoustic Novelty / Farcical Slapstick
+- **Key Instruments**: Playful pizzicato strings, comic bassoon/low-reed stabs, tipsy walking acoustic bass, wooden temple blocks, cheeky sliding brass falls.
+- **Tempo**: Jaunty moderate bounce (~114 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Goofy, farcical, anticlimactic, amused exasperation.
+- **Emotional Resonance**: Comic defeat, bewildered disbelief, deflation of tension, eye-rolling amusement.
+- **Recommended VN Usage**:
+  - A grandiose scheme or dramatic buildup ending in an utterly mundane or ridiculous failure.
+  - Characters comically collapsing in defeat after realizing an absurd misunderstanding.
+  - Lighthearted everyday moments where serious tension dissolves into slapstick.
+
+---
+
+### BGM_ENBAN.ogg
+- **Japanese Title / Gloss**: 円盤 (Flying Saucer / UFO Mystery)
+- **Style / Genre**: Eerie Sci-Fi Mystery / Celestial Occult
+- **Key Instruments**: Gliding theremin-like synth lead, sparkling glockenspiel / celesta arpeggios, hollow atmospheric reverb, mysterious synth pad chords.
+- **Tempo**: Slow, deliberate pulse (~76 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Otherworldly, eerie, mysterious, starry, conspiracy-laden.
+- **Emotional Resonance**: Cosmic wonder, uncanny curiosity, creeping suspicion, paranormal intrigue.
+- **Recommended VN Usage**:
+  - Suizenji passionately recounting classic UFO sightings, Kenneth Arnold, and alien invasion conspiracies.
+  - Gazing into the night sky over the Sonohara mountains through binoculars, watching unexplained lights.
+  - Investigating rumors of supernatural phenomena or alien contact around the town.
+
+---
+
+### BGM_FUAN.ogg
+- **Japanese Title / Gloss**: 不安 (Anxiety / Creeping Unease)
+- **Style / Genre**: Dark Orchestral Tension / Psychological Suspense
+- **Key Instruments**: Shivering tremolo string sections, low sub-bass drone, discordant sudden piano strikes, nervous rhythmic percussion ticks, piercing dissonant intervals.
+- **Tempo**: Slow, anxious crawl (~64 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Tense, nerve-wracking, perilous, cold-sweat anxiety.
+- **Emotional Resonance**: Acute apprehension, dread of imminent discovery, heart pounding in the throat.
+- **Recommended VN Usage**:
+  - Asaba crouching in the dark behind the incinerator while patrol cars circle outside.
+  - Stumbling upon restricted military equipment, medical documents, or classified files.
+  - The silent, suffocating moments right before an ambush or confrontation.
+
+---
+
+### BGM_GAKUSAI.ogg
+- **Japanese Title / Gloss**: 学祭 (School Festival / Brass Fanfare)
+- **Style / Genre**: Marching Brass Pop / Boisterous Festival Parade
+- **Key Instruments**: Punchy bright trumpets and horns, marching snare drum rolls, crashing cymbals, shrill piccolo/flute lead, bouncy brass bassline.
+- **Tempo**: Brisk marching tempo (~132 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Festive, boisterous, grandiose, comical bravado, parade energy.
+- **Emotional Resonance**: Over-the-top ambition, infectious enthusiasm, school festival excitement, theatrical declarations.
+- **Recommended VN Usage**:
+  - Suizenji declaring war on the school administration or launching an absurd newspaper club campaign.
+  - School festival setup chaos, athletic meet preparations, or wild club recruitment drives.
+  - Comedic mock-heroic speeches delivered with grandiose seriousness.
+
+---
+
+### BGM_GENSOU.ogg
+- **Japanese Title / Gloss**: 幻想 (Illusion / Reverie)
+- **Style / Genre**: Dreamy Acoustic Reverie / Lyrical Summer Ballad
+- **Key Instruments**: Warm fingerpicked acoustic guitar, tender expressive flute/pipe lead, gentle orchestral strings, sparkling glockenspiel accents, soft bass.
+- **Tempo**: Relaxed, lyrical tempo (~92 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Poetic, serene, sunlit, nostalgic, gentle afternoon tranquility.
+- **Emotional Resonance**: Tender companionship, fragile peace, quiet childhood innocence, cherishable stillness.
+- **Recommended VN Usage**:
+  - The iconic scene of Asaba gently cutting Iriya's hair in the newspaper clubroom while the afternoon breeze stirs the curtains.
+  - Quiet nocturnal pool scenes where water reflects the starry summer sky.
+  - Gentle, heartwarming bonding moments where danger feels momentarily distant.
+
+---
+
+### BGM_HOUKAI.ogg
+- **Japanese Title / Gloss**: 崩壊 (Collapse / Apocalypse)
+- **Style / Genre**: Apocalyptic Choral Epic / Monumental Cataclysm
+- **Key Instruments**: Towering gothic operatic choir chanting, thunderous orchestral bass drums/timpani, dramatic brass blasts, swirling apocalyptic strings.
+- **Tempo**: Heavy, fateful cadence (~90 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Apocalyptic, monumental, terrifying, awe-inspiring, cosmic catastrophe.
+- **Emotional Resonance**: Absolute despair, paralysis before godlike destructive power, witnessing the collapse of the world.
+- **Recommended VN Usage**:
+  - Full-scale warfare breaking out over Sonohara as the sky burns.
+  - The Black Wing unleashing devastating classified superweapons.
+  - The horrifying climax where civilization itself begins to fracture.
+
+---
+
+### BGM_HOUKAIMAE.ogg
+- **Japanese Title / Gloss**: 崩壊前 (Before the Collapse / Countdown)
+- **Style / Genre**: Industrial Suspense Techno / Ticking Countdown
+- **Key Instruments**: Relentless ticking sequencer pulses, deep distorted industrial bassline, high-tension metallic hi-hats, rising filter sweeps.
+- **Tempo**: Fast, urgent driving pace (~136 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Critical, panic-stricken, mechanical, countdown to detonation.
+- **Emotional Resonance**: Adrenaline panic, racing against the final seconds, desperate survival.
+- **Recommended VN Usage**:
+  - Timed evacuation of a collapsing bunker or burning base.
+  - Countdown sequence before missile launch or facility self-destruction.
+  - Frantic escape sequences where every second saved is life or death.
+
+---
+
+### BGM_IKARIBAKUHATU.ogg
+- **Japanese Title / Gloss**: 怒り爆発 (Exploding Rage / Fury)
+- **Style / Genre**: Furious Action Rock / Hard-Hitting Battle Metal
+- **Key Instruments**: Aggressive distorted electric guitar power chords, pounding rock drums with heavy snare and crash cymbals, driving bass, screaming lead guitar fills.
+- **Tempo**: Fast, hard-hitting rock pace (~140 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Combative, enraged, explosive, defiant, raw adrenaline.
+- **Emotional Resonance**: Uncontrollable rage, righteous fury, breaking all restraint to protect someone, explosive defiance.
+- **Recommended VN Usage**:
+  - Asaba snapping and physically attacking Enomoto or base personnel to defend Iriya.
+  - Heated fistfights born from emotional desperation and betrayal.
+  - Intense climactic physical confrontations where adrenaline overpowers fear.
+
+---
+
+### BGM_INBOU.ogg
+- **Japanese Title / Gloss**: 陰謀 (Conspiracy / Shadowed Plot)
+- **Style / Genre**: Covert Trip-Hop Groove / Sleuth Mystery
+- **Key Instruments**: Muted acoustic guitar plucks, dusty downtempo breakbeat, walking electric bass, eerie wooden flute motifs, tense synth string swells.
+- **Tempo**: Cautious mid-tempo groove (~94 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Suspicious, secretive, conspiratorial, shadow-laden, investigative.
+- **Emotional Resonance**: Heightened alertness, paranoia, sensing hidden puppet masters behind mundane daily events.
+- **Recommended VN Usage**:
+  - Investigating the secret connection between Sonohara Air Base, the Ministry of Defense, and the Black Wing.
+  - Eavesdropping on classified discussions between Enomoto and school faculty.
+  - Discovering that someone among the staff or acquaintances is an undercover handler.
+
+---
+
+### BGM_IRIYA.ogg
+- **Japanese Title / Gloss**: 伊里野 (Iriya Kana's Theme)
+- **Style / Genre**: Tender Music Box & Acoustic Ballad / Fragile Innocence
+- **Key Instruments**: Delicate celesta / music box melody, intimate fingerpicked nylon guitar, tender recorder/flute counter-melody, warm ambient synth cushion.
+- **Tempo**: Slow, gentle sway (~70 BPM, lilting 6/8 meter).
+- **Mood & Atmosphere**: Fragile, innocent, bittersweet, tender, quietly ethereal.
+- **Emotional Resonance**: Heartbreaking fragility, pure affection, protective instinct, profound beauty shadowed by mortality.
+- **Recommended VN Usage**:
+  - Key intimate moments focused on Iriya Kana (e.g. her timid smile, trying on a school uniform, sharing small talk).
+  - Asaba looking at Iriya and feeling the overwhelming certainty that he must protect her from the world.
+  - Quiet, tender scenes between the two protagonists where the harsh military reality momentarily recedes.
+
+---
+
+### BGM_KANDOU_ARR.ogg
+- **Japanese Title / Gloss**: 感動 アレンジ (Moving Arrangement / Tender Reassurance)
+- **Style / Genre**: Bittersweet Acoustic Ballad / Emotional Catharsis
+- **Key Instruments**: Gentle acoustic fingerpicking, intimate acoustic piano, warm synth pad backing, sparkling chimes, delicate dynamic swells.
+- **Tempo**: Slow, deeply poignant tempo (~68 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Heartfelt, comforting, radiant, emotionally sincere, tearful warmth.
+- **Emotional Resonance**: Emotional release, deep gratitude, reconciliation after terror, mutual reassurance.
+- **Recommended VN Usage**:
+  - Reconciliations after emotional distress or panic (e.g. Asaba holding Iriya after an anxiety episode).
+  - Characters exchanging heartfelt promises under the evening sky.
+  - Emotional breakthroughs where long-held emotional defenses finally crumble.
+
+---
+
+### BGM_KANDOU_SHORT.ogg
+- **Japanese Title / Gloss**: 感動 短 (Moving Short / Soaring Hymn)
+- **Style / Genre**: Sweeping Orchestral Hymn / Climactic Emotional Rise
+- **Key Instruments**: Full orchestral string section, soaring French horns and brass chorale, grand piano arpeggios, majestic timpani, sparkling chimes.
+- **Tempo**: Majestic, expansive moderato (~76 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Grandiose, transcendent, deeply moving, triumphant yet tearful.
+- **Emotional Resonance**: Overwhelming catharsis, heroic resolve, spiritual elevation, boundless devotion.
+- **Recommended VN Usage**:
+  - Short dramatic stings or scene transitions marking an unforgettable emotional milestone.
+  - Watching the dawn break over the horizon after surviving a harrowing night.
+  - A moment of profound clarity where a character dedicates their entire life to another.
+
+---
+
+### BGM_KEIHOU.ogg
+- **Japanese Title / Gloss**: 警報 (Alarm / Air Raid Siren)
+- **Style / Genre**: Ominous Siren Drone / Cold Military Alert
+- **Key Instruments**: Distant rising and falling air-raid sirens, echoing mechanical drones, deep pulsing sub-bass, cold metallic clangs, eerie Doppler sweeps.
+- **Tempo**: Slow ambient emergency pulse (~66 BPM).
+- **Mood & Atmosphere**: Chilling, ominous, wartime reality, inescapable danger, public panic.
+- **Emotional Resonance**: Visceral shock, terror, the sudden shattering of peaceful everyday life, realization that war is here.
+- **Recommended VN Usage**:
+  - Air-raid sirens wailing over Sonohara city and through the school speakers.
+  - Students rushing into emergency shelters during real attacks or tense air-defense drills.
+  - The chilling atmosphere when military conflict invades civilian territory.
+
+---
+
+### BGM_KENSOU.ogg
+- **Japanese Title / Gloss**: 喧騒 (Bustle / Classroom Clamor)
+- **Style / Genre**: Cheerful Acoustic Pop / Lively Everyday Groove
+- **Key Instruments**: Bouncy acoustic rhythm guitar, bright wooden xylophone/marimba, playful flute/whistle lead, energetic electric bass, light percussion.
+- **Tempo**: Brisk, spirited tempo (~124 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Bustling, cheerful, sunlit, lively schoolyard chaos, carefree.
+- **Emotional Resonance**: Harmless distraction, lively camaraderie, everyday teenage laughter, bustling comfort.
+- **Recommended VN Usage**:
+  - Classroom chatter during lunch break or before morning homeroom.
+  - Crowded hallways, friends wrestling or sharing snacks between classes.
+  - High-energy mundane school life where everyone is absorbed in their own minor concerns.
+
+---
+
+### BGM_KESSEN.ogg
+- **Japanese Title / Gloss**: 決戦 (Decisive Battle / Showdown)
+- **Style / Genre**: High-Velocity Synth Trance / Climactic Aerial Combat
+- **Key Instruments**: Driving four-on-the-floor kick, rapid 16th-note synth sequencer bass, piercing synthesizer melody hook, dramatic cymbal crashes, electronic risers.
+- **Tempo**: High-velocity combat tempo (~146 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Electrifying, climactic, fierce, sky-bound dogfight, desperate resolve.
+- **Emotional Resonance**: Fierce determination, flying into the teeth of danger, all-or-nothing commitment, fierce protective urge.
+- **Recommended VN Usage**:
+  - High-speed aerial dogfights where the Black Wing engages overwhelming enemy formations.
+  - The decisive turning point of a combat sequence where defeat means total destruction.
+  - Desperate breakthroughs against impossible odds to save someone in peril.
+
+---
+
+### BGM_KINKYUU.ogg
+- **Japanese Title / Gloss**: 緊急 (Emergency / Red Alert)
+- **Style / Genre**: High-Tension Electronic Scramble / Crisis Techno
+- **Key Instruments**: Driving syncopated synth bass sequence, rapid electronic drums, sharp synth brass stabs, warning siren pulses.
+- **Tempo**: Fast, urgent cadence (~132 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Critical alert, high-pressure, tactical mobilization, imminent breach.
+- **Emotional Resonance**: Acute pressure, adrenaline, sudden crisis demanding immediate action.
+- **Recommended VN Usage**:
+  - Military base scramble: pilots sprinting across hangars to board interceptor craft.
+  - Sudden security breaches or intruder alerts within a classified facility.
+  - Immediate danger forcing characters to drop everything and flee.
+
+---
+
+### BGM_KINPAKU.ogg
+- **Japanese Title / Gloss**: 緊迫 (Imminent Tension / Peril)
+- **Style / Genre**: Ominous Low-Frequency Suspense / Subterranean Dread
+- **Key Instruments**: Low ominous choir drone, sharp metallic percussive impacts, deep sub-bass pulse, dissonant strings swelling and fading.
+- **Tempo**: Slow, perilous crawl (~60 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Suffocating, menacing, cornered, lethal hazard, breathless.
+- **Emotional Resonance**: Acute fear, primal survival instinct, realization that there is no escape.
+- **Recommended VN Usage**:
+  - Being surrounded by armed military guards or security personnel at the night pool.
+  - Discovering that every exit from the school or base perimeter has been sealed.
+  - Lethal standoffs where characters are caught completely red-handed.
+
+---
+
+### BGM_KONWAKU.ogg
+- **Japanese Title / Gloss**: 困惑 (Bewilderment / Comic Confusion)
+- **Style / Genre**: Quirky Comedic Mystery / Farcical Perplexity
+- **Key Instruments**: Playful pizzicato strings, quirky marimba/xylophone runs, tipsy walking bass, dry woodblocks, comedic pitch-bend synth accents.
+- **Tempo**: Moderate playful tempo (~108 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Baffling, eccentric, quizzical, comical, mildly disoriented.
+- **Emotional Resonance**: Scratching one's head in disbelief, dumbfounded bewilderment, comic absurdity.
+- **Recommended VN Usage**:
+  - Asaba utterly baffled by Iriya's bizarre, out-of-context reactions (e.g. hiding a stray cat in his shoe locker).
+  - Classmates staring blankly at Suizenji's wildly illogical conspiracy declarations.
+  - Farcical misunderstandings where everyone is talking about completely different things.
+
+---
+
+### BGM_KONWAKU_ARR.ogg
+- **Japanese Title / Gloss**: 困惑 アレンジ (Confusion Arrangement)
+- **Style / Genre**: Glitchy Downtempo Groove / Amateur Sleuthing
+- **Key Instruments**: Filtered electronic beat, bubbling synth bassline, muted acoustic guitar chords, playful glitch chirps, quirky rhythmic swing.
+- **Tempo**: Mid-tempo urban bounce (~98 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Inquisitive, curious, cheeky, urban teenage mystery.
+- **Emotional Resonance**: Lighthearted intrigue, playful snooping, bemused fascination.
+- **Recommended VN Usage**:
+  - The newspaper club sneaking around campus to uncover secret rumors.
+  - Tailing an acquaintance who is acting suspiciously around the shopping arcade.
+  - Amateur investigative digging that leads to amusing or unexpected results.
+
+---
+
+### BGM_LEMON.ogg
+- **Japanese Title / Gloss**: レモン (Lemon / Girls' Whispers)
+- **Style / Genre**: Sweet Pastoral Pop / Innocent Feminine Warmth
+- **Key Instruments**: Gentle acoustic guitar strumming, sweet flute/recorder melody, warm electric piano, delicate glockenspiel, soft brush percussion.
+- **Tempo**: Relaxed, gentle walk (~92 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Sweet, nostalgic, tender, sunlit courtyard, innocent youth.
+- **Emotional Resonance**: Warm feminine friendship, sweet and sour youth, gentle vulnerability, comforting trust.
+- **Recommended VN Usage**:
+  - Akiho and her circle of friends sharing secrets and giggling over lunch.
+  - Intimate conversations between female characters about crushes, worries, and family life.
+  - Nostalgic, tender afternoon scenes capturing the bittersweet purity of middle school youth.
+
+---
+
+### BGM_MAIMU.ogg
+- **Japanese Title / Gloss**: マイム・マイム (Mayim Mayim / Folk Dance)
+- **Style / Genre**: Accelerating Klezmer Folk Dance / School Campfire Dance
+- **Key Instruments**: Spirited accordion lead, bouncing acoustic rhythm guitar, lively clarinet, spirited handclap rhythms, driving acoustic bass.
+- **Tempo**: Accelerating dance pace (~130 BPM ramping to ~148 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Festive, boisterous, chaotic, communal fun, breathless acceleration.
+- **Emotional Resonance**: Communal euphoria, shared laughter, dizzying exhaustion as the dance tempo spins out of control.
+- **Recommended VN Usage**:
+  - The iconic school folk dance around the campfire during school retreats or festival nights.
+  - Awkward hand-holding sequences between nervous teenagers trying not to trip over each other.
+  - High-energy comedic group participation where everyone gets swept up in collective madness.
+
+---
+
+### BGM_MAYUMI.ogg
+- **Japanese Title / Gloss**: 椎名真由美 (Shiina Mayumi's Theme)
+- **Style / Genre**: Sassy Lounge Swing / Irresponsible Adult Jazz
+- **Key Instruments**: Warm Rhodes electric piano, swaggering electric bassline, playful brass stabs, crisp rim-shot drums, cheeky synth-horn lead.
+- **Tempo**: Relaxed swing groove (~104 BPM, 4/4 swing feel).
+- **Mood & Atmosphere**: Sassy, bohemian, disheveled, humorous, worldly big-sister charm.
+- **Emotional Resonance**: Brazen teasing, carefree cynicism, humorous intrusion, affectionate adult meddling.
+- **Recommended VN Usage**:
+  - Shiina Mayumi bursting into the clubroom or nurse's office with messy hair and canned coffee.
+  - Mayumi shamelessly grilling Asaba about girls or offering ridiculously inappropriate adult advice.
+  - Comedic scenes where adult authority completely fails to act respectable.
+
+---
+
+### BGM_MAYUMI_ARR.ogg
+- **Japanese Title / Gloss**: 椎名真由美 アレンジ (Mayumi Arrangement / Smoky Solitude)
+- **Style / Genre**: Smoky Jazz Piano / Contemplative Adult Reflection
+- **Key Instruments**: Mellow grand piano solo with smoky jazz voicings, tender rubato phrasing, delicate lingering sustained bass notes.
+- **Tempo**: Slow, reflective rubato (~68 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Introspective, bittersweet, weary, dusk settling over the infirmary, adult sorrow.
+- **Emotional Resonance**: Quiet guilt, weary responsibility, deep compassion for the doomed teenagers, solitary grief.
+- **Recommended VN Usage**:
+  - Mayumi alone at dusk in the nurse's office, dropping her cheerful mask to reveal her inner anguish.
+  - Somber late-night conversations where Mayumi reveals the classified, horrific background of Iriya's condition.
+  - Heart-to-hearts between adults who realize they are powerless to stop the military machine.
+
+---
+
+### BGM_MAYUMI_ARR2.ogg
+- **Japanese Title / Gloss**: 椎名真由美 アレンジ2 (Mayumi Reassurance / Nurse's Office)
+- **Style / Genre**: Gentle Acoustic Ballad / Reassuring Warmth
+- **Key Instruments**: Delicate fingerpicked acoustic guitar, warm acoustic piano accompaniment, soft flute melody, gentle synth pad warmth.
+- **Tempo**: Slow, tender ballad tempo (~72 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Comforting, safe, maternal, protective, healing sanctuary.
+- **Emotional Resonance**: Unconditional acceptance, soothing reassurance, emotional relief, holding a crying child.
+- **Recommended VN Usage**:
+  - Tending to Iriya's fever and bleeding in the nurse's office while keeping military handlers at bay.
+  - Asaba breaking down in front of Mayumi and being given space to let out all his suppressed pain.
+  - Quiet, warm recovery scenes before the characters must face the harsh world again.
+
+---
+
+### BGM_MOUSOU_RE.ogg
+- **Japanese Title / Gloss**: 妄想 リテイク (Wild Teenage Delusion)
+- **Style / Genre**: Funk Swagger / Comedic Acid Jazz
+- **Key Instruments**: Pumping slap bassline, wah-wah electric rhythm guitar, crisp hip-hop drum loop, quirky organ riffs, cheeky brass stabs.
+- **Tempo**: Upbeat funky strut (~118 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Smug, goofy, exaggerated swagger, comic narcissism, adolescent fantasy.
+- **Emotional Resonance**: Wild romantic delusions, puffed-up bravado, imagining oneself as a suave action hero, comic absurdity.
+- **Recommended VN Usage**:
+  - Asaba letting his teenage imagination spiral out of control over an innocent interaction with Iriya.
+  - Overblown masculine posturing in front of friends after securing a "date."
+  - Comedic internal monologues where ordinary situations are imagined as grand romantic conquests.
+
+---
+
+### BGM_NAZO.ogg
+- **Japanese Title / Gloss**: 謎 (Riddle / The Classified Enigma)
+- **Style / Genre**: Dark Ambient Downtempo / Government Secrecy
+- **Key Instruments**: Eerie low synth drone, resonant electric piano chords, ticking clockwork clicks, hollow wind textures, deep sub-bass.
+- **Tempo**: Slow, methodical investigative pulse (~72 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Enigmatic, sterile, classified, shadowy military installation, covert intrigue.
+- **Emotional Resonance**: Chilling curiosity, the weight of forbidden knowledge, isolated dread.
+- **Recommended VN Usage**:
+  - Infiltrating restricted subterranean chambers or computer terminals on the base.
+  - Decoding classified flight records, pilot medical files, or military logs.
+  - Realizing that the entire town is a testing ground under constant surveillance.
+
+---
+
+### BGM_NITIJO.ogg
+- **Japanese Title / Gloss**: 日常 (Everyday Life / School Days)
+- **Style / Genre**: Bright Acoustic Pop / Sunny Slice-of-Life
+- **Key Instruments**: Crisp acoustic rhythm guitar, bright glockenspiel / xylophone hooks, sweet flute counter-melody, bouncy bass, lively pop drum kit.
+- **Tempo**: Brisk, sunny stride (~124 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Sunny, carefree, cheerful, youthful, quintessential school days.
+- **Emotional Resonance**: Warm camaraderie, morning vitality, carefree school routine, comfortable normalcy.
+- **Recommended VN Usage**:
+  - Morning commutes to school, greeting friends by the shoe lockers.
+  - Energetic lunchtime banter, trading snacks, and classroom gossip.
+  - The core everyday slice-of-life backdrop of Sonohara Middle School.
+
+---
+
+### BGM_NITIJO_ARR.ogg
+- **Japanese Title / Gloss**: 日常 アレンジ (Everyday Life Arrangement / Afternoon Breeze)
+- **Style / Genre**: Pastoral Folk Waltz / Nostalgic Afternoon
+- **Key Instruments**: Warm acoustic guitar strumming, tender accordion/melodica lead, gentle woodwinds, light acoustic bass, soft brush percussion.
+- **Tempo**: Flowing, gentle waltz tempo (~110 BPM, 3/4 meter).
+- **Mood & Atmosphere**: Sun-dappled, nostalgic, peaceful, breezy, gentle afternoon comfort.
+- **Emotional Resonance**: Quiet appreciation of ordinary days, tender companionship, wholesome warmth.
+- **Recommended VN Usage**:
+  - Relaxed after-school clubroom hours when no one feels like working.
+  - Walking home together along the riverbank while the summer cicadas sing.
+  - Heartwarming scenes reinforcing the simple beauty of peaceful everyday life.
+
+---
+
+### BGM_NITIJO_ARR2.ogg
+- **Japanese Title / Gloss**: 日常 アレンジ2 (Everyday Life Arrangement 2 / Fragile Peace)
+- **Style / Genre**: Bittersweet Acoustic Ballad / Melancholic Normalcy
+- **Key Instruments**: Tender nylon-string acoustic guitar picking, warm supportive synth pad, soft flute/whistle countermelody, subtle chime accents.
+- **Tempo**: Slow, gentle lilting pace (~74 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Bittersweet, reflective, quiet, golden dusk, fragile normalcy.
+- **Emotional Resonance**: Pre-grief, realizing that simple everyday peace is slipping away, poignant appreciation of fleeting time.
+- **Recommended VN Usage**:
+  - Asaba walking home alone in the dusk, painfully aware of Iriya's worsening condition.
+  - Quiet evenings in his room staring at his desk while distant fighter jets roar in the sky.
+  - Introspective monologues about wanting an ordinary summer to never end.
+
+---
+
+### BGM_OMOTAIKEI.ogg
+- **Japanese Title / Gloss**: 重たい系 (Heavy-Hearted / Psychological Burden)
+- **Style / Genre**: Dark Ambient Drone / Psychological Oppression
+- **Key Instruments**: Low subterranean sub-bass hum, eerie pitch-bending synth pads, cold reverberant metallic hits, hollow atmospheric wind sweeps.
+- **Tempo**: Very slow, atmospheric crawl (~52 BPM).
+- **Mood & Atmosphere**: Suffocating, cold, dread-filled, heavy, psychologically crushing.
+- **Emotional Resonance**: Despair, numbness, the crushing weight of reality, complete helplessness.
+- **Recommended VN Usage**:
+  - Uncovering the horrifying medical reality of the Black Wing pilot program.
+  - Asaba being confronted with the cold, immovable authority of the defense forces.
+  - The devastating psychological aftermath of a tragedy where all words fail.
+
+---
+
+### BGM_OMOTAIKEI_B.ogg
+- **Japanese Title / Gloss**: 重たい系 B (Heavy-Hearted B / Sinister Revelation)
+- **Style / Genre**: Ominous Low Drone / Sinister Discovery
+- **Key Instruments**: Deep synthetic sub-drone, tense discordant synth swells, stark sudden silences, muffled low heartbeat thuds.
+- **Tempo**: Glacial ambient pulse (~48 BPM).
+- **Mood & Atmosphere**: Menacing, chilling, sinister, claustrophobic, dark secret revealed.
+- **Emotional Resonance**: Pure dread, silent shock, freezing in terror, confronting cold military malice.
+- **Recommended VN Usage**:
+  - Looking through classified personnel dossiers and seeing Iriya's file marked for termination.
+  - The chilling silence when a friendly face reveals their true cold military persona.
+  - Sudden sinister discoveries where the protagonist's world turns upside down.
+
+---
+
+### BGM_ROUKA.ogg
+- **Japanese Title / Gloss**: 廊下 (Corridor / School Hallways)
+- **Style / Genre**: Nostalgic Acoustic Pop / Lyrical School Days
+- **Key Instruments**: Flowing acoustic rhythm guitar, bright glockenspiel / bell melody, sweet wooden flute, warm electric bass, gentle shaker/drum rhythm.
+- **Tempo**: Relaxed, pleasant walking tempo (~100 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Nostalgic, sunny, warm, comfortable, leisurely school corridors.
+- **Emotional Resonance**: Carefree teenage innocence, comfortable companionship, the simple joy of everyday school friendships.
+- **Recommended VN Usage**:
+  - Walking down the wooden school corridors between classes or carrying armfuls of newspapers.
+  - Casual conversations with classmates by the hallway windows overlooking the courtyard.
+  - Warm, sunny midday slice-of-life moments.
+
+---
+
+### BGM_ROUKA_ARR.ogg
+- **Japanese Title / Gloss**: 廊下 アレンジ (Corridor Arrangement / Sunset Hallway)
+- **Style / Genre**: Nostalgic Acoustic Ballad / Wistful Golden Hour
+- **Key Instruments**: Expressive fingerpicked acoustic guitar, mournful wooden pipe/flute, gentle acoustic bass, soft shimmering bell chimes.
+- **Tempo**: Gentle, reflective pace (~82 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Bittersweet, wistful, golden sunset light, quiet emptiness, fading youth.
+- **Emotional Resonance**: Cherishing the final moments of youth, unvoiced goodbyes, the poignant beauty of ordinary school memories.
+- **Recommended VN Usage**:
+  - Walking down the deserted school hallway bathed in deep orange sunset light.
+  - Staring out the window at the distant military base while contemplating an uncertain future.
+  - Quiet transitional scenes where characters silently absorb recent emotional shocks.
+
+---
+
+### BGM_SASUPENSUKEI.ogg
+- **Japanese Title / Gloss**: サスペンス系 (Suspense / Sudden Ambush)
+- **Style / Genre**: High-Intensity Breakbeat Suspense / Ambush Alert
+- **Key Instruments**: Aggressive distorted breakbeat drums, urgent pulsing synth bass, piercing klaxon alarm stabs, rising electronic noise sweeps.
+- **Tempo**: Fast, breathless pace (~140 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Sudden shock, perilous ambush, immediate danger, hair-trigger panic.
+- **Emotional Resonance**: Heart-stopping fear, sudden adrenaline jolt, frantic split-second scramble to escape.
+- **Recommended VN Usage**:
+  - Sudden interception by military patrol vehicles or armed commandos.
+  - Explosions or sudden breaches shattering a moment of calm.
+  - Fast-paced escape sequences where characters are chased through hazardous territory.
+
+---
+
+### BGM_SEIJYAKU.ogg
+- **Japanese Title / Gloss**: 静寂 (Tranquility / Starlit Silence)
+- **Style / Genre**: Ethereal Ambient Nocturne / Starlit Water Ballad
+- **Key Instruments**: Flowing harp / acoustic piano arpeggios, gentle breathy synth flute lead, deep warm synth pads, crystalline celesta bells.
+- **Tempo**: Slow, serene sway (~64 BPM, lilting 6/8 meter).
+- **Mood & Atmosphere**: Serene, nocturnal, starlit, deeply intimate, tranquil water reflections.
+- **Emotional Resonance**: Whispered vulnerability, sacred quietness, pure connection between two souls alone under the vast cosmos.
+- **Recommended VN Usage**:
+  - The foundational scene: Asaba meeting Iriya alone at the middle school swimming pool at night under the starry sky.
+  - Teaching Iriya how to swim while floating together in the black, mirrored water.
+  - Intimate late-night conversations where the outside world ceases to exist.
+
+---
+
+### BGM_SENNYU.ogg
+- **Japanese Title / Gloss**: 潜入 (Infiltration / Stealth Mission)
+- **Style / Genre**: Stealth Electronic Groove / Covert Reconnaissance
+- **Key Instruments**: Muted syncopated synth bass ostinato, punchy electronic drum kit, sneaky muted brass/string hits, filtered ticking clockwork percussion.
+- **Tempo**: Fast, focused tempo (~132 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Stealthy, focused, covert, nocturnal infiltration, alert.
+- **Emotional Resonance**: Breathless focus, thrill of breaking the rules, dodging security flashlights.
+- **Recommended VN Usage**:
+  - Asaba hopping the school fence with his duffel bag to sneak into the locked pool.
+  - Infiltrating restricted airbase zones or sneaking past security guards.
+  - The newspaper club's nocturnal covert reconnaissance missions.
+
+---
+
+### BGM_SHOUSOU.ogg
+- **Japanese Title / Gloss**: 焦燥 (Agitation / Impatience)
+- **Style / Genre**: Fast Syncopated Funk-Rock / Agitated Scramble
+- **Key Instruments**: Pumping slap electric bass, agitated rhythm guitar stabs, crisp drums with anxious hi-hat chokes, punchy brass hits.
+- **Tempo**: Fast, impatient strut (~128 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Restless, hurried, comedic panic, sweat-inducing agitation.
+- **Emotional Resonance**: Frantic impatience, ticking deadline pressure, running hopelessly behind schedule.
+- **Recommended VN Usage**:
+  - Asaba realizing he has completely overslept on an important day and sprinting out the door with toast in mouth.
+  - The frantic panic of trying to hide contraband or tidy up the clubroom before a surprise teacher inspection.
+  - Hurried, exasperated chases where characters are desperately trying to catch up with someone.
+
+---
+
+### BGM_SINSEKAI.ogg
+- **Japanese Title / Gloss**: 新世界 (New World / Dawn Horizon)
+- **Style / Genre**: Majestic Orchestral Anthem / Expansive Sunrise
+- **Key Instruments**: Soaring orchestral string section, noble French horns and brass chorale, rolling timpani, grand piano arpeggios, shimmering glockenspiel.
+- **Tempo**: Expansive, majestic moderato (~86 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Awe-inspiring, grandiose, radiant, horizon-spanning, triumphant hope.
+- **Emotional Resonance**: Epiphany, spiritual renewal, profound clarity, embracing a vast new reality with tears in one's eyes.
+- **Recommended VN Usage**:
+  - Standing atop the school roof at dawn, watching the first rays of sunlight illuminate the vast sky above the clouds.
+  - The climactic turning point where characters reject predetermined tragedy and resolve to carve out their own future.
+  - Epilogue sequences reflecting on the irrevocable growth of youth.
+
+---
+
+### BGM_SUIZENJI.ogg
+- **Japanese Title / Gloss**: 水前寺 (Suizenji Kunihiro's Theme)
+- **Style / Genre**: Bombastic Ragtime March / Eccentric Big Band Comedy
+- **Key Instruments**: Bouncy honky-tonk piano, theatrical marching snare, comedic tuba/trombone bass, flamboyant clarinet runs, laughing brass fanfares.
+- **Tempo**: Brisk, theatrical stride (~130 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Bombastic, eccentric, grandiose, hilarious, hyper-confident showmanship.
+- **Emotional Resonance**: Megalomaniac charisma, boundless enthusiasm, flamboyant absurdity, irresistible eccentric leadership.
+- **Recommended VN Usage**:
+  - Suizenji kicking open the clubroom door with dramatic fanfare, melon pan in hand and spectacles gleaming.
+  - Announcing wild, impossible investigative projects (e.g. camping out on the mountain to capture a live alien).
+  - High-energy newspaper club editorial meetings where logic takes a backseat to sheer passion.
+
+---
+
+### BGM_TOUSOU.ogg
+- **Japanese Title / Gloss**: 逃走 (Flight / Desperate Escape)
+- **Style / Genre**: High-Speed Breakbeat Techno / Tactical Pursuit
+- **Key Instruments**: Rapid syncopated electronic drums, aggressive pulsing synth bassline, urgent sequencer arpeggios, warning synth stabs.
+- **Tempo**: High-velocity pursuit pace (~144 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Breathless, urgent, adrenaline-charged, fleeing in panic, evasive.
+- **Emotional Resonance**: Sheer panic, heart-pounding survival instinct, desperately evading pursuing forces.
+- **Recommended VN Usage**:
+  - Asaba and Iriya desperately running through dark city alleys to shake off black government sedans.
+  - Scurrying down emergency stairwells while base sirens echo through the concrete shafts.
+  - High-intensity pursuit sequences where any misstep means instant capture.
+
+---
+
+### BGM_TYUUKA.ogg
+- **Japanese Title / Gloss**: 中華 (Chinese / The Eating Contest)
+- **Style / Genre**: Comedic Oriental Pop / High-Speed Noodle Race
+- **Key Instruments**: Bouncy synthesizer/pipa melody, comedic woodblocks and gongs, punchy bassline, rapid-fire rhythmic percussion.
+- **Tempo**: Fast, breathless racing pace (~140 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Zany, manic, ravenous, high-speed comedic challenge.
+- **Emotional Resonance**: Manic gluttony, frantic chewing, hilarious competitive panic.
+- **Recommended VN Usage**:
+  - The legendary ramen and gyoza eating contests in town.
+  - Characters desperately shoveling food into their mouths to win a bet or beat the clock.
+  - Slapstick comedic trials of physical stamina and gastrointestinal endurance.
+
+---
+
+### BGM_TYUUKA_B.ogg
+- **Japanese Title / Gloss**: 中華 B (Chinese B / Martial Standoff)
+- **Style / Genre**: Theatrical Kung-Fu Parody / Mock Martial Standoff
+- **Key Instruments**: Resonant ceremonial gong crashes, bamboo flutes, dramatic pentatonic brass stabs, temple blocks, exaggerated percussion fills.
+- **Tempo**: Theatrical moderate martial pace (~108 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Theatrical, mock-serious, martial arts showdown, comically grand.
+- **Emotional Resonance**: Dramatic face-off, mock rivalry, exaggerated posturing, comic tension.
+- **Recommended VN Usage**:
+  - A dramatic challenge issued over the last bowl of noodles or club territory.
+  - Parodies of martial arts movie showdowns between rivals (e.g. Suizenji vs. Enomoto or rival club leaders).
+  - High-stakes comic standoffs where characters treat silly disputes with deadly seriousness.
+
+---
+
+### BGM_YOKAN.ogg
+- **Japanese Title / Gloss**: 予感 (Premonition / The Summer's End)
+- **Style / Genre**: Lyrical Acoustic Folk Ballad / Windswept Prologue
+- **Key Instruments**: Intricate dual fingerpicked acoustic guitars, soaring expressive wooden flute/recorder, warm acoustic bass, gentle shaker/brush percussion, soft accordion warmth.
+- **Tempo**: Flowing moderate ballad (~96 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Nostalgic, windswept, bittersweet, poetic, late August twilight.
+- **Emotional Resonance**: The bittersweet realization that childhood is drawing to a close, quiet premonition of a life-changing encounter, tender yearning.
+- **Recommended VN Usage**:
+  - The iconic prologue: August 31st, walking back to school on the final night of summer vacation with a stuffed duffel bag.
+  - Asaba gazing out across Sonohara, sensing that his mundane middle school life is about to change forever.
+  - The foundational thematic motif for the beginning and conclusion of the entire journey.
+
+---
+
+### BGM_YUMEUTSUTSU.ogg
+- **Japanese Title / Gloss**: 夢現 (Daydream / Half-Awake)
+- **Style / Genre**: Tender Acoustic Waltz / Fragile Reverie
+- **Key Instruments**: Delicate acoustic guitar fingerpicking, sweet music box / celesta bells, tender flute countermelody, soft warm ambient pads.
+- **Tempo**: Gentle, lilting slow waltz (~72 BPM, 3/4 or 6/8 meter).
+- **Mood & Atmosphere**: Dreamlike, tranquil, vulnerable, peaceful reverie, morning drowsiness.
+- **Emotional Resonance**: Floating in a gentle dream, innocent comfort, peaceful vulnerability, sweet solace away from fear.
+- **Recommended VN Usage**:
+  - Waking up slowly with sunbeams filtering through the bedroom curtains.
+  - Quiet, drowsy conversations while lying on the nurse's office cot or sitting together by the poolside.
+  - Gentle moments of solace where the harshness of the outside world feels soft, distant, and safe.
+
+---
+
+### BGM_YUUSEN.ogg
+- **Japanese Title / Gloss**: 優先 (Priority / Tender Devotion)
+- **Style / Genre**: Upbeat Romantic Pop-Ballad / Youthful Devotion
+- **Key Instruments**: Bright acoustic rhythm guitar, bouncy Rhodes electric piano, cheerful synth bells, warm punchy bassline, crisp pop drums.
+- **Tempo**: Upbeat, warm mid-tempo (~116 BPM, 4/4 meter).
+- **Mood & Atmosphere**: Affectionate, uplifting, youthful, romantic, heartfelt clarity.
+- **Emotional Resonance**: Unabashed priority ("you are the most important thing to me"), joyful loyalty, confident affection, warm romantic certainty.
+- **Recommended VN Usage**:
+  - Asaba making the conscious, unwavering decision to prioritize Iriya over all rules, school, and consequences.
+  - Cheerful, affectionate dates where both characters feel completely happy and at ease.
+  - Triumphant moments of mutual trust and devotion where love overcomes fear.
+
+---

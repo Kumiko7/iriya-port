@@ -1,0 +1,25 @@
+# Your own game files: ROMs, Himawari, EPUBs and everything made from them
+/data/
+
+# Development leftovers (unpacked ROM files, emulator, captures)
+/dev/
+
+# Build output
+/build/
+/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Editors, OS, local tool settings
+.claude/
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
+.DS_Store

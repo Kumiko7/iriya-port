@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>BGM matcher — Iriya ⇄ Himawari</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --panel: #fff; --ink: #222; --muted: #6b6b6b; --line: #e3e1dc;
+    --accent: #2f6fb5; --accent-soft: #e5eef8; --warn: #b5562f; --warn-soft: #f8ebe5; --ok: #2f8a4f;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 system-ui, "Segoe UI", "Yu Gothic UI", "Meiryo", sans-serif; background: var(--bg); color: var(--ink); }
+  header { position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  header h1 { font-size: 16px; margin: 0 8px 0 0; font-weight: 600; }
+  #now { flex: 1 1 360px; display: flex; align-items: center; gap: 10px; min-width: 300px; }
+  #now-label { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+  audio { height: 32px; flex: 1; min-width: 200px; }
+  button { font: inherit; border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 3px 9px; cursor: pointer; color: var(--ink); }
+  button:hover { border-color: #bbb; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:disabled { opacity: .45; cursor: default; }
+  button.play { width: 34px; padding: 3px 0; font-size: 12px; }
+  button.play.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  #status { font-size: 13px; color: var(--muted); }
+  #status.dirty { color: var(--warn); }
+  #status.saved { color: var(--ok); }
+  main { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 14px; padding: 14px 16px 40px; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+  .sec-head { padding: 10px 12px; border-bottom: 1px solid var(--line); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; position: sticky; top: 53px; background: var(--panel); z-index: 2; border-radius: 8px 8px 0 0; }
+  .sec-head h2 { font-size: 14px; margin: 0; font-weight: 600; flex: 1; }
+  .sec-head input, .sec-head select { font: inherit; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px; }
+  .row { padding: 8px 12px; border-bottom: 1px solid var(--line); }
+  .row:last-child { border-bottom: 0; }
+  #ds .row { cursor: pointer; }
+  #ds .row.sel { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+  .top { display: flex; align-items: center; gap: 8px; }
+  .name { font-weight: 600; font-family: ui-monospace, Consolas, monospace; font-size: 13px; }
+  .gloss { color: var(--muted); font-size: 13px; }
+  .stats { margin-left: auto; color: var(--muted); font-size: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .bar { display: inline-block; height: 6px; background: var(--accent); border-radius: 3px; vertical-align: middle; margin-left: 4px; opacity: .7; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; align-items: center; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--line); border-radius: 14px; padding: 1px 4px 1px 2px; background: #fafaf8; font-size: 12.5px; }
+  .chip button { border: 0; background: transparent; padding: 0 4px; font-size: 12px; }
+  .chip button.play { width: auto; }
+  .chip .x { color: var(--muted); }
+  .chip .x:hover { color: var(--warn); }
+  .none { color: var(--muted); font-size: 12.5px; font-style: italic; }
+  .warn { color: var(--warn); background: var(--warn-soft); border-radius: 4px; padding: 0 6px; font-size: 12px; }
+  .changed { color: var(--accent); font-size: 12px; }
+  details { margin-top: 4px; }
+  summary { color: var(--muted); font-size: 12px; cursor: pointer; }
+  .ctx { font-size: 12.5px; color: #444; margin: 4px 0 0 14px; padding: 0; }
+  .ctx li { margin: 2px 0; }
+  .used-by { font-size: 12px; color: var(--muted); margin-top: 3px; }
+  .used-by b { color: var(--accent); font-weight: 600; }
+  .him-title { font-size: 13px; }
+  #him .row.unused .name { color: var(--muted); }
+  .add { margin-left: 6px; }
+  .hint { font-size: 12.5px; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--line); background: #fbfbf9; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } .sec-head { position: static; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>BGM matcher</h1>
+  <div id="now"><span id="now-label">Nothing playing</span><audio id="player" controls preload="none"></audio></div>
+  <span id="status">Loading…</span>
+  <button id="reset" title="Throw away the saved matching and go back to the built-in one">Reset to built-in</button>
+  <button id="save" class="primary" disabled>Save</button>
+</header>
+<main>
+  <section id="ds-sec">
+    <div class="sec-head">
+      <h2>DS tracks <span class="gloss" id="ds-count"></span></h2>
+      <select id="ds-game"><option value="">Both games</option><option value="iriya1">Game I</option><option value="iriya2">Game II</option></select>
+      <select id="ds-sort"><option value="use">Most used</option><option value="name">Name</option></select>
+    </div>
+    <div class="hint">Click a DS track to select it, then <b>＋</b> on a Himawari track to add it. A track with several
+      replacements picks one per scene. With none, the DS track plays. <span class="warn">overused</span> means it covers
+      more of a game's text than Himawari's most used track does (4.9 %), so it could use more than one.</div>
+    <div id="ds"></div>
+  </section>
+  <section id="him-sec">
+    <div class="sec-head">
+      <h2>Himawari tracks <span class="gloss" id="him-count"></span></h2>
+      <input id="him-q" placeholder="Filter…" size="12">
+      <select id="him-sort"><option value="use">Most used</option><option value="name">Name</option><option value="free">Unassigned first</option></select>
+    </div>
+    <div id="him"></div>
+  </section>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+let S = null, map = {}, sel = null, dirty = false, playing = null;
+const player = $('#player');
+
+function esc(s) { return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+const himBy = () => Object.fromEntries(S.him.map(h => [h.name, h]));
+
+function play(src, label, btnKey) {
+  if (playing === btnKey && !player.paused) { player.pause(); return; }
+  if (player.dataset.src !== src) { player.src = src; player.dataset.src = src; }
+  player.loop = true;
+  player.play().catch(() => {});
+  playing = btnKey;
+  $('#now-label').textContent = label;
+  $('#now-label').title = label;
+  markPlaying();
+}
+function markPlaying() {
+  document.querySelectorAll('button.play').forEach(b => b.classList.toggle('on', b.dataset.key === playing && !player.paused));
+}
+player.addEventListener('pause', markPlaying);
+player.addEventListener('play', markPlaying);
+
+function dsShare(d) { const v = Object.values(d.share || {}); return v.length ? Math.max(...v) : 0; }
+function usedBy() {
+  const u = {};
+  for (const [k, ts] of Object.entries(map)) for (const t of ts) (u[t] ||= []).push(k);
+  return u;
+}
+function setDirty(v) {
+  dirty = v;
+  $('#save').disabled = !v;
+  const st = $('#status');
+  st.className = v ? 'dirty' : (S.saved ? 'saved' : '');
+  st.textContent = v ? 'Unsaved changes' : (S.saved ? 'Using your saved matching' : 'Using the built-in matching');
+  if (S.usage !== 'ready') st.textContent += ` · usage: ${S.usage}`;
+}
+
+function renderDS() {
+  const game = $('#ds-game').value, sort = $('#ds-sort').value;
+  let list = S.ds.filter(d => !game || d.games[game] !== undefined);
+  list.sort(sort === 'name' ? (a, b) => a.name.localeCompare(b.name) : (a, b) => dsShare(b) - dsShare(a));
+  $('#ds-count').textContent = `(${list.length})`;
+  const H = himBy();
+  $('#ds').innerHTML = list.map(d => {
+    const ts = map[d.name] || [];
+    const share = Object.entries(d.share || {}).map(([g, v]) => `${g === 'iriya1' ? 'I' : 'II'} ${v.toFixed(1)}%`).join(' · ');
+    const scenes = Object.values(d.scenes || {}).reduce((a, b) => a + b, 0);
+    const over = dsShare(d) > 4.9 && ts.length < 2;
+    const builtin = (S.builtin[d.name] || []).join(',') !== ts.join(',');
+    const plays = ['iriya1', 'iriya2'].filter(g => d.games[g] !== undefined).map(g =>
+      `<button class="play" data-key="ds:${g}:${d.name}" data-ds="${g}:${d.games[g]}" data-label="${esc(d.name)} (${g === 'iriya1' ? 'I' : 'II'})" title="Play the Game ${g === 'iriya1' ? 'I' : 'II'} version">▶${g === 'iriya1' ? 'I' : 'II'}</button>`).join('');
+    const chips = ts.length ? ts.map(t => `<span class="chip"><button class="play" data-key="h:${esc(t)}" data-h="${esc(t)}" data-label="${esc(t)} ${esc(H[t]?.title || '')}">▶</button>${esc(t)}${H[t]?.title && H[t].title !== t ? ` <span class="gloss">${esc(H[t].title)}</span>` : ''}<button class="x" data-rm="${esc(d.name)}|${esc(t)}" title="Remove">×</button></span>`).join('')
+      : '<span class="none">no replacement (the DS track plays)</span>';
+    const ctx = (d.ctx || []).length ? `<details><summary>where it plays</summary><ul class="ctx">${d.ctx.map(c => `<li>${esc(c)}</li>`).join('')}</ul></details>` : '';
+    return `<div class="row${sel === d.name ? ' sel' : ''}" data-sel="${esc(d.name)}">
+      <div class="top">${plays}<span class="name">${esc(d.name.slice(4))}</span><span class="gloss">${esc(d.gloss)}</span>
+        ${over ? '<span class="warn">overused</span>' : ''}${builtin ? '<span class="changed" title="differs from the built-in matching">● changed</span>' : ''}
+        <span class="stats">${share || '—'}${scenes ? ` · ${scenes} scenes` : ''}<span class="bar" style="width:${Math.min(80, dsShare(d) * 7)}px"></span></span></div>
+      <div class="chips">${chips}</div>${ctx}</div>`;
+  }).join('');
+}
+
+function renderHim() {
+  const q = $('#him-q').value.trim().toLowerCase(), sort = $('#him-sort').value;
+  const u = usedBy();
+  let list = S.him.filter(h => !q || h.name.toLowerCase().includes(q) || (h.title || '').toLowerCase().includes(q));
+  if (sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
+  else if (sort === 'free') list.sort((a, b) => (!!u[a.name] - !!u[b.name]) || (b.share - a.share));
+  else list.sort((a, b) => b.share - a.share);
+  $('#him-count').textContent = `(${list.length})`;
+  $('#him').innerHTML = list.map(h => {
+    const by = u[h.name] || [];
+    const ctx = (h.ctx || []).length ? `<details><summary>where Himawari uses it</summary><ul class="ctx">${h.ctx.map(c => `<li>${esc(c)}</li>`).join('')}</ul></details>` : '';
+    return `<div class="row${by.length ? '' : ' unused'}">
+      <div class="top"><button class="play" data-key="h:${esc(h.name)}" data-h="${esc(h.name)}" data-label="${esc(h.name)} ${esc(h.title)}">▶</button>
+        <span class="name">${esc(h.name)}</span>${h.title && h.title !== h.name ? `<span class="him-title">${esc(h.title)}</span>` : ''}
+        <span class="stats">${h.share ? h.share.toFixed(1) + '%' : '—'}${h.scenes ? ` · ${h.scenes} scenes` : ''}<span class="bar" style="width:${Math.min(80, h.share * 14)}px"></span></span>
+        <button class="add" data-add="${esc(h.name)}" ${sel ? '' : 'disabled'} title="${sel ? 'Add to ' + esc(sel) : 'Select a DS track first'}">＋</button></div>
+      ${by.length ? `<div class="used-by">used for ${by.map(b => `<b>${esc(b.slice(4))}</b>`).join(', ')}</div>` : ''}${ctx}</div>`;
+  }).join('');
+}
+function render() { renderDS(); renderHim(); markPlaying(); setDirty(dirty); }
+
+document.addEventListener('click', e => {
+  const t = e.target.closest('button, .row');
+  if (!t) return;
+  if (t.dataset.ds) { const [g, sid] = t.dataset.ds.split(':'); play(`/audio/ds/${g}/${sid}.wav`, t.dataset.label, t.dataset.key); e.stopPropagation(); return; }
+  if (t.dataset.h) { play(`/audio/h/${encodeURIComponent(t.dataset.h)}.ogg`, t.dataset.label, t.dataset.key); e.stopPropagation(); return; }
+  if (t.dataset.rm) { const [k, tr] = t.dataset.rm.split('|'); map[k] = (map[k] || []).filter(x => x !== tr); setDirty(true); render(); e.stopPropagation(); return; }
+  if (t.dataset.add) { if (!sel) return; const l = map[sel] ||= []; if (!l.includes(t.dataset.add)) l.push(t.dataset.add); setDirty(true); render(); return; }
+  if (t.dataset.sel && !e.target.closest('details')) { sel = sel === t.dataset.sel ? null : t.dataset.sel; render(); }
+});
+['#ds-game', '#ds-sort'].forEach(s => $(s).addEventListener('change', renderDS));
+['#him-sort'].forEach(s => $(s).addEventListener('change', renderHim));
+$('#him-q').addEventListener('input', renderHim);
+
+$('#save').addEventListener('click', async () => {
+  $('#save').disabled = true;
+  const r = await fetch('/api/save', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({map})}).then(r => r.json());
+  await load(true);
+  let msg = 'Saved';
+  if (r.written?.length) msg += ` · extracted ${r.written.length} new track(s)`;
+  if (r.missing?.length) msg += ` · not found: ${r.missing.join(', ')}`;
+  $('#status').textContent = msg; $('#status').className = 'saved';
+});
+$('#reset').addEventListener('click', async () => {
+  if (!confirm('Throw away your saved matching and go back to the built-in one?')) return;
+  await fetch('/api/reset', {method: 'POST', body: '{}'});
+  await load(true);
+});
+window.addEventListener('beforeunload', e => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+async function load(resetMap) {
+  S = await fetch('/api/state').then(r => r.json());
+  if (resetMap || !Object.keys(map).length) { map = JSON.parse(JSON.stringify(S.map)); dirty = false; }
+  render();
+  if (S.usage !== 'ready') setTimeout(refreshUsage, 3000);
+}
+async function refreshUsage() {        // usage numbers arrive while the analysis runs; keep the edits
+  const s = await fetch('/api/state').then(r => r.json());
+  S = {...s, map: S.map};
+  render();
+  if (S.usage !== 'ready') setTimeout(refreshUsage, 3000);
+}
+load(true);
+</script>
+</body>
+</html>
