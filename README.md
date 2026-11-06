@@ -1,5 +1,13 @@
 # Iriya no Sora, UFO no Natsu I + II — PC port
 
+A PC port of the [*Iriya no Sora* DS games](https://vndb.org/v4694).
+
+Adds native text rendering, upscaled art, the bonus LN chapters inserted in, and an alternate BGM soundtrack, all toggleable with the original format.
+
+Download from the [Releases](https://github.com/Kumiko7/iriya-port/releases) page.
+
+## Below, development details:
+
 A PC engine for the two Nintendo DS sound novels *DS Dengeki Bunko: Iriya no
 Sora, UFO no Natsu* and *…II*. Both games are combined into one app: one title
 screen, one chapter list, shared bookmarks, and the story runs straight from
