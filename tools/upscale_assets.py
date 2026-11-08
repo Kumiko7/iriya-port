@@ -34,6 +34,27 @@ SCALE = 4
 TILE, PAD = 320, 24
 CELL_PAD = 8                                     # source pixels around each face cell
 
+# Touch-ups to the source before upscaling, for details the model would lose:
+# (game, ROM path) -> [(x, y, (r, g, b), strength)] in the upright picture.
+PRE_FIXES = {
+    # 伊里野 at the blackboard (ラブレター1): her mouth is four faint pixels the
+    # model smooths away; make them a soft rose line
+    ('iriya1', 'bg/ev_005_02.nnt'): [(106, 113, (196, 120, 120), 0.42), (107, 113, (196, 120, 120), 0.6),
+                                     (108, 113, (196, 120, 120), 0.6), (109, 113, (196, 120, 120), 0.42),
+                                     (107, 112, (196, 120, 120), 0.2)],
+}
+
+
+def pre_fix(gid, p, rgba):
+    fixes = PRE_FIXES.get((gid, p))
+    if not fixes:
+        return rgba
+    rgba = rgba.copy()
+    for x, y, col, k in fixes:
+        px = rgba[y, x, :3].astype(np.float32)
+        rgba[y, x, :3] = np.round(px * (1 - k) + np.array(col, np.float32) * k).astype(np.uint8)
+    return rgba
+
 
 def out_root():
     return paths.data_path('upscaled')
@@ -125,6 +146,8 @@ def main():
     ap.add_argument('--out', default=out_root())
     ap.add_argument('--quality', type=int, default=90)
     ap.add_argument('--force', action='store_true', help='redo files that already exist')
+    ap.add_argument('--redo-alpha', action='store_true',
+                    help='redo files whose picture has transparency (cut-outs, face sheets)')
     ap.add_argument('--only', default='', help='only ROM paths starting with this, e.g. win/')
     args = ap.parse_args()
 
@@ -157,7 +180,8 @@ def main():
     for k, (gid, rom, p) in enumerate(jobs):
         dst = os.path.join(args.out, gid, p[:-4] + '.webp')
         stale = not old_upright and not p.startswith('win/')   # an older set stored them unturned
-        if os.path.exists(dst) and not args.force and not stale:
+        exists = os.path.exists(dst) and not args.force and not stale
+        if exists and not args.redo_alpha:
             skipped += 1
             total_bytes += os.path.getsize(dst)
             continue
@@ -167,8 +191,13 @@ def main():
             failed += 1
             print('  skip', p, e)
             continue
+        if exists and rgba[..., 3].min() == 255:      # --redo-alpha: opaque, keep it
+            skipped += 1
+            total_bytes += os.path.getsize(dst)
+            continue
         if not p.startswith('win/'):           # the port shows these turned upright
             rgba = np.ascontiguousarray(np.rot90(rgba, 1))
+        rgba = pre_fix(gid, p, rgba)
         cells = face_cells(rom, p, rgba.shape) if p.startswith('win/') else None
         if cells:
             # a face sheet packs one expression per cell: upscale each on its

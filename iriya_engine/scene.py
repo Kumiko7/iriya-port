@@ -42,6 +42,12 @@ SLIDE_FRAMES = 20            # 49 page slide (0x200eea4)
 FACE_W, FACE_H = 176, 56
 
 
+def _reset_alpha(surf):
+    """Undo a set_alpha(n). set_alpha(None) would also switch off per-pixel
+    alpha blending on a surface that has its own transparency (pygame 2)."""
+    surf.set_alpha(255 if surf.get_flags() & pygame.SRCALPHA else None)
+
+
 class Tween:
     __slots__ = ('v', 'a', 'b', 't', 'dur')
 
@@ -368,7 +374,14 @@ class Scene:
             lay.x.to(v(a[2]), 0)
             lay.y.to(v(a[3]), 0)
             lay.shake = (0, 0, 0)
-            lay.alpha.to(0, 0)        # a loaded layer starts transparent; 73 shows it (0x205e888)
+            if (li != 0 and lay.img is not None and lay.alpha.b >= 255 and (lay.alpha.busy or lay.alpha.v > 0)
+                    and vm.swap_pending()):
+                # a crossfade is still bringing this layer in (read faster than the DS
+                # pace, the script loads the next picture before the swap): let the new
+                # picture take over the fade instead of being swapped in invisible
+                pass
+            else:
+                lay.alpha.to(0, 0)    # a loaded layer starts transparent; 73 shows it (0x205e888)
             if name:
                 lay.img = self.game.bg(name)
                 lay.name = name
@@ -407,6 +420,11 @@ class Scene:
             # old layer a is released (0x2010970)
             i, j = a[0] & 3, a[1] & 3
             li, lj = L[i], L[j]
+            if lj.img is None and li.img is not None:
+                # nothing to move in: two crossfade threads overlapped (the player
+                # read on before the first finished) and the first already did the
+                # swap. The DS would release layer a and go black; keep it instead.
+                return
             for attr in ('img', 'name', 'x', 'y', 'alpha', 'shake', 'shake_t', 'shake_off', 'prio', 'loading'):
                 av, bv = getattr(li, attr), getattr(lj, attr)
                 setattr(li, attr, bv)
@@ -714,7 +732,7 @@ class Scene:
             img = lay.img
             img.set_alpha(int(lay.alpha.v))
             view.blit(img, (px, py))
-            img.set_alpha(None)
+            _reset_alpha(img)
         left = view.subsurface((0, 0, PAGE_W, VIEW_H))
         right = view.subsurface((RIGHT_X, 0, PAGE_W, VIEW_H))
         self._render_faces(left)
@@ -759,7 +777,7 @@ class Scene:
             else:
                 img.set_alpha(int(lay.alpha.v))
                 view.blit(img, (px, py))
-                img.set_alpha(None)
+                _reset_alpha(img)
         left = view.subsurface((0, 0, pw, vh))
         right = view.subsurface((round(RIGHT_X * k), 0, pw, vh))
         self._render_faces(left, k)
@@ -899,11 +917,11 @@ class Scene:
                 old = sheet.frame(f.prev_expr)
                 old.set_alpha(int(255 * (1 - f.xfade.v)))
                 win.blit(old, (ix, iy))
-                old.set_alpha(None)
+                _reset_alpha(old)
                 img = sheet.frame(f.expr)
                 img.set_alpha(int(255 * f.xfade.v))
                 win.blit(img, (ix, iy))
-                img.set_alpha(None)
+                _reset_alpha(img)
             else:
                 win.blit(sheet.frame(f.expr), (ix, iy))
             r = win.get_rect()
@@ -924,7 +942,7 @@ class Scene:
             if a < 255:
                 self._text_cache.set_alpha(int(a))
                 page.blit(self._text_cache, (0, 0))
-                self._text_cache.set_alpha(None)
+                _reset_alpha(self._text_cache)
             else:
                 page.blit(self._text_cache, (0, 0))
         self._draw_marker(page)

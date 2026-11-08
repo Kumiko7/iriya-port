@@ -24,6 +24,7 @@ log = logging.getLogger('app')
 LOGICAL = (PAGE_W * 2 + 16, VIEW_H)   # two pages + spine
 RIGHT = PAGE_W + 16                   # x of the right page in logical space
 FPS = 60
+SKIP_DWELL = 2                        # frames each message stays up while skipping
 APP_NAME = 'イリヤの空、ＵＦＯの夏　Ｉ＋ＩＩ'
 
 DEFAULT_SETTINGS = {
@@ -344,6 +345,7 @@ class Session:
         self._awarded_line = -1
         self.auto = False
         self.skip = False
+        self.skip_dwell = 0
         self.wait_t = 0
         self.title_card = 0
         app.mark_seen(gid, chap)
@@ -502,14 +504,28 @@ class Session:
             self.title_card -= 1
             return
         sc.auto_mode = self.auto
-        steps = 4 if self.skip else 1
-        for _ in range(steps):
-            vm.step_frame(fast=self.skip)
+        vm.stop_at_clicks = self.skip
+        if self.skip:
+            # skip: text and effects at once, each message on screen for
+            # SKIP_DWELL frames, so the pages go by quickly but visibly
+            vm.step_frame(fast=True)
             sc.update()
             if vm.waiting_click():
-                if self.skip:
+                self.skip_dwell += 1
+                if self.skip_dwell >= SKIP_DWELL:
+                    self.skip_dwell = 0
                     self.click()
-                elif self.auto:
+            if self.vm.finished:
+                self._award_lines(final=True)
+            for p in self.popups:
+                p[1] -= 1
+            self.popups = [p for p in self.popups if p[1] > 0]
+            return
+        for _ in range(1):
+            vm.step_frame(fast=False)
+            sc.update()
+            if vm.waiting_click():
+                if self.auto:
                     # DS (0x200d294 / 0x200cad8): a fixed countdown from the moment the
                     # message is done. Waits that end a page (48/49/4a, 0x200ec70) count
                     # three times as long as ones inside a page (41/42, 0x200eb4c):

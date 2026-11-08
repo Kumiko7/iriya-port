@@ -102,6 +102,7 @@ class VM:
         self.unknown = {}
         self.seek_line = None       # stop fast-forward when this text line starts
         self.seek_done = False
+        self.stop_at_clicks = False  # skip mode: fast, but still stop at each message
 
     # ------------------------------------------------------------- helpers
     def val(self, v):
@@ -113,6 +114,20 @@ class VM:
 
     def frames(self, v):
         return max(0, self.val(v))
+
+    def swap_pending(self):
+        """True while a helper thread (a background crossfade) is still on its way
+        to a 7d layer swap."""
+        instrs = self.prog.instrs
+        for t in self.threads[1:]:
+            if t is None or t.wait == DONE or t.pc is None:
+                continue
+            for ins in instrs[t.pc:t.pc + 8]:
+                if ins.op == 0x7d:
+                    return True
+                if ins.op in (0xb7, 0xb0, 0xff):
+                    break
+        return False
 
     @property
     def main(self):
@@ -162,6 +177,17 @@ class VM:
             elif t.wait == WAIT_CLICK:
                 continue
             self._run(ti, t, fast)
+            if fast and ti > 0:
+                # fast-forward: helper threads (e.g. the background crossfade
+                # spawned with b4 kind 3) also get through their timed waits in
+                # this frame, so they finish before the main thread, which runs
+                # ahead, spawns the next one; otherwise two crossfades overlap
+                # and the second swaps an empty layer in (black screen on load)
+                k = 0
+                while t.wait == WAIT_FRAMES and k < 64:
+                    t.wait, t.wait_arg = WAIT_NONE, None
+                    self._run(ti, t, fast)
+                    k += 1
         if self.threads[0] is None or self.threads[0].wait == DONE:
             self.finished = True
 
@@ -195,6 +221,8 @@ class VM:
                         if o is None or o.wait == DONE:
                             self.threads[k] = Thread(tgt, addr)
                             break
+                    if fast and ti == 0:
+                        return      # let the new thread run (and finish its waits) this frame
                 else:
                     if len(t.stack) < 3:
                         t.stack.append(t.pc)
@@ -279,7 +307,7 @@ class VM:
             elif op in (0x41, 0x42, 0x48, 0x49, 0x4a):
                 if ti == 0:
                     sc.text_wait(op)
-                    if fast:
+                    if fast and not self.stop_at_clicks:
                         sc.after_click(op, fast=True)
                     else:
                         t.wait, t.wait_arg = WAIT_CLICK, op

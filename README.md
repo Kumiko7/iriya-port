@@ -61,6 +61,10 @@ Everything of yours lives under `data/`, which git ignores:
 | Quick save / load | | F5 / F9 |
 | Fullscreen | | F11, Alt+Enter |
 
+Skip runs through the text at about 30 messages a second, so pages go by
+quickly but you still see them; it stops when you let go of Ctrl or press Tab
+again.
+
 The layout copies the DS held sideways like a book. The left page (the DS top
 screen) shows the character face windows, and the right page (the touch screen)
 shows the vertical text. Background art spans both pages, as it did across the
@@ -101,7 +105,8 @@ them under カードリスト (title menu or in-game menu).
 **High-res text** (on by default) draws the story text and backlog at the
 window's native resolution. It uses an installed Japanese font, Meiryo by
 default. Layout, ruby, keyword highlights and vertical punctuation are
-unchanged, so it stays sharp at any window size or in fullscreen. Pick another
+unchanged, so it stays sharp at any window size or in fullscreen. The DS's
+emphasis stroke (傍点) beside a word is drawn as a sesame mark ﹅. Pick another
 font from the オプション → フォント dropdown, which lists every installed font
 that has kana and kanji (Japanese fonts first) and shows a live sample of the
 one under the cursor. Turn it off with オプション → 高解像度文字 to get the
@@ -121,10 +126,16 @@ Diffusion WebUI venv:
 - It writes about 1,180 WebP files (quality 90, about 160 MB for both games) to
   `data/upscaled/`.
 - It takes about 8 minutes on an RTX 4070-class GPU. Running it again only does
-  missing files; `--force` redoes them and `--only win/` limits it to one folder.
-- Face sheets are upscaled one expression at a time, and the cut-out masks go
-  through the model too, so face edges come out smooth rather than as enlarged
-  pixel steps.
+  missing files; `--force` redoes them, `--redo-alpha` redoes only pictures
+  with transparency, and `--only win/` limits it to one folder or file.
+- Face sheets are upscaled one expression at a time, and the cut-out masks
+  (faces, the large character pictures) go through the model too, so their
+  edges come out smooth rather than as enlarged pixel steps. A set made by an
+  older version of the tool may still have stepped edges: rerun it with
+  `--redo-alpha`.
+- A few details the model would lose are touched up in the source first
+  (`PRE_FIXES` in the tool), such as 伊里野's faint mouth in the blackboard
+  picture of ラブレター1.
 - オプション → 画質 switches between 高画質 and 原画 (the original DS art).
 - Text, the HUD and menus stay pixel-sharp, and the pause, save and options
   screens show the original art behind them.

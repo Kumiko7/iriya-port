@@ -17,7 +17,7 @@ for off, op, a in ins:
     if op == 'G':
         line += font.char(a[0]); continue
     if op == 0x44:
-        line += '《' + ''.join(ruby_char(x) for x in a[1:]) + f'|{a[0]:x}》'; continue
+        line += '《' + ''.join(ruby_char(x, game) for x in a[1:]) + f'|{a[0]:x}》'; continue
     if op in (0x40, 0x41, 0x42, 0x48):
         line += {0x40: '⏎', 0x41: '⏏', 0x42: '¶', 0x48: '■'}[op]
         if op != 0x48: flush()

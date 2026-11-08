@@ -54,7 +54,9 @@ class FaceSheet:
         if not self.frames:
             return self.surface.subsurface(pygame.Rect(0, 0, min(128, self.surface.get_width()), min(64, self.surface.get_height())))
         i = max(0, min(len(self.frames) - 1, i))
-        return self.surface.subsurface(self.frames[i])
+        # some .buf frames reach past the sheet (w_4nin: 176 wide on a 128 sheet)
+        r = self.frames[i].clip(self.surface.get_rect())
+        return self.surface.subsurface(r if r.w and r.h else pygame.Rect(0, 0, 1, 1))
 
 
 class GameData:

@@ -135,6 +135,21 @@ class HiresText:
     def ok(self):
         return self.path is not None
 
+    def emphasis_mark(self):
+        """﹅ (sesame dot) when the font has it, else ・."""
+        m = getattr(self, '_emph', None)
+        if m is None:
+            m = '・'
+            try:
+                import pygame.freetype as ft
+                ft.init()
+                if ft.Font(self.path, 12).get_metrics('﹅')[0] is not None:
+                    m = '﹅'
+            except (OSError, TypeError, IndexError, pygame.error):
+                pass
+            self._emph = m
+        return m
+
     def _font(self, px):
         f = self._fonts.get(px)
         if f is None:
@@ -213,9 +228,11 @@ class HiresText:
             dx = (xo - 3) if half else 0
             surf.blit(img, (round((2 + dx) * k - ox), round(y * k - oy)))
         for code, dx, y in ruby:
-            ch = ruby_char(code)
+            ch = ruby_char(code, game.id)
             if ch == '‐':
                 ch = 'ー'
+            elif ch == '＼':                  # the DS's 傍点 stroke: a sesame mark in a real font
+                ch = self.emphasis_mark()
             img, (ox, oy) = self.glyph(ch, rcell, WHITE, max(1, outline - 1))
             surf.blit(img, (round((2 + dx) * k - ox), round(y * k - oy)))
         if len(self._cols) > 400:

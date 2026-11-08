@@ -84,5 +84,13 @@ class Font:
         return self.to_char.get(i, '�')
 
 
-def ruby_char(i):
+def ruby_char(i, game_id=None):
+    """The character of ruby glyph i (com/rubi.bin). Game II's table has one more
+    glyph than Game I's, ヴ at 0xca, so its codes from there on are one higher.
+    0xd0 / 0xd2 (II: 0xd3) are the slanted 傍点 stroke, kept here as ＼."""
+    if game_id == 'iriya2':
+        if i == 0xca:
+            return 'ヴ'
+        if i > 0xca:
+            i -= 1
     return RUBY_CHARS[i] if 0 <= i < len(RUBY_CHARS) else '?'
