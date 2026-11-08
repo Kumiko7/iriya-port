@@ -275,6 +275,10 @@ class App:
         self.state = state
 
     def run(self):
+        # fixed 60 steps a second: when a frame takes too long to draw (a big window,
+        # a screen recorder), the game catches up with extra steps instead of slowing
+        step = 1.0 / FPS
+        acc, last = 0.0, time.perf_counter()
         while True:
             for ev in pygame.event.get():
                 if ev.type == pygame.QUIT:
@@ -286,7 +290,20 @@ class App:
                 if ev.type in (pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION):
                     ev.lpos = self.to_logical(ev.pos)
                 self.state.event(ev)
-            self.state.update()
+            now = time.perf_counter()
+            acc += min(now - last, 0.25)
+            last = now
+            n = 0
+            while acc >= step * 0.5 and n < 4:       # one step per frame at full speed
+                state = self.state
+                state.update()
+                acc -= step
+                n += 1
+                if self.state is not state:         # a new screen starts on its own frame
+                    acc = 0.0
+                    break
+            if n == 4:
+                acc = 0.0
             self.audio.update()
             canvas = self.target()
             canvas.fill((0, 0, 0))

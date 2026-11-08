@@ -43,10 +43,27 @@ SLIDE_DIST = 210             # measured on DeSmuME: 10.5 px a frame, drawn round
 FACE_W, FACE_H = 176, 56
 
 
+def _blit_scaled_parts(src, dst, k, band=32):
+    """Enlarge the non-empty parts of a mostly transparent DS-size overlay onto dst,
+    pixel-sharp, band by band: the HUD sits at the bottom and the click marker near
+    the top, so one bounding box would scale and blend nearly the whole page."""
+    w, h = src.get_size()
+    for y in range(0, h, band):
+        part = src.subsurface((0, y, w, min(band, h - y)))
+        br = part.get_bounding_rect()
+        if br.w and br.h:
+            br.move_ip(0, y)
+            x0, y0 = round(br.x * k), round(br.y * k)
+            size = (round(br.right * k) - x0, round(br.bottom * k) - y0)
+            dst.blit(pygame.transform.scale(src.subsurface(br), size), (x0, y0))
+
+
 def _reset_alpha(surf):
     """Undo a set_alpha(n). set_alpha(None) would also switch off per-pixel
     alpha blending on a surface that has its own transparency (pygame 2)."""
-    surf.set_alpha(255 if surf.get_flags() & pygame.SRCALPHA else None)
+    # decide by the pixel format, not the SRCALPHA flag: pygame 2 sets that flag
+    # for surface alpha too, and an opaque image left at alpha 255 blits ~30x slower
+    surf.set_alpha(255 if surf.get_masks()[3] else None)
 
 
 class Tween:
@@ -868,11 +885,7 @@ class Scene:
         if hud is not None and not self.hide_text:
             hud(lo_l, lo_r)
         for lo_s, page in ((lo_l, left), (lo_r, right)):
-            br = lo_s.get_bounding_rect()      # only enlarge the part that has pixels
-            if br.w and br.h:
-                x0, y0 = round(br.x * k), round(br.y * k)
-                size = (round(br.right * k) - x0, round(br.bottom * k) - y0)
-                page.blit(pygame.transform.scale(lo_s.subsurface(br), size), (x0, y0))
+            _blit_scaled_parts(lo_s, page, k)
         self._draw_marker(right, k)
         ox, oy = origin
         dst.blit(view, (ox, oy), (0, 0, pw, vh))
