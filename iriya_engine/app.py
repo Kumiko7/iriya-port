@@ -780,18 +780,49 @@ class TitleState(State):
     def update(self):
         self.t += 1
 
-    def draw(self, surf):
-        surf.blit(self.bg_l, (0, 0), (0, 0, PAGE_W, VIEW_H))
+    def _pictures(self):
+        """[(game, rom path, logical x, y, scale, source rect in 1x pixels or None)]"""
+        g1 = self.app.games.get('iriya1') or self.app.ui_game
         rw = self.bg_r.get_width()
-        surf.blit(self.bg_r, (RIGHT, 0), ((rw - PAGE_W) // 2, 0, PAGE_W, VIEW_H))
+        out = [(g1, 'title/titleL1.nnt', 0, 0, 1, (0, 0, PAGE_W, VIEW_H)),
+               (g1, 'title/titleR1.nnt', RIGHT, 0, 1, ((rw - PAGE_W) // 2, 0, PAGE_W, VIEW_H))]
         if self.logo2 is not None and 'iriya2' in self.app.games:
-            for i, lg in enumerate((self.logo, self.logo2)):
-                w, h = lg.get_size()
-                sm = pygame.transform.smoothscale(lg, (w * 3 // 5, h * 3 // 5))
-                surf.blit(sm, (RIGHT + 2 + i * (PAGE_W // 2), 30 - sm.get_height() // 2 + 10))
+            for i, (g, lg) in enumerate(((g1, self.logo), (self.app.games['iriya2'], self.logo2))):
+                h = lg.get_height() * 3 // 5
+                out.append((g, 'title/titlelogo.nnt', RIGHT + 2 + i * (PAGE_W // 2), 30 - h // 2 + 10, 0.6, None))
         else:
-            surf.blit(self.logo, (RIGHT + (PAGE_W - self.logo.get_width()) // 2, 8))
-        draw_spine(surf)
+            out.append((g1, 'title/titlelogo.nnt', RIGHT + (PAGE_W - self.logo.get_width()) // 2, 8, 1, None))
+        return out
+
+    def draw_art(self, window, r, k):
+        """The title pictures from the upscaled art at window resolution."""
+        for g, path, x, y, sc, area in self._pictures():
+            img = g._hd_image(path, True, k * sc)
+            pos = (r.x + round(x * k), r.y + round(y * k))
+            if area is None:
+                window.blit(img, pos)
+            else:
+                ax, ay, aw, ah = area
+                window.blit(img, pos, (round(ax * k), round(ay * k), round(aw * k), round(ah * k)))
+        return True
+
+    def draw(self, surf):
+        if self.app.art_hd():
+            # the pictures come from draw_art; the menu goes on an overlay laid over them
+            if getattr(self, 'overlay', None) is None:
+                self.overlay = pygame.Surface(LOGICAL, pygame.SRCALPHA)
+            self.overlay.fill((0, 0, 0, 0))
+            draw_spine(surf)
+            surf = self.overlay
+        else:
+            self.overlay = None
+            for g, path, x, y, sc, area in self._pictures():
+                img = g.image(path, rotate=True)
+                if sc != 1:
+                    w, h = img.get_size()
+                    img = pygame.transform.smoothscale(img, (w * 3 // 5, h * 3 // 5))
+                surf.blit(img, (x, y), area)
+            draw_spine(surf)
         panel(surf, pygame.Rect(RIGHT + 14, 65, PAGE_W - 28, len(self.menu.items) * 19 + 6), 170)
         self.menu.draw(surf)
         self.app.text(surf, 'Ｆ１１：全画面', RIGHT + PAGE_W - 6, VIEW_H - 16, GREY, 'right')
@@ -930,7 +961,9 @@ class ChapterState(State):
                 pygame.draw.rect(surf, (c, c + 8, 46 + y // 12), (x0, y, PAGE_W, 4))
         draw_spine(surf)
         app = self.app
-        app.text(surf, 'もくじ　' + GAME_TITLES[self.tab], RIGHT + 8, 10, GOLD, game=app.games[self.tab])
+        # 'もくじ' on the left page: with it in front, Game II's title runs off the right page
+        app.text(surf, 'もくじ', 8, 10, GOLD, game=app.games[self.tab])
+        app.text(surf, GAME_TITLES[self.tab], RIGHT + 8, 10, GOLD, game=app.games[self.tab])
         for i, (label, c, en) in enumerate(self.items):
             r = self._rect(i)
             if i == self.sel:
@@ -956,10 +989,11 @@ class SaveLoadState(State):
     def __init__(self, app, mode, back):
         super().__init__(app)
         self.mode, self.back = mode, back
+        # both screens show the same slots in the same places; the save screen
+        # shows オート greyed out (only the game writes it)
         self.keys = ['auto', 'quick'] + [f's{i}' for i in range(1, self.SLOTS + 1)]
-        if mode == 'save':
-            self.keys = [k for k in self.keys if k != 'auto']
-        self.sel = 0
+        self.locked = {'auto'} if mode == 'save' else set()
+        self.sel = 1 if mode == 'save' else 0
         self.confirm = None
 
     def _rect(self, i):
@@ -985,10 +1019,11 @@ class SaveLoadState(State):
         n = len(self.keys)
         pick = None
         if ev.type == pygame.KEYDOWN:
-            if ev.key in (pygame.K_DOWN, pygame.K_s):
-                self.sel = (self.sel + 1) % n
-            elif ev.key in (pygame.K_UP, pygame.K_w):
-                self.sel = (self.sel - 1) % n
+            if ev.key in (pygame.K_DOWN, pygame.K_s, pygame.K_UP, pygame.K_w):
+                d = 1 if ev.key in (pygame.K_DOWN, pygame.K_s) else -1
+                self.sel = (self.sel + d) % n
+                while self.keys[self.sel] in self.locked:
+                    self.sel = (self.sel + d) % n
             elif ev.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_z):
                 pick = self.sel
             elif ev.key == pygame.K_DELETE:
@@ -998,13 +1033,13 @@ class SaveLoadState(State):
                     app._save_json('saves.json', app.saves)
         elif ev.type == pygame.MOUSEMOTION:
             for i in range(n):
-                if self._rect(i).collidepoint(ev.lpos):
+                if self._rect(i).collidepoint(ev.lpos) and self.keys[i] not in self.locked:
                     self.sel = i
         elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
             for i in range(n):
                 if self._rect(i).collidepoint(ev.lpos):
                     pick = i
-        if pick is None:
+        if pick is None or self.keys[pick] in self.locked:
             return
         k = self.keys[pick]
         if self.mode == 'save':
@@ -1032,16 +1067,18 @@ class SaveLoadState(State):
         app.text(surf, 'Ｄｅｌ：削除　右クリック：戻る', PAGE_W - 6, 8, GREY, 'right')
         for i, k in enumerate(self.keys):
             r = self._rect(i)
-            panel(surf, r, 200 if i == self.sel else 130)
+            locked = k in self.locked
+            panel(surf, r, 70 if locked else (200 if i == self.sel else 130))
             if i == self.sel:
                 pygame.draw.rect(surf, GOLD, r, 1)
             s = app.saves.get(k)
-            app.text(surf, self._label(k), r.x + 4, r.y + 3, GOLD if i == self.sel else SKY)
+            app.text(surf, self._label(k), r.x + 4, r.y + 3,
+                     (110, 110, 120) if locked else (GOLD if i == self.sel else SKY))
             if s:
                 g = app.games.get(s['game'])
-                app.text(surf, s.get('time', '')[5:], r.right - 4, r.y + 3, GREY, 'right')
+                app.text(surf, s.get('time', '')[5:], r.right - 4, r.y + 3, (110, 110, 120) if locked else GREY, 'right')
                 t = ('Ｉ ' if s['game'] == 'iriya1' else 'ＩＩ ') + s.get('title', '')
-                app.text(surf, t[:15], r.x + 4, r.y + 16, WHITE, game=g)
+                app.text(surf, t[:15], r.x + 4, r.y + 16, (110, 110, 120) if locked else WHITE, game=g)
             else:
                 app.text(surf, '－－－', r.x + 70, r.y + 16, (110, 110, 120))
 

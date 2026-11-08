@@ -700,8 +700,11 @@ class Scene:
             return (random.randint(0, amp) - random.randint(0, amp),
                     random.randint(0, amp) - random.randint(0, amp))
         idx = (int(t * 16384 / period) & 0xFFFF) >> 4        # FX_SinCosTable_ index
-        s = math.sin(idx * 2 * math.pi / 4096)
-        d = int(s * amp)
+        sv = round(math.sin(idx * 2 * math.pi / 4096) * 4096)     # the table's fx16 value
+        # (sin * amp) >> 12 rounds down, so the window sits a pixel further left
+        # (or up) for most of the negative half; measured on DeSmuME: per 120-frame
+        # cycle at amp 2 it holds +2 1 frame, +1 40, 0 20, -1 20 and -2 40
+        d = (sv * amp) >> 12
         return (d, 0) if axis == 1 else (0, d)
 
     def busy_effects(self):
