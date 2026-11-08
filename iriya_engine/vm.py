@@ -14,6 +14,9 @@ log = logging.getLogger('vm')
 
 WAIT_NONE, WAIT_FRAMES, WAIT_CLICK, WAIT_THREAD, DONE = range(5)
 
+# 演出速度 速い: script waits, fades and tweens run in this share of their DS time
+FX_SCALE_FAST = 0.5
+
 
 class Instr:
     __slots__ = ('off', 'op', 'args', 'glyph')
@@ -114,6 +117,16 @@ class VM:
 
     def frames(self, v):
         return max(0, self.val(v))
+
+    def fx_frames(self, v):
+        """A script duration (wait, fade, tween) in frames, shortened by 演出速度 速い.
+
+        The staff roll keeps the DS timing: it is timed to its song."""
+        n = self.frames(v)
+        sc = self.scene
+        if n > 1 and getattr(sc, 'fast_fx', False) and not getattr(sc, 'scroll_mode', False):
+            n = max(1, int(round(n * FX_SCALE_FAST)))
+        return n
 
     def swap_pending(self):
         """True while a helper thread (a background crossfade) is still on its way
@@ -272,13 +285,13 @@ class VM:
                     t.pc = self._jump(a[2] | (a[3] << 16))
             # ---------------------------------------------- waits
             elif op == 0x58:
-                n = self.frames(a[0])
+                n = self.fx_frames(a[0])
                 if n > 0 and not fast:
                     t.wait, t.timer, t.wait_arg = WAIT_FRAMES, n, None
             elif op == 0x59:
                 # a timed wait the player can cut short (state 0xd, 0x20129d8): a tap
                 # ends it on the next frame
-                n = self.frames(a[0])
+                n = self.fx_frames(a[0])
                 if n > 0 and not fast:
                     t.wait, t.timer, t.wait_arg = WAIT_FRAMES, n, 0x59
             # ---------------------------------------------- text

@@ -396,15 +396,15 @@ class Scene:
         elif op == 0x71:
             L[a[0] & 3].prio = v(a[1])
         elif op == 0x73:
-            L[a[0] & 3].alpha.to(max(0, min(255, v(a[1]))), 0 if fast else vm.frames(a[2]))
+            L[a[0] & 3].alpha.to(max(0, min(255, v(a[1]))), 0 if fast else vm.fx_frames(a[2]))
         elif op == 0x74:
             lay = L[a[0] & 3]
-            n = 0 if fast else vm.frames(a[3])
+            n = 0 if fast else vm.fx_frames(a[3])
             lay.x.to(v(a[1]), n)
             lay.y.to(v(a[2]), n)
         elif op == 0x75:  # (layer, axis, amp, frames) as 0x2010808; 0xFFFF = until stopped
             axis, amp = v(a[1]), v(a[2])
-            n = -1 if a[3] >= 0x8000 else vm.frames(a[3])
+            n = -1 if a[3] >= 0x8000 else vm.fx_frames(a[3])
             if axis not in (1, 2, 3) or amp < 0:
                 n = 0
             lay = L[a[0] & 3]
@@ -447,9 +447,9 @@ class Scene:
             # restart, so 66 + 62 alone is a flash). Type 1 is the diagonal sprite wipe,
             # other types a 16-step fade; 0 frames means 60 (0x201be3c / 0x201beb8).
             self.fade_mode = v(a[0])
-            n = vm.frames(a[1])
+            n = vm.fx_frames(a[1]) if vm.frames(a[1]) else vm.fx_frames(60)
             self.fade.to(0.0 if op == 0x63 else 1.0, 0)
-            self.fade.to(1.0 if op == 0x63 else 0.0, 0 if fast else (n or 60))
+            self.fade.to(1.0 if op == 0x63 else 0.0, 0 if fast else n)
         # ------------------------------------------------ faces
         elif 0x80 <= op <= 0x8f or 0xe0 <= op <= 0xe4:
             self._face_op(op, a, vm, fast)
@@ -463,7 +463,7 @@ class Scene:
         elif op == 0xa6:
             self.scroll_frames = max(1, v(a[0]))
         elif op == 0xa2:
-            self.text_alpha.to(max(0, min(255, v(a[0]))), 0 if fast else vm.frames(a[1]))
+            self.text_alpha.to(max(0, min(255, v(a[0]))), 0 if fast else vm.fx_frames(a[1]))
         # ------------------------------------------------ sound
         elif op == 0x96:  # prepare a track (silent until 90), master volume back to full
             self.bgm, self.bgm_on = a[0], True
@@ -480,29 +480,29 @@ class Scene:
             if self.bgm_state == 1:
                 self.bgm_state = 2
                 if not self.mute_audio:
-                    self.audio.bgm_fade_in(0 if fast else vm.frames(a[0]))
+                    self.audio.bgm_fade_in(0 if fast else vm.fx_frames(a[0]))
         elif op == 0x91:  # fade out and stop a playing track
             if self.bgm_state == 2:
                 self.bgm_state = 0
                 self.bgm_on = False
                 if not self.mute_audio:
-                    self.audio.bgm_fade_out(0 if fast else vm.frames(a[0]))
+                    self.audio.bgm_fade_out(0 if fast else vm.fx_frames(a[0]))
         elif op == 0x93:  # master volume (vol 0..127, frames)
             self.bgm_master = max(0.0, min(1.0, v(a[0]) / 127.0))
             if not self.mute_audio:
-                self.audio.master_to(self.bgm_master, 0 if fast else vm.frames(a[1]))
+                self.audio.master_to(self.bgm_master, 0 if fast else vm.fx_frames(a[1]))
         elif op == 0x9e:
             if not self.mute_audio:
                 self.audio.load_se(a[0], a[1])
         elif op == 0x98:
             if not fast and not self.mute_audio:
-                self.audio.play_se(a[0], vm.frames(a[1]))
+                self.audio.play_se(a[0], vm.fx_frames(a[1]))
         elif op == 0x99:
             if not self.mute_audio:
-                self.audio.stop_se(a[0], 0 if fast else vm.frames(a[1]))
+                self.audio.stop_se(a[0], 0 if fast else vm.fx_frames(a[1]))
         elif op == 0x9b:
             if not self.mute_audio:
-                self.audio.se_volume_to(a[0], min(1.0, v(a[1]) / 127.0), 0 if fast else vm.frames(a[2]))
+                self.audio.se_volume_to(a[0], min(1.0, v(a[1]) / 127.0), 0 if fast else vm.fx_frames(a[2]))
         elif op in (0x55, 0x5c, 0x9d, 0x9f, 0xbc, 0x7f):
             pass  # flags / minor sprite tweaks not reproduced
         else:
@@ -523,7 +523,7 @@ class Scene:
             self.faces.clear()
             return
         if op == 0xe4:                       # (_, alpha, frames): 87 on every window
-            n = 0 if fast else vm.frames(a[2])
+            n = 0 if fast else vm.fx_frames(a[2])
             target = max(0, min(255, v(a[1])))
             for f in self.faces.values():
                 f.alpha.to(target, n)
@@ -584,18 +584,18 @@ class Scene:
             elif len(a) >= 6:
                 f.tint = None
         elif op == 0x83:                     # (id, x, y[, frames, mode]): move the window
-            n = 0 if fast or len(a) < 4 else vm.frames(a[3])
+            n = 0 if fast or len(a) < 4 else vm.fx_frames(a[3])
             f.x.to(v(a[1]), n)
             f.y.to(v(a[2]), n)
         elif op == 0x8b:                     # (id, x, y[, frames, mode]): face image inside the window
-            n = 0 if fast or len(a) < 4 else vm.frames(a[3])
+            n = 0 if fast or len(a) < 4 else vm.fx_frames(a[3])
             f.ix.to(v(a[1]), n)
             f.iy.to(v(a[2]), n)
         elif op == 0xe1:                     # load an expression; e2 shows it
             f.pending = max(0, v(a[1]) - 1)
         elif op == 0xe2:                     # (id, frames): show the loaded expression
             if f.pending is not None:
-                n = 0 if fast else max(0, vm.frames(a[1]))
+                n = 0 if fast else max(0, vm.fx_frames(a[1]))
                 if f.expr is not None and f.pending != f.expr and n > 1 and f.alpha.v > 0:
                     f.prev_expr = f.expr
                     f.xfade.to(0.0, 0)
@@ -605,7 +605,7 @@ class Scene:
                     f.xfade.to(1.0, 0)
                 f.expr, f.pending = f.pending, None
         elif op == 0x87:                     # (id, alpha, frames): fade the window
-            n = 0 if fast else vm.frames(a[2])
+            n = 0 if fast else vm.fx_frames(a[2])
             f.alpha.to(max(0, min(255, v(a[1]))), n)
         else:
             vm.unknown[op] = vm.unknown.get(op, 0) + 1

@@ -90,8 +90,11 @@ times that at the end of a page (オート速度 速い / 普通 / 遅い, the D
 choices; 普通 is the default, as on a new DS save), or by message length with 文字数. As on the DS,
 holding the ▼ button for a second turns auto on, and the four buttons are hidden
 while it runs.
-オプション → 文字速度 has 瞬間, とても速い, 速い, 原作 and 遅い; 演出速度 速い
-shortens the scroll and dissolve.
+オプション → 文字速度 has 瞬間, とても速い, 速い, 原作 and 遅い. 演出速度 速い
+shortens the scroll and dissolve, and runs the scripts' waits, fades, fades of
+pictures and faces, shakes and music fades in half their DS time (a scene
+change of about 10 s takes 5). The staff rolls keep the DS timing, since they
+are timed to their songs.
 
 **Keyword cards:** as on the DS, some words in Game I hide TIPS cards. They
 look like normal text. As on the DS, the radar orb warns of them ahead: it

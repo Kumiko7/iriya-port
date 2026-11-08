@@ -29,7 +29,7 @@ APP_NAME = 'イリヤの空、ＵＦＯの夏　Ｉ＋ＩＩ'
 
 DEFAULT_SETTINGS = {
     'char_frames': 2.0,     # frames per character: 文字速度 速い (4 = the DS's own pace, 0 = instant)
-    'fast_fx': True,        # 演出速度 速い: quicker column scroll / page dissolve than the DS
+    'fast_fx': True,        # 演出速度 速い: quicker scroll / dissolve, script waits and fades at half time
     'card_popup': True,     # show the 「カードゲット！」 box when a card is collected
     'auto_frames': 30,      # auto mode: frames after a message (DS: 10 / 30 / 50, a new save starts at 30); -1 = by length
     'bgm_volume': 0.8,
