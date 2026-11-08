@@ -505,6 +505,9 @@ class Session:
             return
         sc.auto_mode = self.auto
         vm.stop_at_clicks = self.skip
+        # skip: scrolls, fades and page clears finish at once, as on load; a skip
+        # ends with the page exactly as normal reading would have left it
+        sc.fast = self.skip
         if self.skip:
             # skip: text and effects at once, each message on screen for
             # SKIP_DWELL frames, so the pages go by quickly but visibly
