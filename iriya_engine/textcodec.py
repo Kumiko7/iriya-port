@@ -46,8 +46,21 @@ RUBY_CHARS = (
 )
 
 
+# Symbol slots each game's font redraws as other text: two half-width letters per
+# cell (a space is an empty half), or another kanji. Found by checking every glyph
+# the scripts use in the box-drawing and NEC row-13 blocks against its bitmap.
+REDRAWN = {
+    'iriya1': {**dict(zip(range(1113, 1121), ['Ex', 'cu', 'se', ' m', 'e,', ' s', 'ir', '. '])),
+               1198: '祥'},
+    'iriya2': {**dict(zip(range(1175, 1189), ['"M', 'IA', 'Yo', 'u ', 'ar', 'e ', 'no', 't ',
+                                              'fo', 'rg', 'ot', 'te', 'n.', '" '])),
+               **dict(zip(range(1204, 1214), ['AM', '10', ':4', '2 ', 'DA', 'MA', 'sh', 'ot',
+                                              '5M', 'S ']))},
+}
+
+
 class Font:
-    def __init__(self, font_bin):
+    def __init__(self, font_bin, game_id=None):
         self.data = font_bin
         self.count = len(font_bin) // GLYPH_BYTES
         sj = _sjis_chars()
@@ -65,6 +78,7 @@ class Font:
             j = by_bitmap.get(self.raw(i))
             if j is not None and j in table:
                 table[i] = table[j]
+        table.update(REDRAWN.get(game_id, {}))
         self.to_char = table
         self.from_char = {}
         for i in sorted(table, reverse=True):

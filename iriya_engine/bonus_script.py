@@ -39,7 +39,7 @@ class Builder:
         self.words = []
         self.cmap = {}
         for i, c in font.to_char.items():
-            if i >= 614 and (c not in self.cmap or i < self.cmap[c]):
+            if i >= 614 and len(c) == 1 and (c not in self.cmap or i < self.cmap[c]):
                 self.cmap[c] = i
         self.rmap = {}
         for i, c in enumerate(RUBY_CHARS):

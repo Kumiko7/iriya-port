@@ -204,6 +204,23 @@ class HiresText:
         self._glyphs[key] = g
         return g
 
+    def pair_glyph(self, text, cell, color, outline):
+        """Two half-width letters side by side, turned 90° clockwise like Latin text
+        in vertical Japanese: the DS font draws English this way in a few symbol slots."""
+        key = ('pair', text, cell, color, outline)
+        g = self._glyphs.get(key)
+        if g is not None:
+            return g
+        c0 = cell // 2 + outline
+        surf = pygame.Surface((cell + 2 * c0, cell + 2 * c0), pygame.SRCALPHA)
+        for c, dx in zip(text, (-cell / 4, cell / 4)):
+            if c != ' ':
+                img, (ox, oy) = self.glyph(c, cell, color, outline)
+                surf.blit(img, (round(c0 + dx - ox), round(c0 - oy)))
+        g = (pygame.transform.rotate(surf, -90), (c0, c0))
+        self._glyphs[key] = g
+        return g
+
     # ----------------------------------------------------------- columns
     def column_surface(self, game, col, k, color_for=None):
         """A column rendered at scale k; local x origin is the column x - 2."""
@@ -223,7 +240,10 @@ class HiresText:
             if ch in ('\ufffd', '　', ' ', ''):
                 continue
             color = color_for(kid) if color_for else (WHITE if kid is None else HILITE)
-            img, (ox, oy) = self.glyph(ch, cell, color, outline)
+            if len(ch) == 2:                  # a slot the DS font redraws as two sideways letters
+                img, (ox, oy) = self.pair_glyph(ch, cell, color, outline)
+            else:
+                img, (ox, oy) = self.glyph(ch, cell, color, outline)
             # half-width glyphs render centred in a full cell; move them to their half
             dx = (xo - 3) if half else 0
             surf.blit(img, (round((2 + dx) * k - ox), round(y * k - oy)))

@@ -63,7 +63,7 @@ class GameData:
     def __init__(self, game_id, rom_path):
         self.id = game_id
         self.rom = NDSRom(rom_path)
-        self.font = Font(self.rom.read('com/font.bin'))
+        self.font = Font(self.rom.read('com/font.bin'), game_id)
         self.ruby_raw = self.rom.read('com/rubi.bin')
         snd = [p for p in self.rom.files if p.startswith('snd/') and p.endswith('.sdat')][0]
         self.sdat = SDAT(self.rom.read(snd))

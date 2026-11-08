@@ -113,7 +113,9 @@ them under カードリスト (title menu or in-game menu).
 window's native resolution. It uses an installed Japanese font, Meiryo by
 default. Layout, ruby, keyword highlights and vertical punctuation are
 unchanged, so it stays sharp at any window size or in fullscreen. The DS's
-emphasis stroke (傍点) beside a word is drawn as a sesame mark ﹅. Pick another
+emphasis stroke (傍点) beside a word is drawn as a sesame mark ﹅. The few
+English lines the DS draws in spare symbol slots (「Excuse me, sir.」,
+"MIA――You are not forgotten.") come out sideways as on the DS. Pick another
 font from the オプション → フォント dropdown, which lists every installed font
 that has kana and kanji (Japanese fonts first) and shows a live sample of the
 one under the cursor. Turn it off with オプション → 高解像度文字 to get the
