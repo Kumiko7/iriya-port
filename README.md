@@ -65,6 +65,10 @@ Skip runs through the text at about 30 messages a second, so pages go by
 quickly but you still see them; it stops when you let go of Ctrl or press Tab
 again.
 
+The main menu starts with Game I's title screen. The first time you read a
+Game II chapter it switches to Game II's, and from then on ←/→ on the main menu
+switch between the two (with each game's title music). The choice is kept.
+
 The layout copies the DS held sideways like a book. The left page (the DS top
 screen) shows the character face windows, and the right page (the touch screen)
 shows the vertical text. Background art spans both pages, as it did across the

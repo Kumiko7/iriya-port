@@ -111,6 +111,7 @@ class App:
         self.read_chapters = set(prog.get('seen', []))
         self.cards = {g: set(v) for g, v in prog.get('cards', {}).items()}
         self.unlocks = set(prog.get('unlocks', []))
+        self.title_game = prog.get('title', 'iriya1')   # whose title screen the main menu shows
         self._huds = {}
         self.state = None
         self.session = None      # active Session (story playback)
@@ -139,13 +140,30 @@ class App:
             'seen': sorted(self.read_chapters),
             'cards': {g: sorted(v) for g, v in self.cards.items()},
             'unlocks': sorted(self.unlocks),
+            'title': self.title_game,
             'minigame': self.minigame})
 
     def mark_seen(self, gid, chap):
         key = f'{gid}:{chap}'
-        if key not in self.read_chapters:
-            self.read_chapters.add(key)
+        changed = key not in self.read_chapters
+        self.read_chapters.add(key)
+        if gid == 'iriya2' and 'title2' not in self.unlocks:
+            # the first time Game II is read, the main menu takes its title screen;
+            # from then on ←/→ on the main menu switch between the two
+            self.unlocks.add('title2')
+            self.title_game = 'iriya2'
+            changed = True
+        if changed:
             self.save_progress()
+
+    TITLE_BGM = {'iriya1': 32, 'iriya2': 26}         # BGM_IRIYA in each game
+
+    def title_games(self):
+        """The title screens the main menu can show, in ←/→ order."""
+        out = [g for g in ('iriya1', 'iriya2') if g in self.games]
+        if 'title2' not in self.unlocks and len(out) > 1:
+            out = ['iriya1']
+        return out
 
     def owned_cards(self, gid):
         return self.cards.setdefault(gid, set())
@@ -722,11 +740,9 @@ class TitleState(State):
     def __init__(self, app):
         super().__init__(app)
         self.app.session = None
-        app.audio.set_game(app.ui_game)
         app.audio.stop_all()
         g1 = app.games.get('iriya1') or app.ui_game
-        self.bg_l = g1.image('title/titleL1.nnt', rotate=True)
-        self.bg_r = g1.image('title/titleR1.nnt', rotate=True)
+        self._set_title(app.title_game if app.title_game in app.title_games() else app.title_games()[0], fade=60)
         self.logo = g1.image('title/titlelogo.nnt', rotate=True)
         g2 = app.games.get('iriya2')
         self.logo2 = g2.image('title/titlelogo.nnt', rotate=True) if g2 else None
@@ -746,11 +762,29 @@ class TitleState(State):
                   ('おわる', 'quit', True)]
         self.menu = Menu(app, items, RIGHT + PAGE_W // 2, 72, 19, 'center', 150)
         self.t = 0
-        bgm = 32 if 'iriya1' in app.games else None  # BGM_IRIYA
+
+    def _set_title(self, gid, fade=30):
+        """Show `gid`'s title pictures and play its title music."""
+        app = self.app
+        self.tgame = app.games.get(gid) or app.ui_game
+        self.bg_l = self.tgame.image('title/titleL1.nnt', rotate=True)
+        self.bg_r = self.tgame.image('title/titleR1.nnt', rotate=True)
+        app.audio.set_game(self.tgame)
+        bgm = app.TITLE_BGM.get(self.tgame.id)
         if bgm is not None and app.audio.ok:
-            app.audio.play_bgm(bgm, 60)
+            app.audio.play_bgm(bgm, fade)
 
     def event(self, ev):
+        app = self.app
+        if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_a, pygame.K_d):
+            games = app.title_games()
+            if len(games) > 1:
+                i = games.index(self.tgame.id) if self.tgame.id in games else 0
+                app.title_game = games[(i + (1 if ev.key in (pygame.K_RIGHT, pygame.K_d) else -1)) % len(games)]
+                app.ui_sound('move')
+                self._set_title(app.title_game)
+                app.save_progress()
+            return
         v = self.menu.event(ev)
         if v is None:
             if ev.type == pygame.KEYDOWN and ev.key == pygame.K_ESCAPE:
@@ -783,9 +817,10 @@ class TitleState(State):
     def _pictures(self):
         """[(game, rom path, logical x, y, scale, source rect in 1x pixels or None)]"""
         g1 = self.app.games.get('iriya1') or self.app.ui_game
+        tg = self.tgame
         rw = self.bg_r.get_width()
-        out = [(g1, 'title/titleL1.nnt', 0, 0, 1, (0, 0, PAGE_W, VIEW_H)),
-               (g1, 'title/titleR1.nnt', RIGHT, 0, 1, ((rw - PAGE_W) // 2, 0, PAGE_W, VIEW_H))]
+        out = [(tg, 'title/titleL1.nnt', 0, 0, 1, (0, 0, PAGE_W, VIEW_H)),
+               (tg, 'title/titleR1.nnt', RIGHT, 0, 1, ((rw - PAGE_W) // 2, 0, PAGE_W, VIEW_H))]
         if self.logo2 is not None and 'iriya2' in self.app.games:
             for i, (g, lg) in enumerate(((g1, self.logo), (self.app.games['iriya2'], self.logo2))):
                 h = lg.get_height() * 3 // 5
