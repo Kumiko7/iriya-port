@@ -10,6 +10,7 @@ import pygame
 
 from .scene import Scene, PAGE_W, VIEW_H
 from .textcodec import ruby_char
+from .correct import VIRTUAL, FALLBACK
 
 WIN_FONTS = os.path.join(os.environ.get('WINDIR', 'C:/Windows'), 'Fonts')
 FONT_CANDIDATES = [
@@ -158,6 +159,12 @@ class HiresText:
         return f
 
     # ----------------------------------------------------------- glyphs
+    def has_char(self, ch):
+        try:
+            return self._font(12).metrics(ch)[0] is not None
+        except (pygame.error, IndexError, TypeError):
+            return False
+
     def glyph(self, ch, cell, color, outline):
         """Outlined glyph image for a `cell`-pixel square, vertical-text oriented.
 
@@ -240,6 +247,8 @@ class HiresText:
             if ch in ('\ufffd', '　', ' ', ''):
                 continue
             color = color_for(kid) if color_for else (WHITE if kid is None else HILITE)
+            if gi >= VIRTUAL and not self.has_char(ch):    # corrected text: a form the font lacks
+                ch = FALLBACK.get(ch, ch)
             if len(ch) == 2:                  # a slot the DS font redraws as two sideways letters
                 img, (ox, oy) = self.pair_glyph(ch, cell, color, outline)
             else:

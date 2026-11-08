@@ -45,7 +45,7 @@ Everything of yours lives under `data/`, which git ignores:
 | `data/upscaled/` | the 高画質 art | `tools/upscale_assets.py` |
 | `data/himawari/` | your copy of 「ひまわり」 | you |
 | `data/himawari_bgm/` | the alternative soundtrack | `tools/bgm/extract_himawari.py` |
-| `data/epub/` | the light novels, for the bonus chapters | you |
+| `data/epub/` | the light novels, for the bonus chapters and the corrected text | you |
 
 ## Controls
 
@@ -279,6 +279,28 @@ Reproduced from the original data:
     - Enemy and boss movement patterns are my own, because the ROM stores
       them only as code.
 
+## Corrected text (本文)
+
+The DS scripts were typed in from the novels and carry about 60 misreads
+(転枚生 for 転校生, 心職 for 心臓, カ for 力 …). They also cut a few lines and words,
+shorten long ―― runs, and use JIS X 0208 stand-ins for kanji such as 麵. With
+the Dengeki Bunko EPUBs in `data/epub/`, オプション → 本文 「修正版」 (the default)
+puts the books' text back:
+
+- Each story chapter is compared with its book chapter when it loads, and about
+  470 places are patched. Nothing from the books is stored in the port.
+- Where the EPUB itself has the typo (鳥龍茶, 輸ゴム, ほ兄ちゃん …), the DS text
+  stays. So do the DS's own layouts: the cinema sign, the English lines, and
+  ― instead of an ASCII hyphen.
+- Paragraphs that change length are re-wrapped the way the DS lays out a column
+  (14 cells, a hanging 、。」』, its own early breaks kept). A line the DS cut
+  comes back as its own paragraph, ending on a click. Line ids are unchanged,
+  so saves work in either mode.
+- High-res text shows the book's kanji forms (麵, 嚙, 頰 …). The 12px DS font
+  doesn't have them, so 1x text shows the DS form.
+- 「ＤＳ版」 gives the scripts exactly as on the DS. Changing 本文 during a
+  chapter reloads the current page. Without the EPUBs only ＤＳ版 is available.
+
 ## Light-novel bonus chapters
 
 The DS games leave out two of the books' 番外編: 「そんなことだから」 (vol. 1)
@@ -339,6 +361,7 @@ packaging\build.bat
   - `alt_bgm.py`: the alternative (ひまわり) soundtrack: track mapping and playback
   - `bonus.py` / `bonus_script.py`: the light-novel bonus chapters (EPUB reader,
     staging, script compiler)
+  - `correct.py`: the corrected text (本文 修正版): EPUB diff, glyph patching, re-wrap
   - `minigames/`: the mini-games
   - `app.py`: game shell
 - `tools/`:

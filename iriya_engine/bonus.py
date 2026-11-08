@@ -317,16 +317,17 @@ def _title_loader(jpeg):
     return load
 
 
-def install(games, dirs):
+def install(games, dirs, epubs=None):
     """Add the 番外編 found in the user's EPUBs to Game I's chapter list."""
     g1 = games.get('iriya1')
     if g1 is None:
         return []
     g1.alt = games.get('iriya2')
-    try:
-        epubs = find_epubs(dirs)
-    except OSError:
-        return []
+    if epubs is None:
+        try:
+            epubs = find_epubs(dirs)
+        except OSError:
+            return []
     added = []
     chapters = list(g1.chapters)
     for cid, (vol, toc_title, title) in BONUS.items():

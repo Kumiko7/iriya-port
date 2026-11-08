@@ -40,6 +40,7 @@ DEFAULT_SETTINGS = {
     'hires_text': True,     # draw story text at window resolution
     'bgm_set': 'ds',        # 'ds' = the games' own music, 'himawari' = the alternative soundtrack
     'art': 'hd',            # 'hd' = upscaled art (when built with tools/upscale_assets.py), 'original'
+    'script': 'corrected',  # 本文: 'corrected' = typos and cuts fixed from the EPUBs (correct.py), 'ds'
 }
 TEXT_SPEEDS = [('瞬間', 0.0), ('とても速い', 1.0), ('速い', 2.0), ('原作', 4.0), ('遅い', 6.0)]
 AUTO_SPEEDS = [('速い', 10), ('普通', 30), ('遅い', 50), ('文字数', -1)]
@@ -89,8 +90,15 @@ class App:
             g.hd_dir = d if os.path.isdir(d) else None
             g.hd_upright = bool(manifest.get('upright'))
         self.hd_ready = any(g.hd_dir for g in self.games.values())
-        from .bonus import install as install_bonus
-        self.bonus_chapters = install_bonus(self.games, rom_dirs)
+        from .bonus import install as install_bonus, find_epubs
+        try:
+            epubs = find_epubs(rom_dirs)
+        except OSError:
+            epubs = {}
+        self.bonus_chapters = install_bonus(self.games, rom_dirs, epubs)
+        from .correct import Corrector
+        for g in self.games.values():
+            g.corrector = Corrector(g, epubs) if epubs else None
         from .alt_bgm import find as find_alt_bgm
         self.audio.alt = find_alt_bgm(list(rom_dirs) + [self.ddir])
         self.audio.set_alt(self.settings.get('bgm_set') == 'himawari')
@@ -375,6 +383,14 @@ class Session:
         self.scene = Scene(self.game, app.audio, app.settings)
         self.scene.chapter = chap
         self.prog = Program(self.game.script(chap))
+        self.corrected = False
+        co = getattr(self.game, 'corrector', None)
+        if app.settings.get('script', 'corrected') == 'corrected' and co is not None and co.has(chap):
+            try:
+                self.corrected = co.apply(chap, self.prog) > 0
+            except Exception as ex:            # a damaged book must not stop the game
+                log.warning('cannot correct %s %s: %s', gid, chap, ex)
+                self.prog = Program(self.game.script(chap))
         self.vm = VM(self.prog, self.scene)
         self.scene.collected = app.owned_cards(gid)
         self.hud = app.hud(gid)

@@ -6,13 +6,15 @@ from .hires import HiresText, font_label, list_japanese_fonts
 
 
 class OptionsState:
-    KEYS = ['text', 'fx', 'auto', 'popup', 'bgm', 'bgmset', 'se', 'scale', 'full', 'smooth', 'art', 'hires', 'font', 'back']
+    KEYS = ['text', 'fx', 'auto', 'popup', 'script', 'bgm', 'bgmset', 'se', 'scale', 'full', 'smooth', 'art', 'hires',
+            'font', 'back']
     HIRES_ROW = KEYS.index('hires')
     FONT_ROW = KEYS.index('font')
     BACK_ROW = KEYS.index('back')
     COMBO_ROWS = 10
     ITEM_H = 16
-    ROW_PITCH = 16
+    ROW_PITCH = 15
+    ROW_TOP = 27
     hires_always = True   # draw_hires is called even with high-res text off (font preview)
 
     def __init__(self, app, back):
@@ -22,6 +24,7 @@ class OptionsState:
         self.back = back
         self.sel = 0
         self.combo = None          # {'items': [(label, path)], 'sel': int, 'top': int}
+        self.script0 = app.settings.get('script', 'corrected')
         self._preview_fonts = {}
 
     def update(self):
@@ -42,6 +45,8 @@ class OptionsState:
             ('演出速度', '速い' if s.get('fast_fx') else '原作'),
             ('オート速度', au),
             ('カード通知', 'オン' if s.get('card_popup', True) else 'オフ'),
+            ('本文', ('修正版' if s.get('script', 'corrected') == 'corrected' else 'ＤＳ版')
+             if self._can_correct() else 'ＤＳ版のみ'),
             ('ＢＧＭ音量', pct(s['bgm_volume'])),
             ('ＢＧＭ', ('ひまわり' if s.get('bgm_set') == 'himawari' else '原作') if self.app.audio.alt else '原作のみ'),
             ('効果音音量', pct(s['se_volume'])),
@@ -70,6 +75,10 @@ class OptionsState:
             s['auto_frames'] = vals[(k + d) % len(vals)]
         elif key == 'popup':
             s['card_popup'] = not s.get('card_popup', True)
+        elif key == 'script':
+            if not self._can_correct():
+                return
+            s['script'] = 'ds' if s.get('script', 'corrected') == 'corrected' else 'corrected'
         elif key in ('bgm', 'se'):
             key = 'bgm_volume' if key == 'bgm' else 'se_volume'
             s[key] = round(max(0.0, min(1.0, s[key] + 0.1 * d)), 2)
@@ -98,13 +107,26 @@ class OptionsState:
             return
         elif i == self.BACK_ROW:
             self.app.save_settings()
-            self.app.goto(self.back)
+            self._leave()
             return
         self.app.save_settings()
         self.app.ui_sound('move')
 
     def _rect(self, i):
-        return pygame.Rect(self.A.RIGHT + 6, 30 + i * self.ROW_PITCH, self.A.PAGE_W - 12, 15)
+        return pygame.Rect(self.A.RIGHT + 6, self.ROW_TOP + i * self.ROW_PITCH, self.A.PAGE_W - 12, 14)
+
+    def _can_correct(self):
+        return any(getattr(g, 'corrector', None) for g in self.app.games.values())
+
+    def _leave(self):
+        """Back to where options was opened. If 本文 changed during a chapter, reload it
+        at the current page so the other text shows at once."""
+        ses = self.app.session
+        if (self.app.settings.get('script', 'corrected') != self.script0 and ses is not None
+                and isinstance(self.back, self.A.PauseState)):
+            self.app.start_chapter(ses.gid, ses.chap, ses.scene.page_line)
+            return
+        self.app.goto(self.back)
 
     # ------------------------------------------------------------ combobox
     def _open_combo(self):
@@ -188,7 +210,7 @@ class OptionsState:
         if self.A.is_back(ev):
             self.app.save_settings()
             self.app.ui_sound('cancel')
-            self.app.goto(self.back)
+            self._leave()
             return
         n = len(self._rows())
         if ev.type == pygame.KEYDOWN:

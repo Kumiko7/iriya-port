@@ -8,6 +8,7 @@ from . import nnt
 from .rom import NDSRom
 from .sdat import SDAT
 from .textcodec import Font
+from .correct import VIRTUAL
 from .cards import load_cards
 
 # Chapter titles (from the games' title/name*.nnt plates) in script order.
@@ -68,6 +69,8 @@ class GameData:
         snd = [p for p in self.rom.files if p.startswith('snd/') and p.endswith('.sdat')][0]
         self.sdat = SDAT(self.rom.read(snd))
         self._img = {}
+        self.virtual_glyphs = {}        # code >= correct.VIRTUAL -> fallback font index
+        self.corrector = None
         self._faces = {}
         self._glyphs = {}
         self._ruby = {}
@@ -300,6 +303,8 @@ class GameData:
         """
         if 0x2000 <= idx < 0x2300:     # half-width (lone or 縦中横 halves)
             return self.han_glyph(idx & 0xFF)
+        if idx >= VIRTUAL:              # a character the font lacks (corrected scripts): its fallback
+            idx = self.virtual_glyphs.get(idx, 614)
         key = (idx, vertical)
         s = self._glyphs.get(key)
         if s is None:
