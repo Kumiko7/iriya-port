@@ -810,11 +810,12 @@ class Scene:
             x, y = lay.x.px, lay.y.px
             # Keep full-size art covering both pages: a scroll past the image edge
             # (e.g. the shared impact effect on 480-wide art) would otherwise show black.
+            # Only sideways: the DS leaves the vertical position alone (a picture set
+            # lower than usual, such as 水前寺 at y 50 in 第三種接近遭遇２, shows black above it).
             if iw >= VIEW_W:
                 x = min(max(x, 0), iw - VIEW_W)
-            if ih >= VIEW_H:
-                y = min(max(y, 0), ih - VIEW_H)
-            px = -x + sx
+            # shake / sway offsets add to the scroll position (0x2011464), as x does
+            px = -(x + sx)
             py = y + VIEW_H - ih + sy
             img = lay.img
             img.set_alpha(int(lay.alpha.v))
@@ -852,12 +853,10 @@ class Scene:
             x, y = lay.x.px, lay.y.px
             if iw >= VIEW_W:
                 x = min(max(x, 0), iw - VIEW_W)
-            if ih >= VIEW_H:
-                y = min(max(y, 0), ih - VIEW_H)
             img = self.game.bg_hd(lay.name, k) if lay.name else None
             if img is None:
                 img = pygame.transform.smoothscale(lay.img, (round(iw * k), round(ih * k)))
-            px = round((-x + sx) * k)
+            px = round(-(x + sx) * k)
             py = round((y + VIEW_H - ih + sy) * k)
             if lay.alpha.v >= 255:
                 view.blit(img, (px, py))
