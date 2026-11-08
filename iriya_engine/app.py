@@ -156,7 +156,9 @@ class App:
         if changed:
             self.save_progress()
 
-    TITLE_BGM = {'iriya1': 32, 'iriya2': 26}         # BGM_IRIYA in each game
+    # BGM_IRIYA in each game: read from the sound manager's current track (+0x14) in
+    # DeSmuME save states taken on each game's title screen
+    TITLE_BGM = {'iriya1': 32, 'iriya2': 26}
 
     def title_games(self):
         """The title screens the main menu can show, in ←/→ order."""
