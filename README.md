@@ -301,6 +301,22 @@ puts the books' text back:
 - 「ＤＳ版」 gives the scripts exactly as on the DS. Changing 本文 during a
   chapter reloads the current page. Without the EPUBs only ＤＳ版 is available.
 
+| | 修正版 (default) | ＤＳ版 |
+|---|---|---|
+| Misreads (about 60): 転枚生, 心職, 夕日に滑らされた, お揚はポット | the book's 転校生, 心臓, 照らされた, お湯 | as on the DS |
+| Look-alike characters: カ for 力, オ for 才, katakana ペ in いっぺん | the right character (they look the same on screen) | as on the DS |
+| Words and lines the DS cut: 大きな声で、, 推薦枠, 「兄が喋っていた。」, 「な、何か用？」 | put back; a whole cut line becomes its own paragraph with a click | left out |
+| Small rewrites: 気を失って, 小瓶一本, 柏手 | the book's 意識を失って, 小瓶三本, 拍手 | as on the DS |
+| Long dash runs: 「――――――っ!」 | full length, as in the book (up to about 60, over several columns) | capped at 6 |
+| Kanji forms the DS font lacks: 麵 嚙 噓 頰 剝 … | the book's form in high-res text; 1x text shows the DS form | 麺 噛 嘘 頬 剥 … |
+| Small kana, punctuation, quote marks: ねえ/ねぇ, 、/。, “ ”/〝 〟 | as in the book | as on the DS |
+| Typos in the EPUB itself: 鳥龍茶, 輸ゴム, ほ兄ちゃん | the DS text is kept | as on the DS |
+| DS-only layouts: the cinema sign, the English lines, エピローグ２ | as on the DS | as on the DS |
+| Column layout | the DS's; paragraphs that changed length are re-wrapped the same way | the DS's |
+| Clicks | the DS's, plus one per restored line (6 in all) | the DS's |
+| Saves, bookmarks, cards | same line ids: a save loads at the same page in either mode | same |
+| Needs | the EPUBs in `data/epub/` | nothing |
+
 ## Light-novel bonus chapters
 
 The DS games leave out two of the books' 番外編: 「そんなことだから」 (vol. 1)
