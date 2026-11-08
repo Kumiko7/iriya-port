@@ -202,8 +202,10 @@ Reproduced from the original data:
   branches.
 - Vertical text with ruby (furigana), keyword highlights and vertical
   punctuation forms.
-- Background layers with crossfades, scrolling and shaking. As on the DS, a
-  newly loaded layer starts transparent until the script fades it in.
+- Background layers with crossfades, scrolling, shaking and the slow sway of
+  op `7f`. As on the DS, a newly loaded layer starts transparent until the
+  script fades it in. Moves (`74`) step the way the DS does, in 1/16 px with
+  (target − position) / frames left each frame, and are drawn rounded down.
 - Screen fades: the 16-step fade and the diagonal wipe (fade type 1), drawn
   from the game's own wipe sprites (com/wipe.nnt) with the DS sprite layout.
   As on the DS, fades cover the art and the face windows but not the text or
@@ -212,7 +214,8 @@ Reproduced from the original data:
   fully covered, so `66` white followed by `62` is a white flash. A fade given
   0 frames lasts 60.
 - Face windows with expressions, cross-fades, moves, the darkened window panel,
-  and the jitter / sway shakes (ops `86` / `8f`). The face image sits where the
+  and the jitter / sway shakes (ops `86` / `8f`; the sway rounds down as the DS
+  does, so a window holds its leftmost spot longest). The face image sits where the
   DS puts it, 2 px right and 7 px up from its `8b` position, inside a 1 px white
   frame. As on the DS, a window stays
   invisible until the script fades it in; setting an expression doesn't show it.

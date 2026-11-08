@@ -38,6 +38,7 @@ CHAR_FRAMES = 4              # default per-character delay (0x200e40c); op a1 pi
 SCROLL_FRAMES_DS, SCROLL_FRAMES_FAST = 20, 16    # column scroll (0x200dd18)
 DISSOLVE_FRAMES_DS, DISSOLVE_FRAMES_FAST = 32, 20  # 4a page dissolve: alpha 255 -> 0 by 8 (0x200e930)
 SLIDE_FRAMES = 20            # 49 page slide (0x200eea4)
+SLIDE_DIST = 210             # measured on DeSmuME: 10.5 px a frame, drawn rounded down
 
 FACE_W, FACE_H = 176, 56
 
@@ -76,17 +77,58 @@ class Tween:
         return self.dur > 0
 
 
+class StepTween:
+    """A background position moved the DS way (op 74, 0x2010740 / 0x2011924): kept in
+    1/16 pixels, each frame it goes (target - now) / frames left, the division
+    truncated, and it is drawn at now >> 4. Reaches the target on the last frame."""
+    __slots__ = ('cur', 'tgt', 'n')
+
+    def __init__(self, v=0):
+        self.cur = self.tgt = int(v) * 16
+        self.n = 0
+
+    def to(self, target, frames):
+        self.tgt = int(round(target * 16))
+        if frames <= 0:
+            self.cur, self.n = self.tgt, 0
+        else:
+            self.n = frames
+
+    def update(self, fast=False):
+        if self.n > 0:
+            if fast or self.n == 1:
+                self.cur = self.tgt
+            else:
+                d = self.tgt - self.cur
+                self.cur += int(d / self.n)             # C division: toward zero
+            self.n -= 1
+
+    @property
+    def v(self):
+        return self.cur / 16.0
+
+    @property
+    def px(self):
+        return self.cur >> 4                            # whole pixels, rounded down
+
+    @property
+    def busy(self):
+        return self.n > 0
+
+
 class Layer:
     def __init__(self, prio):
         self.img = None
         self.name = ''
-        self.x = Tween(8)
-        self.y = Tween(8)
+        self.x = StepTween(8)
+        self.y = StepTween(8)
         self.alpha = Tween(255)
         self.prio = prio
         self.shake = (0, 0, 0)  # axis (1=x 2=y 3=both), amplitude, frames (-1 = forever)
         self.shake_t = 0
         self.shake_off = (0, 0)
+        self.sway = None        # op 7f: [axis, amp, phase step, frames (-1 = until stopped), phase]
+        self.sway_off = (0, 0)
         self.loading = 0        # frames until the image op 70 asked for is in (DS loads asynchronously)
 
 
@@ -425,7 +467,8 @@ class Scene:
                 # read on before the first finished) and the first already did the
                 # swap. The DS would release layer a and go black; keep it instead.
                 return
-            for attr in ('img', 'name', 'x', 'y', 'alpha', 'shake', 'shake_t', 'shake_off', 'prio', 'loading'):
+            for attr in ('img', 'name', 'x', 'y', 'alpha', 'shake', 'shake_t', 'shake_off', 'sway', 'sway_off',
+                         'prio', 'loading'):
                 av, bv = getattr(li, attr), getattr(lj, attr)
                 setattr(li, attr, bv)
                 setattr(lj, attr, av)
@@ -503,7 +546,16 @@ class Scene:
         elif op == 0x9b:
             if not self.mute_audio:
                 self.audio.se_volume_to(a[0], min(1.0, v(a[1]) / 127.0), 0 if fast else vm.fx_frames(a[2]))
-        elif op in (0x55, 0x5c, 0x9d, 0x9f, 0xbc, 0x7f):
+        elif op == 0x7f:
+            # (layer, axis, amp, period, frames) as 0x20108d0: the background sways
+            # amp * sin over `period` frames; frames 0 stops it, -1 runs until stopped
+            lay = L[a[0] & 3]
+            period, frames = v(a[3]), v(a[4])
+            if frames == 0 or period <= 0:
+                lay.sway, lay.sway_off = None, (0, 0)
+            else:
+                lay.sway = [v(a[1]) & 0xFF, v(a[2]) & 0xFF, int(0x10000 / period), frames, 0]
+        elif op in (0x55, 0x5c, 0x9d, 0x9f, 0xbc):
             pass  # flags / minor sprite tweaks not reproduced
         else:
             vm.unknown[op] = vm.unknown.get(op, 0) + 1
@@ -620,6 +672,21 @@ class Scene:
             lay.x.update(fast)
             lay.y.update(fast)
             lay.alpha.update(fast)
+            if lay.sway is not None:
+                # 0x2011a64: while a sway runs the shake is not stepped at all
+                sw = lay.sway
+                sw[4] = (sw[4] + sw[2]) & 0xFFFF
+                sv = round(math.sin((sw[4] >> 4) * 2 * math.pi / 4096) * 4096)
+                d = int(sw[1] * sv / 4096)                  # C division: toward zero
+                if sw[0] == 1:
+                    lay.sway_off = (d, 0)
+                elif sw[0] == 2:
+                    lay.sway_off = (0, d)
+                if sw[3] > 0:
+                    sw[3] -= 1
+                    if sw[3] == 0:
+                        lay.sway, lay.sway_off = None, (0, 0)
+                continue
             axis, amp, n = lay.shake
             if n:
                 lay.shake_off = self._layer_shake_step(lay)
@@ -722,16 +789,16 @@ class Scene:
             if lay.img is None or lay.alpha.v <= 0 or lay.loading > 0:
                 continue
             iw, ih = lay.img.get_size()
-            sx, sy = lay.shake_off if lay.shake[2] else (0, 0)
-            x, y = lay.x.v, lay.y.v
+            sx, sy = lay.sway_off if lay.sway is not None else (lay.shake_off if lay.shake[2] else (0, 0))
+            x, y = lay.x.px, lay.y.px
             # Keep full-size art covering both pages: a scroll past the image edge
             # (e.g. the shared impact effect on 480-wide art) would otherwise show black.
             if iw >= VIEW_W:
                 x = min(max(x, 0), iw - VIEW_W)
             if ih >= VIEW_H:
                 y = min(max(y, 0), ih - VIEW_H)
-            px = -int(round(x)) + sx
-            py = int(round(y)) + VIEW_H - ih + sy
+            px = -x + sx
+            py = y + VIEW_H - ih + sy
             img = lay.img
             img.set_alpha(int(lay.alpha.v))
             view.blit(img, (px, py))
@@ -764,8 +831,8 @@ class Scene:
             if lay.img is None or lay.alpha.v <= 0 or lay.loading > 0:
                 continue
             iw, ih = lay.img.get_size()
-            sx, sy = lay.shake_off if lay.shake[2] else (0, 0)
-            x, y = lay.x.v, lay.y.v
+            sx, sy = lay.sway_off if lay.sway is not None else (lay.shake_off if lay.shake[2] else (0, 0))
+            x, y = lay.x.px, lay.y.px
             if iw >= VIEW_W:
                 x = min(max(x, 0), iw - VIEW_W)
             if ih >= VIEW_H:
@@ -773,8 +840,8 @@ class Scene:
             img = self.game.bg_hd(lay.name, k) if lay.name else None
             if img is None:
                 img = pygame.transform.smoothscale(lay.img, (round(iw * k), round(ih * k)))
-            px = round((-round(x) + sx) * k)
-            py = round((round(y) + VIEW_H - ih + sy) * k)
+            px = round((-x + sx) * k)
+            py = round((y + VIEW_H - ih + sy) * k)
             if lay.alpha.v >= 255:
                 view.blit(img, (px, py))
             else:
@@ -913,7 +980,8 @@ class Scene:
             win = pygame.Surface((round(f.w * k), round(f.h * k)), pygame.SRCALPHA)
             if f.tint is not None:
                 win.fill(f.tint)
-            ix, iy = round((f.ix.v + FACE_IMG_DX) * k), round((f.iy.v + FACE_IMG_DY) * k)
+            # the DS keeps face positions as floats and truncates them to whole pixels
+            ix, iy = round((int(f.ix.v) + FACE_IMG_DX) * k), round((int(f.iy.v) + FACE_IMG_DY) * k)
             if f.expr is None:
                 pass                         # no expression shown yet (e2 not reached)
             elif f.prev_expr is not None and f.xfade.v < 1:
@@ -932,7 +1000,7 @@ class Scene:
             pygame.draw.rect(win, (255, 255, 255), r, lw)     # DS: a single 1px white frame
             win.set_alpha(int(f.alpha.v))
             ox, oy = f.shake_off if f.shake is not None else (0, 0)
-            page.blit(win, (round((f.x.v + ox) * k), round((f.y.v + oy) * k)))
+            page.blit(win, (round((int(f.x.v) + ox) * k), round((int(f.y.v) + oy) * k)))
 
     def _render_text(self, page):
         if self.hide_text or self.text_alpha.v <= 0:
@@ -1007,7 +1075,7 @@ class Scene:
         sc = self.scroll.v if live else 0.0
         shift = 0.0
         if live and self.clear_fx is not None and self.clear_fx[0] == 'slide':
-            shift = self.clear_fx[1].v * (PAGE_W + COL_PITCH)
+            shift = self.clear_fx[1].v * SLIDE_DIST
         first = max(0, b - 1) if (live and sc > 0) else b   # the outgoing column only while scrolling
         for j in range(first, n):
             x = COL_X0 - COL_PITCH * (j - b + sc) + shift
