@@ -555,7 +555,9 @@ class Scene:
             if not self.mute_audio:
                 self.audio.load_se(a[0], a[1])
         elif op == 0x98:
-            if not fast and not self.mute_audio:
+            if fast:
+                self.audio.skip_se(a[0])
+            elif not self.mute_audio:
                 self.audio.play_se(a[0], vm.fx_frames(a[1]))
         elif op == 0x99:
             if not self.mute_audio:

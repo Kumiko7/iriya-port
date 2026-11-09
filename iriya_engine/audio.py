@@ -334,13 +334,20 @@ class Audio:
         if not self.ok or not (0 <= ch < SE_CHANNELS):
             return
         v = self.se[ch]
-        sid = v.pending if v.pending is not None else v.id
+        # The DS plays only a sound loaded since the last play (0x201cafc checks the
+        # channel is in its 'loaded' state): a play after a stop or a second play is a no-op.
+        sid, v.pending = v.pending, None
         if sid is None:
             return
         v.start(self._sound(sid), 0.0 if fade_frames else 1.0)
         v.id = sid
         if fade_frames:
             v.set_volume(1.0, fade_frames)
+
+    def skip_se(self, ch):
+        """A play passed over while skipping: the loaded sound counts as used."""
+        if self.ok and 0 <= ch < SE_CHANNELS:
+            self.se[ch].pending = None
 
     def stop_se(self, ch, frames=0):
         if not self.ok or not (0 <= ch < SE_CHANNELS):
