@@ -1170,6 +1170,7 @@ class Scene:
                 glyphs.append((gi, ys[-1], marked.get(j), 0))
         ys.append(y)
         ruby = []
+        ruby_end = TEXT_TOP           # bottom of the previous reading
         for end, nb, codes in col.ruby:
             start = max(0, end - nb)
             if end >= len(ys) or not codes:
@@ -1190,6 +1191,10 @@ class Scene:
                 y0 = TEXT_TOP
             elif y0 + run > TEXT_BOTTOM and run <= TEXT_BOTTOM - TEXT_TOP:
                 y0 = TEXT_BOTTOM - run
+            # A reading never runs into the one above it (no DS script has that case;
+            # the 番外編 built from the books can: 駐車場《ちゅうしゃじょう》に停《と》)
+            y0 = max(y0, ruby_end)
+            ruby_end = y0 + (n - 1) * pitch + 8
             for k, c in enumerate(codes):
                 ruby.append((c, 12, y0 + k * pitch))   # 1px left of where it was: matches DS captures
         return glyphs, ruby

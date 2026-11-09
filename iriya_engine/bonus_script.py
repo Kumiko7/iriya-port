@@ -53,9 +53,13 @@ class Builder:
         self.pending = None          # a paragraph end whose wait is not written yet
         self.missing = set()
         self.faces_on = set()
+        self.bgm_on = False          # a track is playing
+        self.fade_left = 0           # frames of the last BGM fade-out not yet waited for
 
     # ------------------------------------------------------------ encoding
     def op(self, code, *args):
+        if code == 0x58:
+            self.fade_left = max(0, self.fade_left - int(args[0]))
         self.words.append((code << 8) | (1 + len(args)))
         self.words.extend(int(a) & 0xFFFF for a in args)
 
@@ -125,7 +129,16 @@ class Builder:
                 rt = tok[2].translate(SMALL_KANA).replace('‐', 'ー')
                 codes = [self.rmap.get(c) for c in rt]
                 ruby = (len(base), codes) if base and rt and None not in codes else None
-                out.append(([self.glyph_of(c) for c in base], 2 * len(base), ruby, base))
+                prev = out[-1] if out else None
+                if ruby and prev and prev[2]:
+                    # The book gives ruby per kanji (榎《えの》本《もと》); a two-kana reading
+                    # is taller than its kanji, so neighbours would overlap. The DS
+                    # scripts set the word as one group (榎本《えのもと》): do the same.
+                    nb, pc = prev[2]
+                    out[-1] = (prev[0] + [self.glyph_of(c) for c in base], prev[1] + 2 * len(base),
+                               (nb + len(base), pc + codes), prev[3] + base)
+                else:
+                    out.append(([self.glyph_of(c) for c in base], 2 * len(base), ruby, base))
         return out
 
     def paragraph(self, para):
@@ -188,12 +201,23 @@ class Builder:
             x, frames = args
             self.op(0x74, 0, x, 8, frames)
         elif kind == 'bgm':
-            sid, fade = (args + (60,))[:2]
+            # As the DS scripts do: fade the old track out (compile_chapter starts that
+            # before the cue's other actions, so it runs under a background change),
+            # wait for the fade to end, then prepare the new track and fade it in.
+            sid, fade_in, fade_out = (args + (120, 60))[:3]
+            if self.bgm_on:
+                self.act(('bgm_out', fade_out))
+            if self.fade_left:
+                self.op(0x58, self.fade_left)
             self.op(0x96, sid, 0)
-            self.op(0x93, 0, 0)
-            self.op(0x90, fade)
+            self.op(0x90, fade_in)
+            self.bgm_on = True
         elif kind == 'bgm_out':
-            self.op(0x91, args[0] if args else 90)
+            frames = args[0] if args else 90
+            if self.bgm_on:
+                self.op(0x91, frames)
+                self.fade_left = frames
+            self.bgm_on = False
         elif kind == 'se':
             sid, ch = (args + (1,))[:2]
             self.op(0x9e, ch, sid, 0)
@@ -298,6 +322,9 @@ def compile_chapter(font, paras, staging, title_image):
             want_clear = None
         elif acts:
             b.end_wait(0x42)
+        bgm = next((a for a in acts if a[0] == 'bgm'), None)
+        if bgm is not None and b.bgm_on:              # start the fade-out first
+            acts = [('bgm_out', (tuple(bgm[1:]) + (120, 60))[2])] + acts
         for a in acts:
             if a[0] != 'clear':
                 b.act(a)
