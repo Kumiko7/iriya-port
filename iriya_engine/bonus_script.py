@@ -103,7 +103,9 @@ class Builder:
         """Write the wait that ends the previous paragraph (42 = click, 48/49/4a = page clear)."""
         if self.pending is None:
             return
-        self.pending = None
+        blank, self.pending = self.pending == 'blank', None
+        if blank and kind == 0x42:          # an empty line: no click, just the next column
+            return
         self.op(kind)
         if kind in (0x48, 0x49, 0x4a):
             self.col_open = False
@@ -173,7 +175,7 @@ class Builder:
     def blank(self):
         self.end_wait(0x42)
         self.start_column()
-        self.pending = True
+        self.pending = 'blank'
 
     # ------------------------------------------------------------ staging
     def bg(self, name, frames=30, x=8):
