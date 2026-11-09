@@ -16,6 +16,7 @@ from .assets import GameData, GAME_TITLES
 from .audio import Audio
 from .scene import Scene, PAGE_W, VIEW_H, COL_X0, COL_PITCH
 from .vm import VM, Program
+from .clicksplit import split_long_runs
 from .hires import HiresText, find_font
 from .hud import Hud
 
@@ -391,6 +392,10 @@ class Session:
             except Exception as ex:            # a damaged book must not stop the game
                 log.warning('cannot correct %s %s: %s', gid, chap, ex)
                 self.prog = Program(self.game.script(chap))
+        try:                                   # text runs too long to stop and read
+            split_long_runs(self.prog, self.game.font.char)
+        except Exception as ex:                # (it changes nothing until it has its cuts)
+            log.warning('cannot split long runs in %s %s: %s', gid, chap, ex)
         self.vm = VM(self.prog, self.scene)
         self.scene.collected = app.owned_cards(gid)
         self.hud = app.hud(gid)

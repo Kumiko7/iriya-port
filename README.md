@@ -337,6 +337,12 @@ after スタッフロール. The story also runs through them.
 Not reproduced:
 
 - Wireless multiplayer and DS Download Play.
+- Changed on purpose: where the text between two clicks fills more than one
+  page (8 columns), its start scrolls off before you can stop and read it. The
+  port adds a click at the punctuation nearest the middle (`clicksplit.py`).
+  This hits 11 places in Game I's scripts and 6 in the bonus chapters (with the
+  DS text; 修正版 can shift this slightly). Runs with no punctuation, such as II's racing
+  「何か恐ろしいことが起こる」, are kept as they are.
 - Small differences still seen against DeSmuME: the DS top screen comes out
   about 2–3% darker (its 6-bit output and a 15/16 layer blend), and some
   layer fades and slides start a few frames apart between the two screens.
@@ -378,6 +384,7 @@ packaging\build.bat
   - `bonus.py` / `bonus_script.py`: the light-novel bonus chapters (EPUB reader,
     staging, script compiler)
   - `correct.py`: the corrected text (本文 修正版): EPUB diff, glyph patching, re-wrap
+  - `clicksplit.py`: extra clicks in text runs longer than a page
   - `minigames/`: the mini-games
   - `app.py`: game shell
 - `tools/`:
