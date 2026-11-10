@@ -332,8 +332,9 @@ class App:
         pygame.quit()
         sys.exit(0)
 
-    def start_chapter(self, gid, chap, seek_line=None, skip_clicks=0, keep_text=False):
+    def start_chapter(self, gid, chap, seek_line=None, skip_clicks=0, keep_text=False, single=False):
         self.session = Session(self, gid, chap, seek_line, skip_clicks, keep_text)
+        self.session.single = single         # back to the title when it ends (opened from a card)
         self.goto(PlayState(self))
 
     def next_chapter(self, gid, chap):
@@ -1314,7 +1315,7 @@ class PlayState(State):
         if self.toast_t:
             self.toast_t -= 1
         if ses.vm.finished:
-            nxt = self.app.next_chapter(ses.gid, ses.chap)
+            nxt = None if getattr(ses, 'single', False) else self.app.next_chapter(ses.gid, ses.chap)
             if nxt is None:
                 self.app.saves.pop('auto', None)
                 self.app._save_json('saves.json', self.app.saves)

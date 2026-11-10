@@ -7,7 +7,10 @@ card.bin layout (all little endian):
   line break, 0x20XX is the half-width ASCII character XX.
   table_offset: card_count records of 16 bytes:
     u16 name, u16 desc, u16 image (byte offsets into the file), u16 category,
-    u16 kind, u16 value, u16 number, u16 0
+    u16 kind, u16 value, u16 action, u16 0
+  action is what choosing the card in the DS card list starts: 1-3 a mini-game
+  (電撃カード大戦, イリヤ電撃クイズ, BARCAP-S06), 200 + n chapter n. That is the
+  DS's only way to Game I's あとがき (213) and それ以外のこと (214).
 """
 import struct
 
@@ -18,11 +21,11 @@ ATTR_NAMES = ('熱血', '泣き', '萌え')
 
 
 class Card:
-    __slots__ = ('index', 'name', 'desc', 'image', 'category', 'kind', 'power')
+    __slots__ = ('index', 'name', 'desc', 'image', 'category', 'kind', 'power', 'action')
 
-    def __init__(self, index, name, desc, image, category, kind=0, power=0):
+    def __init__(self, index, name, desc, image, category, kind=0, power=0, action=0):
         self.index, self.name, self.desc, self.image, self.category = index, name, desc, image, category
-        self.kind, self.power = kind, power
+        self.kind, self.power, self.action = kind, power, action
 
     @property
     def is_battle(self):
@@ -62,9 +65,9 @@ def load_cards(data, font):
         cats.append(t)
     cards = []
     for k in range(count):
-        n_off, d_off, i_off, cat, kind, power = struct.unpack_from('<6H', data, table + 16 * k)
+        n_off, d_off, i_off, cat, kind, power, action = struct.unpack_from('<7H', data, table + 16 * k)
         name, _ = _read_text(words, (n_off - 8) // 2, font)
         desc, _ = _read_text(words, (d_off - 8) // 2, font)
         image = _read_ascii(data, i_off)
-        cards.append(Card(k, name, desc, image, cat, kind, power))
+        cards.append(Card(k, name, desc, image, cat, kind, power, action))
     return cats, cards

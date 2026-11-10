@@ -43,6 +43,40 @@ class CardListState:
         R = self.A.RIGHT
         return pygame.Rect(R + 6, y, 40, 18), pygame.Rect(R + self.A.PAGE_W - 46, y, 40, 18)
 
+    # ------------------------------------------------------------ card actions
+    def _action(self):
+        """(label, what) for the selected card if it starts something, as on the DS."""
+        card = self.cards[self.sel]
+        if card.index not in self.owned or self.gid != 'iriya1':
+            return None
+        if card.action >= 200:
+            codes = [c for c, _ in self.game.chapters]
+            n = card.action - 200
+            return ('読む', codes[n]) if n < len(codes) else None
+        game = {1: 'cards', 2: 'quiz', 3: 'barcap'}.get(card.action)
+        return ('遊ぶ', game) if game else None
+
+    def _action_rect(self):
+        return pygame.Rect(self.A.PAGE_W - 40, 117, 36, 17)     # beside the picture
+
+    def _run_action(self):
+        act = self._action()
+        if act is None:
+            return
+        app, what = self.app, act[1]
+        app.ui_sound('enter')
+        if what == 'cards':
+            from .minigames.cardbattle import CardBattleState
+            app.goto(CardBattleState(app, self))
+        elif what == 'quiz':
+            from .minigames.quiz import QuizState
+            app.goto(QuizState(app, self))
+        elif what == 'barcap':
+            from .minigames.barcap import BarcapState
+            app.goto(BarcapState(app, self))
+        else:                               # a chapter; the DS returns to the title after it
+            app.start_chapter(self.gid, what, single=True)
+
     # ------------------------------------------------------------ input
     def _move(self, d):
         self.sel = max(0, min(len(self.cards) - 1, self.sel + d))
@@ -79,6 +113,8 @@ class CardListState:
                 self._move(-self.per_page)
             elif k == pygame.K_TAB:
                 self._switch_game()
+            elif k in (pygame.K_RETURN, pygame.K_KP_ENTER, pygame.K_SPACE):
+                self._run_action()
         elif ev.type == pygame.MOUSEBUTTONDOWN:
             if ev.button == 4:
                 self._move(-self.COLS)
@@ -89,6 +125,9 @@ class CardListState:
             if ev.button != 1:
                 return
             pos = ev.lpos
+            if self._action() and self._action_rect().collidepoint(pos):
+                self._run_action()
+                return
             if self._tab_rect().collidepoint(pos):
                 self._switch_game()
                 return
@@ -158,6 +197,12 @@ class CardListState:
         cats = g.card_categories
         cat = cats[card.category] if card.category < len(cats) else ''
         app.text(surf, f'No.{card.index + 1:02d}　{cat}', 8, 8, A.GREY, game=g)
+        act = self._action()
+        if act:
+            ar = self._action_rect()
+            A.panel(surf, ar, 170)
+            pygame.draw.rect(surf, A.GOLD, ar, 1)
+            app.text(surf, act[0], ar.centerx, ar.y + 3, A.WHITE, 'center', game=g)
         frame = pygame.Rect(0, 0, 108, 108)
         frame.midtop = (A.PAGE_W // 2, 26)
         pygame.draw.rect(surf, (8, 12, 26), frame)

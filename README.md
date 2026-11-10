@@ -108,6 +108,15 @@ the word to collect it (collected words turn blue). Clicking the radar briefly
 flashes the hidden words as a hint. The 「カードゲット！」 box is this port's own. Game II awards its cards when you finish each chapter. Browse
 them under カードリスト (title menu or in-game menu).
 
+Six of Game I's cards start something, as on the DS: pick the card and press
+Enter or click 読む / 遊ぶ. スタッフロール, あとがき and それ以外のこと open
+their chapter and return to the title screen when it ends, and the three
+mini-game cards start their game. On the DS this is the only way to the
+あとがき (the card for 1st place in BARCAP‑S06) and to それ以外のことについて
+言えば、 (the card for clearing the quiz): its story ends at the title screen
+after the staff roll, and its もくじ lists neither. This port also reads on
+into both after the staff roll and lists them in the もくじ.
+
 **High-res text** (on by default) draws the story text and backlog at the
 window's native resolution. It uses an installed Japanese font, Meiryo by
 default. Layout, ruby, keyword highlights and vertical punctuation are
