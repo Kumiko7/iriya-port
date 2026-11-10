@@ -322,8 +322,8 @@ puts the books' text back:
 The DS games leave out two of the books' 番外編: 「そんなことだから」 (vol. 1)
 and 「死体を洗え」 (vol. 2). Vol. 3's 「ＥＳＰの冬」 is already in Game II, and
 vol. 4 has none. If you have the Dengeki Bunko EPUBs, put them in `data/epub/`
-and the two chapters appear in Game I's もくじ,
-after スタッフロール. The story also runs through them.
+and the two chapters appear at the end of Game I's もくじ,
+after the afterwords. The story also runs through them.
 
 - The text and each chapter's title illustration are read from your EPUBs at
   startup and turned into a normal chapter script. Nothing from the books is

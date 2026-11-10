@@ -23,9 +23,8 @@ BONUS = {
     'X1': (1, '番外編・そんなことだから', '番外編・そんなことだから'),
     'X2': (2, '番外編・死体を洗え', '番外編・死体を洗え'),
 }
-# Where they go in Game I's chapter list: after the staff roll, before あとがき
-# (Game II places its own 番外編 the same way).
-INSERT_BEFORE = 'D'
+# They go at the end of Game I's chapter list, after the two afterwords
+# (あとがき and それ以外のことについて言えば、).
 
 from .bonus_script import SCENE_BREAK, compile_chapter  # noqa: E402
 
@@ -349,8 +348,7 @@ def install(games, dirs, epubs=None):
             continue
         g1.extra_scripts[cid] = data
         g1.extra_titles[cid] = title
-        at = next((i for i, (c, _) in enumerate(chapters) if c == INSERT_BEFORE), len(chapters))
-        chapters.insert(at, (cid, title))
+        chapters.append((cid, title))
         added.append(cid)
     g1.chapters = chapters
     return added
