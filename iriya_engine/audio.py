@@ -24,6 +24,16 @@ class _Voice:
         self.dur = 0
         self.stop_after = False
         self.pending = None  # loaded but not started (SE)
+        self.fade = 1.0      # SE play/stop fade, multiplied with vol (the channel volume)
+        self.fade_from = self.fade_to_v = 1.0
+        self.ft = self.fdur = 0
+
+    def fade_to(self, target, frames):
+        if frames <= 0:
+            self.fade = self.fade_to_v = target
+            self.fdur = 0
+        else:
+            self.fade_from, self.fade_to_v, self.ft, self.fdur = self.fade, target, 0, frames
 
     def set_volume(self, target, frames):
         if frames <= 0:
@@ -41,7 +51,15 @@ class _Voice:
                 self.dur = 0
                 if self.stop_after:
                     self.stop()
-        self.ch.set_volume(max(0.0, min(1.0, self.vol * master)))
+        if self.fdur:
+            self.ft += 1
+            k = min(1.0, self.ft / self.fdur)
+            self.fade = self.fade_from + (self.fade_to_v - self.fade_from) * k
+            if k >= 1:
+                self.fdur = 0
+                if self.fade <= 0:
+                    self.stop()
+        self.ch.set_volume(max(0.0, min(1.0, self.vol * self.fade * master)))
         if self.loop is not None and self.ch.get_busy() and self.ch.get_queue() is None:
             self.ch.queue(self.loop)
 
@@ -73,6 +91,8 @@ class _Voice:
         self.id = None
         self.stop_after = False
         self.dur = 0
+        self.fade = self.fade_to_v = 1.0
+        self.fdur = 0
 
     def busy(self):
         return self.ch.get_busy()
@@ -329,6 +349,9 @@ class Audio:
             return
         v = self.se[ch]
         v.pending = sid
+        # a load puts the channel volume back to full (0x201ca98); a 0x9b between
+        # the load and the play sets the level the sound starts at
+        v.next_vol = 1.0
 
     def play_se(self, ch, fade_frames=0):
         if not self.ok or not (0 <= ch < SE_CHANNELS):
@@ -339,10 +362,12 @@ class Audio:
         sid, v.pending = v.pending, None
         if sid is None:
             return
-        v.start(self._sound(sid), 0.0 if fade_frames else 1.0)
+        # the play only fades in (0x201cafc); the level is the channel volume times that fade
+        v.start(self._sound(sid), getattr(v, 'next_vol', 1.0))
         v.id = sid
         if fade_frames:
-            v.set_volume(1.0, fade_frames)
+            v.fade_to(0.0, 0)
+            v.fade_to(1.0, fade_frames)
 
     def skip_se(self, ch):
         """A play passed over while skipping: the loaded sound counts as used."""
@@ -356,12 +381,16 @@ class Audio:
         if frames <= 0:
             v.stop()
         else:
-            v.set_volume(0.0, frames)
-            v.stop_after = True
+            v.fade_to(0.0, frames)
 
     def se_volume_to(self, ch, vol, frames):
         if self.ok and 0 <= ch < SE_CHANNELS:
-            self.se[ch].set_volume(vol, frames)
+            v = self.se[ch]
+            if v.pending is not None:
+                v.next_vol = vol
+                if v.id is None:
+                    return
+            v.set_volume(vol, frames)
 
     def stop_all(self):
         if not self.ok:
