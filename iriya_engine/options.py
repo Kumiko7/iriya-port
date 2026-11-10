@@ -6,7 +6,7 @@ from .hires import HiresText, font_label, list_japanese_fonts
 
 
 class OptionsState:
-    KEYS = ['text', 'fx', 'auto', 'popup', 'script', 'bgm', 'bgmset', 'se', 'scale', 'full', 'smooth', 'art', 'hires',
+    KEYS = ['text', 'fx', 'auto', 'script', 'bgm', 'bgmset', 'se', 'scale', 'full', 'smooth', 'art', 'hires',
             'font', 'back']
     HIRES_ROW = KEYS.index('hires')
     FONT_ROW = KEYS.index('font')
@@ -44,7 +44,6 @@ class OptionsState:
             ('文字速度', ts),
             ('演出速度', '速い' if s.get('fast_fx') else '原作'),
             ('オート速度', au),
-            ('カード通知', 'オン' if s.get('card_popup', True) else 'オフ'),
             ('本文', ('修正版' if s.get('script', 'corrected') == 'corrected' else 'ＤＳ版')
              if self._can_correct() else 'ＤＳ版のみ'),
             ('ＢＧＭ音量', pct(s['bgm_volume'])),
@@ -73,8 +72,6 @@ class OptionsState:
             vals = [v for _, v in A.AUTO_SPEEDS]
             k = min(range(len(vals)), key=lambda j: abs(vals[j] - s.get('auto_frames', 30)))
             s['auto_frames'] = vals[(k + d) % len(vals)]
-        elif key == 'popup':
-            s['card_popup'] = not s.get('card_popup', True)
         elif key == 'script':
             if not self._can_correct():
                 return

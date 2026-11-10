@@ -105,8 +105,7 @@ look like normal text. As on the DS, the radar orb warns of them ahead: it
 brightens a step about 16 text lines before a keyword and fully about 6 lines
 before, and stays bright until about 16 lines after it (Game II has no radar). Click
 the word to collect it (collected words turn blue). Clicking the radar briefly
-flashes the hidden words as a hint. The 「カードゲット！」 box is this port's own;
-turn it off with オプション → カード通知 (the card-get sound still plays). Game II awards its cards when you finish each chapter. Browse
+flashes the hidden words as a hint. The 「カードゲット！」 box is this port's own. Game II awards its cards when you finish each chapter. Browse
 them under カードリスト (title menu or in-game menu).
 
 **High-res text** (on by default) draws the story text and backlog at the

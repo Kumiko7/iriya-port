@@ -31,7 +31,6 @@ APP_NAME = 'イリヤの空、ＵＦＯの夏　Ｉ＋ＩＩ'
 DEFAULT_SETTINGS = {
     'char_frames': 2.0,     # frames per character: 文字速度 速い (4 = the DS's own pace, 0 = instant)
     'fast_fx': True,        # 演出速度 速い: quicker scroll / dissolve, script waits and fades at half time
-    'card_popup': True,     # show the 「カードゲット！」 box when a card is collected
     'auto_frames': 30,      # auto mode: frames after a message (DS: 10 / 30 / 50, a new save starts at 30); -1 = by length
     'bgm_volume': 0.8,
     'se_volume': 0.9,
@@ -460,8 +459,7 @@ class Session:
         if self.app.give_card(self.gid, cid):
             self.scene._text_dirty = True
             if popup:
-                if self.app.settings.get('card_popup', True):
-                    self.popups.append([self.game.cards[cid], 150])
+                self.popups.append([self.game.cards[cid], 150])
                 self.app.audio.set_game(self.game)
                 self.app.audio.ui_sound(5)          # SE_CARDGET
             return True
