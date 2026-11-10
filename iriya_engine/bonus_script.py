@@ -12,7 +12,7 @@ log = logging.getLogger('bonus')
 
 SCENE_BREAK = '\x00break'
 
-SUBST = {'─': '―', '〜': '～', '噓': '嘘', '𠮟': '叱', '剝': '剥', '頰': '頬', '‐': '－',
+SUBST = {'─': '―', '〜': '～', '噓': '嘘', '𠮟': '叱', '剝': '剥', '頰': '頬', '顚': '顛', '‐': '－',
          '‼': '！！', '⁉': '！？', '⁈': '？！', '﨑': '崎', '髙': '高', '·': '・', '•': '・'}
 HANG = set('、。，．」』）')                # may hang as the 15th character of a column
 SENTENCE_END = set('。！？')

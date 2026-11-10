@@ -333,6 +333,13 @@ after the afterwords. The story also runs through them.
   the games. Some backgrounds are from Game II; without it, Game I stand-ins
   are used. The choices are mine (`STAGING` in `iriya_engine/bonus.py`).
 
+The books' four あとがき are added too. The DS games have their own, newly
+written あとがき instead, so the books' ones are separate entries at the end of
+the もくじ: 文庫版あとがき・その１ and その２ in Game I, その３ and その４ in
+Game II. They are only opened from the もくじ. Reading on from the chapter
+before does not pass through them, and each one returns to the title screen
+when it ends. They use the picture and music of the DS あとがき.
+
 Not reproduced:
 
 - Wireless multiplayer and DS Download Play.

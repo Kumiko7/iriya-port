@@ -103,7 +103,7 @@ class App:
         self.audio.alt = find_alt_bgm(list(rom_dirs) + [self.ddir])
         self.audio.set_alt(self.settings.get('bgm_set') == 'himawari')
         self.order = [(gid, c) for gid in ('iriya1', 'iriya2') if gid in self.games
-                      for c, _ in self.games[gid].chapters]
+                      for c, _ in self.games[gid].chapters if c not in self.games[gid].toc_only]
         self.ui_game = self.games.get('iriya1') or self.games.get('iriya2')
         self.audio.set_game(self.ui_game)
         try:
@@ -330,6 +330,8 @@ class App:
         self.goto(PlayState(self))
 
     def next_chapter(self, gid, chap):
+        if (gid, chap) not in self.order:        # a もくじ-only chapter ends at the title
+            return None
         i = self.order.index((gid, chap))
         if i + 1 < len(self.order):
             return self.order[i + 1]

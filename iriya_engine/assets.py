@@ -82,6 +82,7 @@ class GameData:
         self.alt = None              # the other game, for '2/' image names in bonus scripts
         self.extra_scripts = {}      # chapter id -> .nsb bytes (bonus chapters, see bonus.py)
         self.extra_titles = {}
+        self.toc_only = set()        # chapters listed in the もくじ but not read through
         self.extra_images = {}       # name -> loader() for 'x/name' images
 
     # ---------------------------------------------------------------- cards

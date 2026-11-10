@@ -23,6 +23,18 @@ BONUS = {
     'X1': (1, '番外編・そんなことだから', '番外編・そんなことだから'),
     'X2': (2, '番外編・死体を洗え', '番外編・死体を洗え'),
 }
+# The books' own あとがき (the DS games have new ones instead): chapter id ->
+# (game, volume, index title, BGM). They are listed in the もくじ only; reading
+# on from the chapter before does not pass through them. Staged like the DS
+# あとがき: its picture and its music (Game II has the same piece as id 29).
+AFTERWORDS = {
+    'Y1': ('iriya1', 1, '文庫版あとがき・その１', 35),
+    'Y2': ('iriya1', 2, '文庫版あとがき・その２', 35),
+    'Y3': ('iriya2', 3, '文庫版あとがき・その３', 29),
+    'Y4': ('iriya2', 4, '文庫版あとがき・その４', 29),
+}
+AFTERWORD_TOC = 'あとがき'
+AFTERWORD_BG = 'ev_005_02'
 # They go at the end of Game I's chapter list, after the two afterwords
 # (あとがき and それ以外のことについて言えば、).
 
@@ -111,16 +123,18 @@ def find_epubs(dirs):
 
 
 # ---------------------------------------------------------------- parsing
-def parse_chapter(epub, title):
+def parse_chapter(epub, title, first_text_only=False):
     """-> (illustration bytes or None, [paragraph]) where a paragraph is a list of
     tokens: ('t', text) | ('r', base, ruby) | ('tcy', digits), or SCENE_BREAK, or ''
-    for a blank line."""
+    for a blank line. first_text_only stops at the first picture page after the
+    text (the あとがき entry runs on into the author notes and the colophon)."""
     image = None
     paras = []
     for path in epub.chapter_files(title):
         doc = epub.read(path).decode('utf-8')
         body = doc.split('<body', 1)[-1]
-        if 'p-image' in body[:80] or ('<p' in body and not re.search(r'<p[^>]*>(?!\s*<img)[^<\s]', body)):
+        # (text paragraphs may open with a full-width space, which \s would match)
+        if 'p-image' in body[:80] or ('<p' in body and not re.search(r'<p[^>]*>(?!\s*<img)[^<\r\n\t ]', body)):
             m = re.search(r'<img\b[^>]*src="([^"]+)"', body)
             if m and image is None:
                 ip = posixpath.normpath(posixpath.join(posixpath.dirname(path), html.unescape(m.group(1))))
@@ -128,6 +142,8 @@ def parse_chapter(epub, title):
                     image = epub.read(ip)
                 except KeyError:
                     pass
+            if first_text_only and paras:
+                break
             continue
         for m in re.finditer(r'<p\b[^>]*>(.*?)</p>', body, re.S):
             paras.append(_parse_para(m.group(1)))
@@ -318,21 +334,21 @@ def _title_loader(jpeg):
 
 
 def install(games, dirs, epubs=None):
-    """Add the 番外編 found in the user's EPUBs to Game I's chapter list."""
+    """Add the 番外編 found in the user's EPUBs to Game I's chapter list, and the
+    books' あとがき to both games' lists."""
     g1 = games.get('iriya1')
-    if g1 is None:
-        return []
-    g1.alt = games.get('iriya2')
+    if g1 is not None:
+        g1.alt = games.get('iriya2')
     if epubs is None:
         try:
             epubs = find_epubs(dirs)
         except OSError:
             return []
     added = []
-    chapters = list(g1.chapters)
+    chapters = list(g1.chapters) if g1 is not None else []
     for cid, (vol, toc_title, title) in BONUS.items():
         e = epubs.get(vol)
-        if e is None:
+        if e is None or g1 is None:
             continue
         try:
             image, paras = parse_chapter(e, toc_title)
@@ -350,5 +366,28 @@ def install(games, dirs, epubs=None):
         g1.extra_titles[cid] = title
         chapters.append((cid, title))
         added.append(cid)
-    g1.chapters = chapters
+    if g1 is not None:
+        g1.chapters = chapters
+    for cid, (gid, vol, title, bgm) in AFTERWORDS.items():
+        g, e = games.get(gid), epubs.get(vol)
+        if g is None or e is None:
+            continue
+        try:
+            _image, paras = parse_chapter(e, AFTERWORD_TOC, first_text_only=True)
+            if paras and plain(paras[0]).strip() == AFTERWORD_TOC:       # the page heading
+                paras = paras[1:]
+            while paras and paras[0] == '':
+                paras.pop(0)
+            if not paras:
+                continue
+            data, _unused, _missing = compile_chapter(
+                g.font, paras, {'open': [('bg', AFTERWORD_BG), ('bgm', bgm)]}, None)
+        except Exception as ex:
+            log.warning('cannot build %s from %s: %s', title, e.path, ex)
+            continue
+        g.extra_scripts[cid] = data
+        g.extra_titles[cid] = title
+        g.chapters = list(g.chapters) + [(cid, title)]
+        g.toc_only.add(cid)
+        added.append(cid)
     return added
