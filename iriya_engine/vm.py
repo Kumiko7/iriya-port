@@ -78,6 +78,54 @@ class Program:
         return raw.split(b'\0')[0].decode('ascii', 'replace')
 
 
+def inline_calls(prog, game):
+    """Put the chapters a script plays with op bc inside it; returns how many.
+
+    Game II's エピローグ１ runs the staff roll (chapter 15) between its pages 106
+    and 107 this way. The roll's lines all take the one line id the caller left
+    free for it (801 between 800 and 802), so a bookmark made during the roll
+    comes back to its start, and the text settings the roll changes (the scroll
+    mode, a1, a6) are put back after it.
+    """
+    n = 0
+    i = 0
+    L = prog.instrs
+    while i < len(L):
+        x = L[i]
+        if x.op != 0xbc or not x.args or not 0 <= x.args[0] < len(game.chapters):
+            i += 1
+            continue
+        sub = Program(game.script(game.chapters[x.args[0]][0])).instrs
+        while sub and sub[-1].op == 0xff:
+            sub.pop()
+        line, page, speed, frames = 0, 0, 0, 23
+        for y in L[:i]:
+            if y.op == 0x4f:
+                line, page = y.args[0], y.args[1]
+            elif y.op == 0xa1:
+                speed = y.args[0]
+            elif y.op == 0xa6:
+                frames = y.args[0]
+        body = []
+        for y in sub:
+            args = (line + 1, page) + tuple(y.args[2:]) if y.op == 0x4f else y.args
+            body.append(Instr(None, y.op, args, y.glyph))
+        body += [Instr(None, 0x5a, (0,)), Instr(None, 0x5b, (0,)),
+                 Instr(None, 0xa1, (speed,)), Instr(None, 0xa6, (frames,))]
+        L[i:i + 1] = body
+        i += len(body)
+        n += 1
+    if n:
+        prog.index = {}
+        prog.line_index = {}
+        for i, ins in enumerate(L):
+            if ins.off is not None:
+                prog.index[ins.off] = i
+            if ins.op == 0x4f:
+                prog.line_index.setdefault(ins.args[0], i)
+    return n
+
+
 class Thread:
     def __init__(self, pc, start=None):
         self.pc = pc
@@ -308,8 +356,9 @@ class VM:
             elif op == 0x40:
                 if ti == 0:
                     if sc.scroll_mode:
-                        if not fast:
-                            t.wait, t.timer = WAIT_FRAMES, sc.scroll_frames
+                        w = sc.new_column()
+                        if w and not fast:
+                            t.wait, t.timer = WAIT_FRAMES, w
                     else:
                         # DS: 0x4001 goes through the glyph path (0x200df84), which
                         # always puts the thread in state 2 until the text engine is

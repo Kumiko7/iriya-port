@@ -15,7 +15,7 @@ from .rom import find_roms
 from .assets import GameData, GAME_TITLES
 from .audio import Audio
 from .scene import Scene, PAGE_W, VIEW_H, COL_X0, COL_PITCH
-from .vm import VM, Program
+from .vm import VM, Program, inline_calls
 from .clicksplit import split_long_runs
 from .hires import HiresText, find_font
 from .hud import Hud
@@ -56,6 +56,12 @@ def data_dir():
 
 
 # =========================================================================
+# Chapters the DS lists in the もくじ but plays inside another one: Game II's
+# エピローグ１ runs the staff roll (F) itself and ends with エピローグ２'s (G) pages.
+# Reading on skips them; they can still be opened from the もくじ.
+READ_SKIP = {'iriya2': ('F', 'G')}
+
+
 class App:
     def __init__(self, rom_dirs=()):
         rom_dirs = paths.search_dirs(rom_dirs)      # given folders first, then data/
@@ -103,7 +109,8 @@ class App:
         self.audio.alt = find_alt_bgm(list(rom_dirs) + [self.ddir])
         self.audio.set_alt(self.settings.get('bgm_set') == 'himawari')
         self.order = [(gid, c) for gid in ('iriya1', 'iriya2') if gid in self.games
-                      for c, _ in self.games[gid].chapters if c not in self.games[gid].toc_only]
+                      for c, _ in self.games[gid].chapters
+                      if c not in self.games[gid].toc_only and c not in READ_SKIP.get(gid, ())]
         self.ui_game = self.games.get('iriya1') or self.games.get('iriya2')
         self.audio.set_game(self.ui_game)
         try:
@@ -330,7 +337,13 @@ class App:
         self.goto(PlayState(self))
 
     def next_chapter(self, gid, chap):
-        if (gid, chap) not in self.order:        # a もくじ-only chapter ends at the title
+        if chap in self.games[gid].toc_only:     # a もくじ-only chapter ends at the title
+            return None
+        if (gid, chap) not in self.order:        # opened from the もくじ: on to the chapter after it
+            codes = [c for c, _ in self.games[gid].chapters]
+            for c in codes[codes.index(chap) + 1:]:
+                if (gid, c) in self.order:
+                    return gid, c
             return None
         i = self.order.index((gid, chap))
         if i + 1 < len(self.order):
@@ -397,6 +410,10 @@ class Session:
             split_long_runs(self.prog, self.game.font.char)
         except Exception as ex:                # (it changes nothing until it has its cuts)
             log.warning('cannot split long runs in %s %s: %s', gid, chap, ex)
+        try:                                   # Game II's staff roll, inside エピローグ１
+            inline_calls(self.prog, self.game)
+        except Exception as ex:
+            log.warning('cannot inline calls in %s %s: %s', gid, chap, ex)
         self.vm = VM(self.prog, self.scene)
         self.scene.collected = app.owned_cards(gid)
         self.hud = app.hud(gid)
@@ -656,9 +673,13 @@ class Session:
         if self.title_card > 0 or sc.hide_text:
             return
         alpha = sc.text_alpha.v * sc.text_fx_alpha()      # screen fades stay under the text
-        from .scene import TEXT_CLIP_X
+        from .scene import TEXT_CLIP_X, ROLL_TOP, ROLL_BOTTOM, PAGE_W
         old = window.get_clip()
-        window.set_clip(pygame.Rect(r.x + RIGHT * k, r.y, round(TEXT_CLIP_X * k), round(VIEW_H * k)).clip(old))
+        if sc.scroll_mode:                                # the staff roll's window
+            box = pygame.Rect(r.x + RIGHT * k, r.y + round(ROLL_TOP * k), round(PAGE_W * k), round((ROLL_BOTTOM - ROLL_TOP) * k))
+        else:
+            box = pygame.Rect(r.x + RIGHT * k, r.y, round(TEXT_CLIP_X * k), round(VIEW_H * k))
+        window.set_clip(box.clip(old))
         self.app.hires.draw_page(window, sc, sc.columns, (r.x + RIGHT * k, r.y), k, alpha)
         window.set_clip(old)
 

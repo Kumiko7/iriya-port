@@ -241,7 +241,12 @@ Reproduced from the original data:
   background takes about a frame per 9 KB to load before it can fade in, while
   the script runs on.
 - BGM with loop points, and sound effects on four channels.
-- The scrolling staff rolls.
+- The staff rolls as the DS shows them: the picture pans on the left page only,
+  the lines rise up a black right page as horizontal rows, and the page
+  counter and buttons are hidden. Game II's roll plays inside エピローグ１,
+  before its last two pages, as on the DS. Reading on from there skips the
+  もくじ's separate スタッフロール and エピローグ２ entries, which hold the same
+  roll and the same two pages.
 - The mini-games, under ミニゲーム on the title screen. They're played on two
   stacked screens like a normally held DS.
   - **イリヤ電撃クイズ (I):**

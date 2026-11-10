@@ -8,7 +8,7 @@ import os
 import math
 import pygame
 
-from .scene import Scene, PAGE_W, VIEW_H
+from .scene import Scene, PAGE_W, VIEW_H, TEXT_TOP, ROLL_X0
 from .textcodec import ruby_char
 from .correct import VIRTUAL, FALLBACK
 
@@ -165,13 +165,13 @@ class HiresText:
         except (pygame.error, IndexError, TypeError):
             return False
 
-    def glyph(self, ch, cell, color, outline):
+    def glyph(self, ch, cell, color, outline, upright=False):
         """Outlined glyph image for a `cell`-pixel square, vertical-text oriented.
 
         Returns (surface, offset) where offset is where the cell's top-left is
         inside the surface.
         """
-        key = (ch, cell, color, outline)
+        key = (ch, cell, color, outline, upright)
         g = self._glyphs.get(key)
         if g is not None:
             return g
@@ -185,13 +185,15 @@ class HiresText:
         area = pygame.Rect(0, top, w, h)
         fg = fg.subsurface(area).copy()
         bg = bg.subsurface(area).copy()
-        if ch in ROTATE:
+        if ch in ROTATE and not upright:
             fg = pygame.transform.rotate(fg, -90)
             bg = pygame.transform.rotate(bg, -90)
         # centre the em box in the cell
         ox = (cell - fg.get_width()) / 2
         oy = (cell - fg.get_height()) / 2
-        if ch in CORNER:
+        if upright:                       # horizontal text (the staff roll): as the font has it
+            pass
+        elif ch in CORNER:
             ox += cell * 0.55
             oy -= cell * 0.55
         elif ch in SMALL:
@@ -269,6 +271,32 @@ class HiresText:
         self._cols[id(col)] = (sig, col, surf)
         return surf
 
+    def row_surface(self, game, col, k):
+        """A staff-roll line as a horizontal row at scale k; local origin is the page's x 0, row y - 2."""
+        sig = ('row', k, len(col.glyphs))
+        hit = self._cols.get(id(col))
+        if hit is not None and hit[0] == sig and hit[1] is col:
+            return hit[2]
+        glyphs, _ = Scene.layout_column(col)
+        surf = pygame.Surface((math.ceil(PAGE_W * k), math.ceil(18 * k)), pygame.SRCALPHA)
+        cell = max(4, round(12 * k))
+        outline = max(1, round(k * 0.45))
+        for gi, y, kid, xo in glyphs:
+            half = 0x2000 <= gi < 0x2300
+            ch = chr(gi & 0xFF) if half else game.font.char(gi)
+            if ch in ('�', '　', ' ', ''):
+                continue
+            if gi >= VIRTUAL and not self.has_char(ch):
+                ch = FALLBACK.get(ch, ch)
+            img, (ox, oy) = self.glyph(ch, cell, WHITE, outline, upright=True)
+            if half:                          # rendered centred in a full cell; its half is the left one
+                ox += 3 * k
+            surf.blit(img, (round((ROLL_X0 + y - TEXT_TOP) * k - ox), round(2 * k - oy)))
+        if len(self._cols) > 400:
+            self._cols.clear()
+        self._cols[id(col)] = (sig, col, surf)
+        return surf
+
     def draw_page(self, window, scene, columns, origin, k, alpha=255):
         """Draw a page of columns with the page's top-left at window pixel `origin`."""
         if alpha <= 0:
@@ -278,9 +306,14 @@ class HiresText:
         page = pygame.Rect(round(ox), round(oy), round(PAGE_W * k), round(VIEW_H * k))
         window.set_clip(page.clip(clip))
         try:
+            roll = scene.scroll_mode and columns is scene.columns
             for x, col in scene.placed_columns(columns):
-                s = self.column_surface(scene.game, col, k, scene.keyword_color)
-                pos = (round(ox + (x - 2) * k), round(oy))
+                if roll:                      # x is the row's y
+                    s = self.row_surface(scene.game, col, k)
+                    pos = (round(ox), round(oy + (x - 2) * k))
+                else:
+                    s = self.column_surface(scene.game, col, k, scene.keyword_color)
+                    pos = (round(ox + (x - 2) * k), round(oy))
                 if alpha < 255:
                     # fade through a copy: surface alpha on per-pixel-alpha
                     # surfaces is unreliable on some SDL builds

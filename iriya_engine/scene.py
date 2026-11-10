@@ -31,6 +31,11 @@ CHAR_PITCH = 12
 TEXT_TOP = 12
 TEXT_BOTTOM = TEXT_TOP + 180
 LOAD_BYTES_PER_FRAME = 9000  # DS image loading speed (see op 70)
+# Staff roll (ops 5a/5b): each line is a horizontal row on the right page, rising
+# from the bottom edge and cut off at ROLL_TOP (measured on DeSmuME).
+ROLL_X0 = 6                  # x of a row's first character
+ROLL_Y0 = 192                # y of a row when it starts
+ROLL_TOP, ROLL_BOTTOM = 17, 192
 TEXT_CLIP_X = 184            # nothing of the text is drawn right of this (DeSmuME captures)  # ruby is kept inside [TEXT_TOP, TEXT_BOTTOM] (0x2020070)
 
 # DS timings (frames at 60 fps), and the quicker ones the port used before.
@@ -146,6 +151,7 @@ class Layer:
         self.shake_off = (0, 0)
         self.sway = None        # op 7f: [axis, amp, phase step, frames (-1 = until stopped), phase]
         self.sway_off = (0, 0)
+        self.screens = 3        # op 70: bit 0 = left page (DS top screen), bit 1 = right page
         self.loading = 0        # frames until the image op 70 asked for is in (DS loads asynchronously)
 
 
@@ -225,9 +231,11 @@ class Scene:
         self.bgm_state = 0          # 0 none, 1 prepared by 96, 2 faded in by 90
         self.bgm_master = 1.0
         self.mute_audio = False     # true while fast-forwarding to a bookmark
-        self.scroll_mode = False    # staff roll: columns stream across the page
+        self.scroll_mode = False    # staff roll: lines rise up the page as rows
         self.scroll_frames = 23     # frames per column in scroll mode
         self.scroll_t = 0
+        self.scroll_lines = 0       # lines begun since the roll started
+        self.scroll_hold = 0        # frames the roll stands still
         self.hires = False          # text drawn by the window-resolution renderer instead
         # where each message (text between two clicks) started: (line id, clicks
         # already released inside that line) -- used to step back one message
@@ -258,9 +266,13 @@ class Scene:
         if self.scroll_mode:
             self.page_line = line_id
             col = Column(line_id, page)
-            col.born = self.scroll_t
+            # the first 8 lines fill the window at once (the roll opens with
+            # blank ones); after that each line comes in at the bottom
+            n = self.scroll_lines
+            self.scroll_lines += 1
+            col.born = self.scroll_t - max(0, COLS_PER_PAGE - n) * self.scroll_frames
             self.columns.append(col)
-            self.columns = [c for c in self.columns if self._scroll_x(c) < PAGE_W + 4]
+            self.columns = [c for c in self.columns if self._roll_y(c) > ROLL_TOP - 20]
             self._text_dirty = True
             return 0
         if not self.columns:
@@ -284,7 +296,12 @@ class Scene:
         waits when a new column starts while an earlier scroll is still running.
         """
         if self.scroll_mode:
-            return 0
+            if self.scroll_lines <= COLS_PER_PAGE:
+                return 0
+            # a line of text takes the DS a frame to put up before it scrolls on
+            # (measured: the roll falls a frame behind per text line, rows stay 21 px apart)
+            self.scroll_hold = 1 if len(self.columns[-1].glyphs) > 1 else 0
+            return self.scroll_frames + self.scroll_hold
         self.columns.append(Column(self.line_id, self.page or 0))
         self._text_dirty = True
         if len(self.columns) <= COLS_PER_PAGE:
@@ -314,8 +331,8 @@ class Scene:
     def char_frames(self):
         return float(self.settings.get('char_frames', CHAR_FRAMES))
 
-    def _scroll_x(self, col):
-        return -14 + (self.scroll_t - getattr(col, 'born', 0)) * COL_PITCH / max(1, self.scroll_frames)
+    def _roll_y(self, col):
+        return ROLL_Y0 - (self.scroll_t - getattr(col, 'born', 0)) * COL_PITCH / max(1, self.scroll_frames)
 
     def _has_text(self):
         return any(c.glyphs and any(g != 614 for g in c.glyphs) for c in self.columns)
@@ -432,6 +449,7 @@ class Scene:
             lay = L[li]
             lay.x.to(v(a[2]), 0)
             lay.y.to(v(a[3]), 0)
+            lay.screens = (a[1] & 3) or 3
             lay.shake = (0, 0, 0)
             if (li != 0 and lay.img is not None and lay.alpha.b >= 255 and (lay.alpha.busy or lay.alpha.v > 0)
                     and vm.swap_pending()):
@@ -485,7 +503,7 @@ class Scene:
                 # swap. The DS would release layer a and go black; keep it instead.
                 return
             for attr in ('img', 'name', 'x', 'y', 'alpha', 'shake', 'shake_t', 'shake_off', 'sway', 'sway_off',
-                         'prio', 'loading'):
+                         'prio', 'loading', 'screens'):
                 av, bv = getattr(li, attr), getattr(lj, attr)
                 setattr(li, attr, bv)
                 setattr(lj, attr, av)
@@ -518,6 +536,7 @@ class Scene:
             self.speed_mode = v(a[0])
         elif op in (0x5a, 0x5b):
             self.scroll_mode = bool(v(a[0]))
+            self.scroll_lines = 0
             self.columns = []
             self._text_dirty = True
         elif op == 0xa6:
@@ -746,7 +765,10 @@ class Scene:
                 self._flush_page()
         self.click_glyph_t += 1
         if self.scroll_mode:
-            self.scroll_t += 1
+            if self.scroll_hold:
+                self.scroll_hold -= 1
+            else:
+                self.scroll_t += 1
             self._text_dirty = True
 
     TRI = (-2, -1, 0, 1, 2, 1, 0, -1)    # 0x205e8b4
@@ -797,6 +819,16 @@ class Scene:
         return self.fade.busy or any(l.alpha.busy or l.x.busy for l in self.layers)
 
     # =============================================================== render
+    @staticmethod
+    def _screens_clip(screens, k):
+        """Clip rectangle for a layer shown on one DS screen only (the staff roll's
+        picture is on the top screen; the bottom one stays black)."""
+        if screens == 1:
+            return pygame.Rect(0, 0, round(PAGE_W * k), round(VIEW_H * k))
+        if screens == 2:
+            return pygame.Rect(round(RIGHT_X * k), 0, round(PAGE_W * k), round(VIEW_H * k))
+        return None
+
     def render(self, out, hud=None):
         """Render into `out` (a 400x256 surface: two pages with a 16px spine).
 
@@ -815,20 +847,22 @@ class Scene:
             # Only sideways: the DS leaves the vertical position alone (a picture set
             # lower than usual, such as 水前寺 at y 50 in 第三種接近遭遇２, shows black above it).
             if iw >= VIEW_W:
-                x = min(max(x, 0), iw - VIEW_W)
+                x = min(max(x, 0), iw - (VIEW_W if lay.screens == 3 else PAGE_W))
             # shake / sway offsets add to the scroll position (0x2011464), as x does
             px = -(x + sx)
             py = y + VIEW_H - ih + sy
             img = lay.img
             img.set_alpha(int(lay.alpha.v))
+            view.set_clip(self._screens_clip(lay.screens, 1))
             view.blit(img, (px, py))
+            view.set_clip(None)
             _reset_alpha(img)
         left = view.subsurface((0, 0, PAGE_W, VIEW_H))
         right = view.subsurface((RIGHT_X, 0, PAGE_W, VIEW_H))
         self._render_faces(left)
         self._draw_fade(view)              # over the art and faces, under the text and HUD
         self._render_text(right)
-        if hud is not None and not self.hide_text:
+        if hud is not None and not self.hide_text and not self.scroll_mode:   # no HUD over the staff roll
             hud(left, right)
         out.blit(view, (0, 0), (0, 0, PAGE_W, VIEW_H))
         out.blit(view, (PAGE_W + 16, 0), (RIGHT_X, 0, PAGE_W, VIEW_H))
@@ -854,18 +888,20 @@ class Scene:
             sx, sy = lay.sway_off if lay.sway is not None else (lay.shake_off if lay.shake[2] else (0, 0))
             x, y = lay.x.px, lay.y.px
             if iw >= VIEW_W:
-                x = min(max(x, 0), iw - VIEW_W)
+                x = min(max(x, 0), iw - (VIEW_W if lay.screens == 3 else PAGE_W))
             img = self.game.bg_hd(lay.name, k) if lay.name else None
             if img is None:
                 img = pygame.transform.smoothscale(lay.img, (round(iw * k), round(ih * k)))
             px = round(-(x + sx) * k)
             py = round((y + VIEW_H - ih + sy) * k)
+            view.set_clip(self._screens_clip(lay.screens, k))
             if lay.alpha.v >= 255:
                 view.blit(img, (px, py))
             else:
                 img.set_alpha(int(lay.alpha.v))
                 view.blit(img, (px, py))
                 _reset_alpha(img)
+            view.set_clip(None)
         left = view.subsurface((0, 0, pw, vh))
         right = view.subsurface((round(RIGHT_X * k), 0, pw, vh))
         self._render_faces(left, k)
@@ -883,7 +919,7 @@ class Scene:
             mark, self.waiting = self.waiting, None
             self._render_text(lo_r)
             self.hires, self.waiting = hires, mark
-        if hud is not None and not self.hide_text:
+        if hud is not None and not self.hide_text and not self.scroll_mode:   # no HUD over the staff roll
             hud(lo_l, lo_r)
         for lo_s, page in ((lo_l, left), (lo_r, right)):
             _blit_scaled_parts(lo_s, page, k)
@@ -1076,12 +1112,13 @@ class Scene:
 
     # ------------------------------------------------------------ layout
     def placed_columns(self, columns):
-        """Yield (x, column) for the columns that are on the page."""
+        """Yield (x, column) for the columns that are on the page; in the staff
+        roll, (y, row)."""
         if self.scroll_mode and columns is self.columns:
             for col in columns:
-                x = self._scroll_x(col)
-                if -14 <= x <= PAGE_W:
-                    yield x, col
+                y = self._roll_y(col)
+                if ROLL_TOP - 16 <= y <= ROLL_BOTTOM:
+                    yield y, col
             return
         live = columns is self.columns
         n = len(columns)
@@ -1114,6 +1151,8 @@ class Scene:
     def keyword_hits(self):
         """[(pygame.Rect in right-page pixels, card id)] for keywords on screen."""
         out = []
+        if self.scroll_mode:
+            return out
         for x, col in self.placed_columns(self.columns):
             glyphs, _ = self.layout_column(col)
             for gi, y, kid, _xo in glyphs:
@@ -1219,17 +1258,22 @@ class Scene:
             body[x0:x1, y0:y1] |= sub
             if color != (255, 255, 255):
                 cols[x0:x1, y0:y1][sub] = color
+        roll = self.scroll_mode and columns is self.columns
         for x, col in self.placed_columns(columns):
             x = int(x)
             glyphs, ruby = self.layout_column(col)
+            if roll:                             # x is the row's y; the column's y runs along x
+                for gi, y, kid, xo in glyphs:
+                    put(g.glyph(gi, vertical=False), ROLL_X0 + y - TEXT_TOP, x, (255, 255, 255))
+                continue
             for gi, y, kid, xo in glyphs:
                 put(g.glyph(gi), x + xo, y, self.keyword_color(kid))
             for c, dx, y in ruby:
                 put(g.ruby_glyph(c), x + dx, int(y), (255, 255, 255))
-        return self.stamp_layer(body, cols)
+        return self.stamp_layer(body, cols, roll)
 
     @classmethod
-    def stamp_layer(cls, body, colors):
+    def stamp_layer(cls, body, colors, roll=False):
         import numpy as np
         table = cls.STAMP_SHADOW if cls.stamp_style == 'shadow' else cls.STAMP_RIM
         W, H = body.shape
@@ -1249,7 +1293,11 @@ class Scene:
         sel = idx >= 8
         rgb[sel] = colors[sel]
         alpha[sel] = 255
-        alpha[TEXT_CLIP_X:, :] = 0      # the DS text window ends there (a scrolling column is cut off)
+        if roll:
+            alpha[:, :ROLL_TOP] = 0
+            alpha[:, ROLL_BOTTOM:] = 0
+        else:
+            alpha[TEXT_CLIP_X:, :] = 0  # the DS text window ends there (a scrolling column is cut off)
         surf = pygame.Surface((W, H), pygame.SRCALPHA)
         pygame.surfarray.pixels3d(surf)[:] = rgb
         pygame.surfarray.pixels_alpha(surf)[:] = alpha
