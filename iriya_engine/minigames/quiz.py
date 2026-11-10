@@ -19,8 +19,8 @@ import pygame
 from . import MiniState, BOTTOM_Y, SCREEN_W
 
 BONUS_CARD = 1
-PASSES = 3
-TIME_LIMIT = 20 * 60          # frames
+PASSES = 5
+TIME_LIMIT = 25 * 60          # frames (the DS counts down from 25:00)
 SE_SEIKAI, SE_FUSEIKAI, SE_ENTER, SE_MOVE, SE_CANCEL, SE_CARDGET = 9, 8, 2, 0, 1, 5
 ANSWER_BARS = [pygame.Rect(22, 100 + 23 * i - 4, 161, 21) for i in range(4)]
 PASS_BTN = pygame.Rect(194, 100, 54, 28)

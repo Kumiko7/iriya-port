@@ -114,8 +114,8 @@ their chapter and return to the title screen when it ends, and the three
 mini-game cards start their game. On the DS this is the only way to the
 あとがき (the card for 1st place in BARCAP‑S06) and to それ以外のことについて
 言えば、 (the card for clearing the quiz): its story ends at the title screen
-after the staff roll, and its もくじ lists neither. This port also reads on
-into both after the staff roll and lists them in the もくじ.
+after the staff roll, and its もくじ lists neither. This port also lists them
+in the もくじ.
 
 **High-res text** (on by default) draws the story text and backlog at the
 window's native resolution. It uses an installed Japanese font, Meiryo by
@@ -208,6 +208,15 @@ python tools/bgm/bgm_matcher.py
 Saves, settings and chapter progress are kept in `%APPDATA%\IriyaPort\`. The
 title menu's 「つづきから読む」 resumes from the autosave.
 
+The story of each game runs from its first chapter to its staff roll and then
+returns to the title screen, as on the DS. With both games present, finishing
+Game I's staff roll brings up Game II's title screen, and 「つづきから読む」
+there starts Game II from its first chapter. Everything after the staff roll
+(あとがき, the side stories, the 番外編, 文庫版あとがき) is opened from the
+もくじ or, where the DS has one, its card; each returns to the title screen
+when it ends and leaves the story's 「つづきから読む」 where it was. The もくじ
+rows are drawn like the DS menu's buttons.
+
 ## What is and isn't reproduced
 
 Reproduced from the original data:
@@ -253,9 +262,9 @@ Reproduced from the original data:
 - The staff rolls as the DS shows them: the picture pans on the left page only,
   the lines rise up a black right page as horizontal rows, and the page
   counter and buttons are hidden. Game II's roll plays inside エピローグ１,
-  before its last two pages, as on the DS. Reading on from there skips the
-  もくじ's separate スタッフロール and エピローグ２ entries, which hold the same
-  roll and the same two pages.
+  before its last two pages, as on the DS, and the story ends there. The
+  もくじ's separate スタッフロール and エピローグ２ entries hold the same roll
+  and the same two pages.
 - The mini-games, under ミニゲーム on the title screen. They're played on two
   stacked screens like a normally held DS.
   - **イリヤ電撃クイズ (I):**
@@ -336,7 +345,7 @@ The DS games leave out two of the books' 番外編: 「そんなことだから�
 and 「死体を洗え」 (vol. 2). Vol. 3's 「ＥＳＰの冬」 is already in Game II, and
 vol. 4 has none. If you have the Dengeki Bunko EPUBs, put them in `data/epub/`
 and the two chapters appear at the end of Game I's もくじ,
-after the afterwords. The story also runs through them.
+after the afterwords.
 
 - The text and each chapter's title illustration are read from your EPUBs at
   startup and turned into a normal chapter script. Nothing from the books is
@@ -350,9 +359,8 @@ after the afterwords. The story also runs through them.
 The books' four あとがき are added too. The DS games have their own, newly
 written あとがき instead, so the books' ones are separate entries at the end of
 the もくじ: 文庫版あとがき・その１ and その２ in Game I, その３ and その４ in
-Game II. They are only opened from the もくじ. Reading on from the chapter
-before does not pass through them, and each one returns to the title screen
-when it ends. They use the picture and music of the DS あとがき.
+Game II. They are only opened from the もくじ, and each one returns to the
+title screen when it ends. They use the picture and music of the DS あとがき.
 
 Not reproduced:
 

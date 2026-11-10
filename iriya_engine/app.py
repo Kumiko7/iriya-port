@@ -56,10 +56,11 @@ def data_dir():
 
 
 # =========================================================================
-# Chapters the DS lists in the もくじ but plays inside another one: Game II's
-# エピローグ１ runs the staff roll (F) itself and ends with エピローグ２'s (G) pages.
-# Reading on skips them; they can still be opened from the もくじ.
-READ_SKIP = {'iriya2': ('F', 'G')}
+# Where each game's story ends, as on the DS: Game I with its staff roll, Game II
+# with エピローグ１ (which runs the staff roll itself and ends with エピローグ２'s
+# pages). Reading stops at the title screen there. Every later chapter (あとがき,
+# 番外編, ...) is opened from the もくじ and returns to the title screen too.
+STORY_END = {'iriya1': 'C', 'iriya2': 'E'}
 
 
 class App:
@@ -108,9 +109,11 @@ class App:
         from .alt_bgm import find as find_alt_bgm
         self.audio.alt = find_alt_bgm(list(rom_dirs) + [self.ddir])
         self.audio.set_alt(self.settings.get('bgm_set') == 'himawari')
-        self.order = [(gid, c) for gid in ('iriya1', 'iriya2') if gid in self.games
-                      for c, _ in self.games[gid].chapters
-                      if c not in self.games[gid].toc_only and c not in READ_SKIP.get(gid, ())]
+        self.order = []                      # the story chapters, read one after the other
+        for gid in ('iriya1', 'iriya2'):
+            if gid in self.games:
+                codes = [c for c, _ in self.games[gid].chapters]
+                self.order += [(gid, c) for c in codes[:codes.index(STORY_END[gid]) + 1]]
         self.ui_game = self.games.get('iriya1') or self.games.get('iriya2')
         self.audio.set_game(self.ui_game)
         try:
@@ -337,19 +340,41 @@ class App:
         self.session.single = single         # back to the title when it ends (opened from a card)
         self.goto(PlayState(self))
 
+    def is_story(self, ses):
+        return (ses.gid, ses.chap) in self.order and not getattr(ses, 'single', False)
+
     def next_chapter(self, gid, chap):
-        if chap in self.games[gid].toc_only:     # a もくじ-only chapter ends at the title
-            return None
-        if (gid, chap) not in self.order:        # opened from the もくじ: on to the chapter after it
-            codes = [c for c, _ in self.games[gid].chapters]
-            for c in codes[codes.index(chap) + 1:]:
-                if (gid, c) in self.order:
-                    return gid, c
+        """The chapter read after this one, or None at the end of a game's story
+        and after anything opened on its own."""
+        if (gid, chap) not in self.order:
             return None
         i = self.order.index((gid, chap))
-        if i + 1 < len(self.order):
+        if i + 1 < len(self.order) and self.order[i + 1][0] == gid:
             return self.order[i + 1]
         return None
+
+    def end_reading(self, ses):
+        """A chapter ended with nothing to read on to: set what つづきから読む does next."""
+        if self.is_story(ses):
+            self.saves.pop('resume', None)
+            if ses.gid == 'iriya1' and 'iriya2' in self.games:
+                # Game I is over: the main menu becomes Game II's, and continuing starts it
+                g2 = self.games['iriya2']
+                self.saves['auto'] = {'game': 'iriya2', 'chap': g2.chapters[0][0], 'line': None,
+                                      'title': g2.chapters[0][1],
+                                      'time': time.strftime('%Y/%m/%d %H:%M'), 'preview': ''}
+                self.unlocks.add('title2')
+                self.title_game = 'iriya2'
+                self.save_progress()
+            else:
+                self.saves.pop('auto', None)
+        elif 'resume' in self.saves:         # back to where the story was left
+            self.saves['auto'] = self.saves.pop('resume')
+        else:
+            old = self.saves.get('auto') or {}
+            if (old.get('game'), old.get('chap')) == (ses.gid, ses.chap):
+                self.saves.pop('auto', None)
+        self._save_json('saves.json', self.saves)
 
     def ui_sound(self, kind):
         self.audio.set_game(self.ui_game)
@@ -358,11 +383,12 @@ class App:
             self.audio.set_game(self.session.game)
 
     # --------------------------------------------------------------- UI text
-    def text(self, surf, s, x, y, color=WHITE, align='left', game=None):
+    def text(self, surf, s, x, y, color=WHITE, align='left', game=None,
+             outline=(0, 0, 0), pitch=12):
         """Draw horizontal Japanese UI text with the game's own font."""
         g = game or self.ui_game
         idxs = g.text_glyphs(s)
-        w = 12 * len(idxs)
+        w = pitch * len(idxs)
         if align == 'center':
             x -= w // 2
         elif align == 'right':
@@ -370,8 +396,20 @@ class App:
         for i, gi in enumerate(idxs):
             if gi is None or gi == 614:
                 continue
-            Scene._outlined(surf, g.glyph(gi, vertical=False), x + 12 * i, y, color, (0, 0, 0))
+            gl = g.glyph(gi, vertical=False)
+            if outline is None:                      # plain, as on the DS's menu buttons
+                key = (id(gl), color)
+                t = self._plain.get(key)
+                if t is None:
+                    t = gl.copy()
+                    t.fill((0, 0, 0, 255), special_flags=pygame.BLEND_RGBA_MULT)
+                    t.fill(color + (0,), special_flags=pygame.BLEND_RGBA_ADD)
+                    self._plain[key] = t
+                surf.blit(t, (x + pitch * i, y))
+            else:
+                Scene._outlined(surf, gl, x + pitch * i, y, color, outline)
         return w
+    _plain = {}
 
     def vtext(self, surf, s, x, y, color=WHITE, pitch=14, game=None):
         """Draw vertical text (top to bottom) — used for chapter title cards."""
@@ -549,7 +587,14 @@ class Session:
     def autosave(self):
         if self.vm.finished:
             return
-        self.app.saves['auto'] = self.snapshot()
+        saves = self.app.saves
+        if self.app.is_story(self):
+            saves.pop('resume', None)
+        elif 'auto' in saves and 'resume' not in saves:
+            old = saves['auto']              # keep the story's place while an extra is read
+            if (old.get('game'), old.get('chap')) in self.app.order:
+                saves['resume'] = old
+        saves['auto'] = self.snapshot()
         self.app._save_json('saves.json', self.app.saves)
 
     def go_back(self):
@@ -792,6 +837,34 @@ def panel(surf, rect, alpha=190):
     pygame.draw.rect(surf, SKY, rect, 1)
 
 
+# the DS menu buttons (title/panel_menu.nnt, panel_chap.nnt): face, bevel, rivet
+DS_BUTTON = {False: ((180, 205, 222), (115, 131, 139), (74, 82, 90)),
+             True: ((239, 181, 189), (165, 123, 132), (115, 90, 99))}      # the chosen one is pink
+
+
+def ds_button(surf, r, selected=False):
+    """A button drawn like the DS's menu panels, at any size: black outline, white
+    top and left edges, shaded bottom and right, and a riveted bevel at each end.
+    (The DS panels are 24 px high and carry the bevel along the long edges too;
+    the もくじ rows here are lower, and the text takes that room.)"""
+    face, mid, dark = DS_BUTTON[bool(selected)]
+    white = (255, 255, 255)
+    pygame.draw.rect(surf, (24, 24, 24), r)
+    pygame.draw.rect(surf, face, r.inflate(-2, -2))
+    x0, y0, x1, y1 = r.x + 1, r.y + 1, r.right - 2, r.bottom - 2
+    pygame.draw.line(surf, dark, (x0 + 1, y1), (x1, y1))
+    pygame.draw.line(surf, dark, (x1, y0 + 1), (x1, y1))
+    pygame.draw.line(surf, white, (x0, y0), (x1, y0))
+    pygame.draw.line(surf, white, (x0, y0), (x0, y1 - 1))
+    for left in (True, False):
+        cx = x0 + 2 if left else x1 - 4                  # the 3 px rivet column
+        a, b = (cx, cx + 1) if left else (cx + 2, cx + 1)
+        pygame.draw.line(surf, mid, (a, y0 + 5), (a, y1 - 5))
+        pygame.draw.line(surf, white, (b, y0 + 5), (b, y1 - 5))
+        pygame.draw.rect(surf, dark, (cx, y0 + 2, 3, 3))
+        pygame.draw.rect(surf, dark, (cx, y1 - 4, 3, 3))
+
+
 def is_back(ev):
     return ((ev.type == pygame.KEYDOWN and ev.key in (pygame.K_ESCAPE, pygame.K_BACKSPACE, pygame.K_x)) or
             (ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 3))
@@ -992,13 +1065,13 @@ class ChapterState(State):
         self.scroll = 0
 
     def _rows(self):
-        return 13
+        return 12
 
     def _rect(self, vis_i):
         page_right = vis_i < self._rows()
         k = vis_i if page_right else vis_i - self._rows()
         x = RIGHT + 6 if page_right else 6
-        return pygame.Rect(x, 36 + k * 16, PAGE_W - 12, 15)
+        return pygame.Rect(x, 27 + k * 19, PAGE_W - 12, 18)
 
     def event(self, ev):
         app = self.app
@@ -1059,24 +1132,22 @@ class ChapterState(State):
         draw_spine(surf)
         app = self.app
         # 'もくじ' on the left page: with it in front, Game II's title runs off the right page
-        app.text(surf, 'もくじ', 8, 10, GOLD, game=app.games[self.tab])
-        app.text(surf, GAME_TITLES[self.tab], RIGHT + 8, 10, GOLD, game=app.games[self.tab])
+        app.text(surf, 'もくじ', 8, 8, GOLD, game=app.games[self.tab])
+        app.text(surf, GAME_TITLES[self.tab], RIGHT + 8, 8, GOLD, game=app.games[self.tab])
         for i, (label, c, en) in enumerate(self.items):
             r = self._rect(i)
-            if i == self.sel:
-                hl = pygame.Surface(r.size, pygame.SRCALPHA)
-                hl.fill((50, 90, 150, 170))
-                surf.blit(hl, r.topleft)
-                pygame.draw.rect(surf, SKY, r, 1)
+            ds_button(surf, r, i == self.sel)
             seen = f'{self.tab}:{c}' in app.read_chapters
-            col = GOLD if i == self.sel else (WHITE if seen else (200, 205, 215))
-            app.text(surf, label, r.x + 3, r.y + 2, col, game=app.games[self.tab])
+            col = (0, 0, 0) if seen or i == self.sel else (64, 76, 92)
+            pitch = 12 if 12 * len(label) <= r.w - 16 else 11     # the longest titles
+            app.text(surf, label, r.x + 9, r.y + 3, col, game=app.games[self.tab],
+                     outline=None, pitch=pitch)
         tr = self._tab_rect()
         panel(surf, tr, 150)
         other = 'ＩＩ' if self.tab == 'iriya1' else 'Ｉ'
         if len(app.games) > 1:
             app.text(surf, f'←→　{other}へ切り替え', tr.centerx, tr.y + 3, WHITE, 'center')
-        app.text(surf, '右クリック：戻る', PAGE_W - 8, 10, GREY, 'right')
+        app.text(surf, '右クリック：戻る', PAGE_W - 8, 8, GREY, 'right')
 
 
 # =========================================================================
@@ -1317,8 +1388,7 @@ class PlayState(State):
         if ses.vm.finished:
             nxt = None if getattr(ses, 'single', False) else self.app.next_chapter(ses.gid, ses.chap)
             if nxt is None:
-                self.app.saves.pop('auto', None)
-                self.app._save_json('saves.json', self.app.saves)
+                self.app.end_reading(ses)
                 self.app.goto(TitleState(self.app))
             else:
                 skip, auto = ses.skip, ses.auto
