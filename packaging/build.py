@@ -28,6 +28,20 @@ RUNTIME_DATA = ('roms', 'upscaled', 'himawari_bgm', 'epub')
 SKIP_FILES = ('usage.json',)            # the BGM matcher's cache
 
 
+def drop_cfg(exe):
+    """Clear Control Flow Guard on the launcher. PyInstaller's bootloader is built with it, and a
+    CFG process kills unicorn (the PARACAP-S07 shooter's CPU emulator) the first time it calls
+    the code it generates (fast fail 0xC0000409). python.exe has no CFG, so this matches it."""
+    import struct
+    with open(exe, 'r+b') as f:
+        d = f.read(0x400)
+        at = struct.unpack_from('<I', d, 0x3c)[0] + 24 + 70        # OptionalHeader.DllCharacteristics
+        flags = struct.unpack_from('<H', d, at)[0]
+        if flags & 0x4000:
+            f.seek(at)
+            f.write(struct.pack('<H', flags & ~0x4000))
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('--no-data', action='store_true', help="don't copy data/ into the build")
@@ -37,6 +51,7 @@ def main():
     subprocess.run([sys.executable, '-m', 'PyInstaller', '--noconfirm', '--clean',
                     '--distpath', DIST, '--workpath', WORK, os.path.join(HERE, 'iriya.spec')],
                    check=True, cwd=ROOT)
+    drop_cfg(os.path.join(APP, 'IriyaPort.exe'))
 
     if not args.no_data:
         for sub in RUNTIME_DATA:

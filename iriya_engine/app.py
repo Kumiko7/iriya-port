@@ -144,11 +144,8 @@ class App:
             return default
 
     def _save_json(self, name, data):
-        p = os.path.join(self.ddir, name)
-        tmp = p + '.tmp'
-        with open(tmp, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=1)
-        os.replace(tmp, p)
+        text = json.dumps(data, ensure_ascii=False, indent=1)
+        paths.write_file(os.path.join(self.ddir, name), text.encode('utf-8'))
 
     def save_settings(self):
         self._save_json('settings.json', self.settings)
@@ -421,6 +418,30 @@ class App:
 
 
 # =========================================================================
+def draw_card_popup(app, game, surf, card, t, new=None):
+    """The 「カードゲット！」 box (this port's own), `t` frames before it goes (of 150)."""
+    a = min(1.0, t / 20.0, (150 - t) / 12.0)
+    box = pygame.Surface((170, 64), pygame.SRCALPHA)
+    box.fill((10, 20, 50, 215))
+    pygame.draw.rect(box, GOLD, box.get_rect(), 1)
+    img = game.card_image(card, 'b') or game.card_image(card, 's')
+    if img is not None:
+        box.blit(img, (6, (64 - img.get_height()) // 2))
+    app.text(box, 'カードゲット！', 52, 10, GOLD, game=game)
+    name = card.name if len(card.name) <= 9 else card.name[:8] + '…'
+    app.text(box, name, 52, 30, WHITE, game=game)
+    if new is not None:
+        box.blit(new, (170 - new.get_width() - 4, 46))
+    for i in range(3):                       # little sparkles
+        ph = (t + i * 17) % 40
+        if ph < 20:
+            cx, cy, rr = 10 + i * 14, 8 + (i * 23) % 44, 1 + ph // 6
+            pygame.draw.line(box, (255, 255, 220), (cx - rr, cy), (cx + rr, cy))
+            pygame.draw.line(box, (255, 255, 220), (cx, cy - rr), (cx, cy + rr))
+    box.set_alpha(int(255 * max(0.0, a)))
+    surf.blit(box, (11, 96))
+
+
 class Session:
     """A running chapter: VM + scene + autosave/bookmark bookkeeping."""
 
@@ -534,6 +555,8 @@ class Session:
                 for cid in cids:
                     if cid not in self.prog.keyword_cards:
                         self.collect(cid)
+        if final and self.gid == 'iriya1' and self.chap == 'B':
+            self.collect(0)             # スタッフロール: the DS gives it as the last chapter ends (0x200c580)
 
     def radar_level(self):
         """Keyword radar, as measured on the DS: it warns of keywords ahead in the
@@ -682,29 +705,9 @@ class Session:
         h.draw_right(right, self.vm.waiting_click(), self.auto)
 
     def draw_popups(self, surf):
-        if not self.popups:
-            return
-        card, t = self.popups[0]
-        a = min(1.0, t / 20.0, (150 - t) / 12.0)
-        box = pygame.Surface((170, 64), pygame.SRCALPHA)
-        box.fill((10, 20, 50, 215))
-        pygame.draw.rect(box, GOLD, box.get_rect(), 1)
-        img = self.game.card_image(card, 'b') or self.game.card_image(card, 's')
-        if img is not None:
-            box.blit(img, (6, (64 - img.get_height()) // 2))
-        self.app.text(box, 'カードゲット！', 52, 10, GOLD, game=self.game)
-        name = card.name if len(card.name) <= 9 else card.name[:8] + '…'
-        self.app.text(box, name, 52, 30, WHITE, game=self.game)
-        if self.hud.new is not None:
-            box.blit(self.hud.new, (170 - self.hud.new.get_width() - 4, 46))
-        for i in range(3):                       # little sparkles
-            ph = (t + i * 17) % 40
-            if ph < 20:
-                cx, cy, rr = 10 + i * 14, 8 + (i * 23) % 44, 1 + ph // 6
-                pygame.draw.line(box, (255, 255, 220), (cx - rr, cy), (cx + rr, cy))
-                pygame.draw.line(box, (255, 255, 220), (cx, cy - rr), (cx, cy + rr))
-        box.set_alpha(int(255 * max(0.0, a)))
-        surf.blit(box, (11, 96))
+        if self.popups:
+            card, t = self.popups[0]
+            draw_card_popup(self.app, self.game, surf, card, t, self.hud.new)
 
     def draw_art(self, window, r, k):
         """High-res scene (upscaled art). Returns False when the 1x frame is used."""
@@ -871,6 +874,18 @@ def is_back(ev):
 
 
 # =========================================================================
+# Game I's secret codes for its six cover cards (1-4巻, 電撃hp, ドラマCD). On the DS title
+# screen (0x200717c state 5, check 0x2006fc4): pressing R clears the entry, and each button
+# pressed while R stays held adds a letter (at most 12); a full match gives the card.
+# U/D/L/R are as the player holds the DS (the DS reads its right button as U, left as D,
+# up as L, down as R). Here Shift stands in for R.
+COVER_CODES = {'AUBRYDXLAU': 5, 'ABYXAXYBAD': 6, 'URDDULDDYY': 7,
+               'BXBXDDAYAY': 8, 'URUDLURUDL': 9, 'DLUYXABYUR': 10}
+CODE_KEYS = {pygame.K_z: 'A', pygame.K_x: 'B', pygame.K_c: 'X', pygame.K_v: 'Y',
+             pygame.K_UP: 'U', pygame.K_w: 'U', pygame.K_DOWN: 'D', pygame.K_s: 'D',
+             pygame.K_LEFT: 'L', pygame.K_a: 'L', pygame.K_RIGHT: 'R', pygame.K_d: 'R'}
+
+
 class TitleState(State):
     def __init__(self, app):
         super().__init__(app)
@@ -897,6 +912,8 @@ class TitleState(State):
                   ('おわる', 'quit', True)]
         self.menu = Menu(app, items, RIGHT + PAGE_W // 2, 72, 19, 'center', 150)
         self.t = 0
+        self.code = ''
+        self.popups = []                     # [card, frames left], as in Session
 
     def _set_title(self, gid, fade=30):
         """Show `gid`'s title pictures and play its title music."""
@@ -909,8 +926,30 @@ class TitleState(State):
         if bgm is not None and app.audio.ok:
             app.audio.play_bgm(bgm, fade)
 
+    def secret_code(self, ev):
+        """Shift (the DS R button) held: keys go to the cover-card codes. True if used."""
+        if ev.type != pygame.KEYDOWN or 'iriya1' not in self.app.games:
+            return False
+        if ev.key in (pygame.K_LSHIFT, pygame.K_RSHIFT):
+            self.code = ''
+            return True
+        if not ev.mod & pygame.KMOD_SHIFT:
+            return False
+        if self.t >= 16 and ev.key in CODE_KEYS and len(self.code) < 12:
+            self.code += CODE_KEYS[ev.key]
+            cid = COVER_CODES.get(self.code)
+            if cid is not None and self.app.give_card('iriya1', cid):
+                g = self.app.games['iriya1']
+                self.popups.append([g.cards[cid], 150])
+                self.app.audio.set_game(g)
+                self.app.audio.ui_sound(5)          # SE_CARDGET
+                self.app.audio.set_game(self.tgame)
+        return True
+
     def event(self, ev):
         app = self.app
+        if self.secret_code(ev):
+            return
         if ev.type == pygame.KEYDOWN and ev.key in (pygame.K_LEFT, pygame.K_RIGHT, pygame.K_a, pygame.K_d):
             games = app.title_games()
             if len(games) > 1:
@@ -948,6 +987,9 @@ class TitleState(State):
 
     def update(self):
         self.t += 1
+        for p in self.popups:
+            p[1] -= 1
+        self.popups = [p for p in self.popups if p[1] > 0]
 
     def _pictures(self):
         """[(game, rom path, logical x, y, scale, source rect in 1x pixels or None)]"""
@@ -996,6 +1038,9 @@ class TitleState(State):
         panel(surf, pygame.Rect(RIGHT + 14, 65, PAGE_W - 28, len(self.menu.items) * 19 + 6), 170)
         self.menu.draw(surf)
         self.app.text(surf, 'Ｆ１１：全画面', RIGHT + PAGE_W - 6, VIEW_H - 16, GREY, 'right')
+        if self.popups:
+            card, t = self.popups[0]
+            draw_card_popup(self.app, self.app.games['iriya1'], surf, card, t)
 
 
 # =========================================================================
@@ -1058,7 +1103,6 @@ class ChapterState(State):
         g = app.games[self.tab]
         items = []
         for c, t in g.chapters:
-            seen = f'{self.tab}:{c}' in app.read_chapters
             items.append((t, c, True))
         self.items = items
         self.sel = 0
@@ -1138,7 +1182,7 @@ class ChapterState(State):
             r = self._rect(i)
             ds_button(surf, r, i == self.sel)
             seen = f'{self.tab}:{c}' in app.read_chapters
-            col = (0, 0, 0) if seen or i == self.sel else (64, 76, 92)
+            col =(0, 0, 0) if seen or i == self.sel else (64, 76, 92)
             pitch = 12 if 12 * len(label) <= r.w - 16 else 11     # the longest titles
             app.text(surf, label, r.x + 9, r.y + 3, col, game=app.games[self.tab],
                      outline=None, pitch=pitch)

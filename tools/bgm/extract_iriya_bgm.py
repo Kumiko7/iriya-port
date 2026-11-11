@@ -1,7 +1,6 @@
 """Extract all Nintendo DS BGM tracks from Iriya no Sora ROMs into data/iriya_bgm/.
 Uses GameData SDAT STRM extraction, writes WAV, and encodes to OGG Vorbis with ffmpeg.
 """
-import io
 import json
 import os
 import subprocess

@@ -116,7 +116,28 @@ mini-game cards start their game. On the DS this is the only way to the
 あとがき (the card for 1st place in BARCAP‑S06) and to それ以外のことについて
 言えば、 (the card for clearing the quiz): its story ends at the title screen
 after the staff roll, and its もくじ lists neither. This port also lists them
-in the もくじ.
+in the もくじ. The スタッフロール card comes with the end of Game I's last
+chapter.
+
+**Secret codes:** Game I has six hidden cover cards (the four volume covers,
+the 電撃hp cover and the drama CD jacket) that only button codes give. They
+count toward the カードリスト total only once you own them, so a full
+collection without them reads 80/80. On the title screen, hold **Shift**
+(the DS's R button) and, still holding it, press:
+
+| Card | Keys (while Shift is held) |
+|---|---|
+| １巻の表紙 | Z ↑ X → V ↓ C ← Z ↑ |
+| ２巻の表紙 | Z X V C Z C V X Z ↓ |
+| ３巻の表紙 | ↑ → ↓ ↓ ↑ ← ↓ ↓ V V |
+| ４巻の表紙 | X C X C ↓ ↓ Z V Z V |
+| 電撃ｈｐの表紙 | ↑ → ↑ ↓ ← ↑ → ↑ ↓ ← |
+| ドラマＣＤの表紙 | ↓ ← ↑ V C Z X V ↑ → |
+
+Z, X, C and V are the DS's A, B, X and Y. The arrows are directions as you see
+the book, the way the DS is held for these games (WASD work too). Pressing
+Shift again starts over. On the DS the codes are entered on the title screen
+the same way, holding R.
 
 **High-res text** (on by default) draws the story text and backlog at the
 window's native resolution. It uses an installed Japanese font, Meiryo by

@@ -10,7 +10,8 @@ a = Analysis(
     [os.path.join(ROOT, 'iriya.py')],
     pathex=[ROOT],
     binaries=collect_dynamic_libs('unicorn'),            # unicorn.dll for the PARACAP-S07 shooter
-    hiddenimports=collect_submodules('iriya_engine'),
+    # unicorn imports its per-architecture classes by name at run time
+    hiddenimports=collect_submodules('iriya_engine') + collect_submodules('unicorn'),
     excludes=['tkinter', 'PIL', 'torch', 'matplotlib', 'scipy', 'pandas', 'IPython', 'pytest'],
     noarchive=False,
 )

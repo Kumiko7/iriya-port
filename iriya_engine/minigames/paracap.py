@@ -16,7 +16,7 @@ import pygame
 
 from . import MiniState, PauseMenu, SCREEN_W, TOP_H
 from .. import dsarm9, dsppu
-from ..paths import user_dir
+from ..paths import user_dir, write_file
 
 SHOOTER_START = 0x203d474
 SHOOTER_EXIT = 0x203d4ec
@@ -254,24 +254,23 @@ class ParacapState(MiniState):
             self.app.audio.stop_all()
             return
         if s.backup_dirty and self.save_path:
-            s.backup_dirty = False
-            with open(self.save_path, 'wb') as f:
-                f.write(s.backup)
+            s.backup_dirty = not write_file(self.save_path, s.backup)
         if s.exited:
             self.close()
 
     def close(self):
         s = self.shooter
         if s is not None and s.backup_dirty and self.save_path:
-            with open(self.save_path, 'wb') as f:
-                f.write(s.backup)
+            write_file(self.save_path, s.backup)
         self.leave()
 
     def draw(self, surf):
         c = self.canvas
         c.fill((0, 0, 0))
         if self.error:
-            self.app.text(self.bottom, self.error, 8, 80, (255, 255, 255))
+            msg = self.error                              # 12 px glyphs: 20 to a line
+            for k in range(0, len(msg), 20):
+                self.app.text(self.bottom, msg[k:k + 20], 8, 40 + 16 * (k // 20), (255, 255, 255))
         elif self.shooter is not None:
             top, bot = self.shooter.screens()
             self.top.blit(pygame.image.frombuffer(top.tobytes(), (SCREEN_W, TOP_H), 'RGB'), (0, 0))

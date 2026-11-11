@@ -48,19 +48,17 @@ class Program:
             self.index[p] = len(self.instrs)
             self.instrs.append(Instr(p, op, args))
             p += 2 * sz
-        # card table after the 0xfdfdfdfd marker: u16 count, u16 first card,
-        # then (line, page, next card) triples -> cards awarded at those lines
+        # card table after the 0xfdfdfdfd marker: u16 count, then (card, line, page)
+        # entries -> cards awarded at those lines
         self.card_lines = {}
         mark = data.find(b'\xfd\xfd\xfd\xfd', 8, hs)
         if mark > 0 and hs - mark >= 8:
             words = struct.unpack_from('<%dH' % ((hs - mark - 4) // 2), data, mark + 4)
-            cnt, card = words[0], words[1]
-            for k in range(cnt):
-                if 2 + 3 * k + 2 >= len(words):
+            for k in range(words[0]):
+                if 3 + 3 * k >= len(words):
                     break
-                line, _page, nxt = words[2 + 3 * k:5 + 3 * k]
+                card, line, _page = words[1 + 3 * k:4 + 3 * k]
                 self.card_lines.setdefault(line, []).append(card)
-                card = nxt
         self.keyword_cards = set(i.args[1] for i in self.instrs if i.op == 0x54 and len(i.args) > 1)
         self.max_page = max([i.args[1] for i in self.instrs if i.op == 0x4f] or [0])
         # map text line ids -> instruction index (for bookmarks / loading)

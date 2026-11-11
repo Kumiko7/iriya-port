@@ -1,4 +1,4 @@
-import struct,collections,sys,glob
+import struct,collections,sys
 def parse(d):
     hs=struct.unpack_from('<I',d,0)[0]
     p=hs; out=[]

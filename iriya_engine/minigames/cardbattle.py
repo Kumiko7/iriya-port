@@ -919,11 +919,11 @@ class CardBattleState(MiniState):
         if key in (pygame.K_LEFT, pygame.K_a):
             self.deck_cursor = max(0, self.deck_cursor - 1)
         elif key in (pygame.K_RIGHT, pygame.K_d):
-            self.deck_cursor = min(n - 1, self.deck_cursor + 1)
+            self.deck_cursor = max(0, min(n - 1, self.deck_cursor + 1))
         elif key in (pygame.K_UP, pygame.K_w):
             self.deck_cursor = max(0, self.deck_cursor - self.DECK_COLS)
         elif key in (pygame.K_DOWN, pygame.K_s):
-            self.deck_cursor = min(n - 1, self.deck_cursor + self.DECK_COLS)
+            self.deck_cursor = max(0, min(n - 1, self.deck_cursor + self.DECK_COLS))
         elif ok:
             self.toggle_deck(self.deck_cursor)
         elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button in (4, 5):
@@ -954,6 +954,8 @@ class CardBattleState(MiniState):
             self.deck_scroll = row - self.DECK_ROWS + 1
 
     def toggle_deck(self, idx):
+        if not 0 <= idx < len(self.deck_cards):          # no battle cards to choose from
+            return
         c = self.deck_cards[idx]
         if c.index in self.deck_sel:
             self.deck_sel.remove(c.index)

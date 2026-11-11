@@ -1,4 +1,4 @@
-import struct, capstone, sys
+import capstone, sys
 import os
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 a=open(os.environ.get('ARM9', os.path.join(ROOT, 'dev', 'extracted', 'iriya1_arm9.bin')),'rb').read(); base=0x2000000

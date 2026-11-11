@@ -13,8 +13,10 @@ Saves, settings and progress are per user, in %APPDATA%/IriyaPort (or
 ~/.local/share/IriyaPort). This module doesn't import pygame, so the tools can
 use it too.
 """
+import logging
 import os
 import sys
+import time
 
 APP_NAME = 'IriyaPort'
 
@@ -62,3 +64,21 @@ def upscaled_dir():
         return d
     base = os.environ.get('APPDATA') or os.path.expanduser('~/.local/share')
     return os.path.join(base, APP_NAME, 'upscaled')
+
+
+def write_file(path, data):
+    """Replace a save file through a temporary one. A file briefly held by another program (a virus
+    scanner, cloud sync, a second copy of the port) is retried; if it stays locked the save is skipped
+    with a warning (the next one writes everything again). Returns True when written."""
+    tmp = path + '.tmp'
+    for attempt in range(5):
+        try:
+            with open(tmp, 'wb') as f:
+                f.write(data)
+            os.replace(tmp, path)
+            return True
+        except OSError as ex:
+            err = ex
+            time.sleep(0.02 * (attempt + 1))
+    logging.getLogger('paths').warning('could not save %s: %s', os.path.basename(path), err)
+    return False

@@ -692,7 +692,7 @@ class BarcapState(MiniState):
     # ------------------------------------------------------------ input
     def hw_point(self, lpos):
         """Canvas position -> (screen, hardware x, y)."""
-        x, y = lpos
+        x, y = int(lpos[0]), int(lpos[1])          # scaled windows give fractional positions
         if 0 <= y < PAGE_H:
             for scr, x0 in (('top', 0), ('bottom', PAGE_W + GAP)):
                 if x0 <= x < x0 + PAGE_W:

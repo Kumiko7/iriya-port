@@ -88,7 +88,6 @@ def decode_indexed(d):
     if fmt == 0:
         moff, msize = struct.unpack_from('<II', d, 0x24)
         m = np.frombuffer(d, dtype='<u2', count=msize // 2, offset=moff)
-        ntiles = m.size
         bpp = 8 if hd['isize'] % 64 == 0 and (m & 0x3FF).max() < hd['isize'] // 64 and (m >> 12).max() == 0 else 4
         if bpp == 4:
             tiles = _unpack4(raw).reshape(-1, 8, 8)

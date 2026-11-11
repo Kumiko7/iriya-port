@@ -110,7 +110,9 @@ class QuizState(MiniState):
         self.app.audio.play_bgm(sid, 0)
 
     def enter_title(self):
-        st = self.data['status']
+        if all(s == 3 for s in self.data['status']):     # the game was closed on the all-clear screen
+            self.data['done'] = True
+            self.app.give_card('iriya1', BONUS_CARD)     # in case that was before the card came up
         self.msg = 9
         self.vil = None
         self.cursor = 0
@@ -199,6 +201,7 @@ class QuizState(MiniState):
         self.t = 0
         self.got_card = False
         self.data['suspend'] = False
+        self.data['done'] = True                 # also when the game is closed on this screen
         self.app.save_progress()
         self.bgm(BGM_TITLE)
 

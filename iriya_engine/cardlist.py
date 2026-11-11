@@ -161,7 +161,10 @@ class CardListState:
         A.draw_spine(surf)
         n_owned = len([c for c in self.cards if c.index in self.owned])
         app.text(surf, 'カードリスト', A.RIGHT + 8, 8, A.GOLD, game=g)
-        app.text(surf, f'{n_owned}/{len(self.cards)}', A.RIGHT + A.PAGE_W - 6, 8, A.WHITE, 'right', game=g)
+        total = len(self.cards)
+        if self.gid == 'iriya1':        # 0x2024834: covers from the secret codes count only once owned
+            total -= sum(1 for i in range(5, 11) if i not in self.owned)
+        app.text(surf, f'{n_owned}/{total}', A.RIGHT + A.PAGE_W - 6, 8, A.WHITE, 'right', game=g)
         for k in range(self.per_page):
             idx = self.page * self.per_page + k
             if idx >= len(self.cards):
