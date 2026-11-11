@@ -1,34 +1,61 @@
-"""イリヤ電撃クイズ (Game I).
+"""イリヤ電撃クイズ (Game I), following the DS quiz code.
 
-Rebuilt from the ROM data and the quiz code in the ARM9 binary:
   * mini/quiz/quiz.buf holds 50 questions as Shift-JIS strings, each followed
     by four answers; the first answer is the correct one. A full-width space
-    marks the line break in a question (17 characters per line).
-  * Each question is drawn at random from those not yet cleared, its answers
-    are shuffled, and correctly answered questions are remembered across plays
-    (status 3 in the save). Clearing all 50 awards the bonus card
-    「それ以外のこと」 (card 1), which opens the side story.
-  * Bottom screen: the Question panel and four answer bars at y = 100 + 23*i,
-    x 22..183 (the original hit boxes). Top screen: Iriya with her speech
-    bubble, the passes left and the TIME gauge.
-  * A wrong answer or running out of time ends the game; passes skip a question.
+    marks a line break in a question (17 characters per line).
+  * A run asks the questions not yet answered in it, in random order with the
+    answers shuffled. 30 seconds per question (the clock starts when the
+    question has finished typing), 5 passes, and a wrong answer or a time-up
+    ends the run. Answering all 50 in one run (中断 keeps a run for later)
+    awards the bonus card 「それ以外のこと」.
+  * Each question remembers whether it was last answered right or wrong, which
+    picks Iriya's comment when it comes up again.
+  * Sprites are cut from the OBJ sheets at the cell offsets and screen
+    positions the DS uses.
 """
 import random
 import pygame
 
-from . import MiniState, BOTTOM_Y, SCREEN_W
+from . import MiniState, ObjSheet
 
 BONUS_CARD = 1
 PASSES = 5
-TIME_LIMIT = 25 * 60          # frames (the DS counts down from 25:00)
-SE_SEIKAI, SE_FUSEIKAI, SE_ENTER, SE_MOVE, SE_CANCEL, SE_CARDGET = 9, 8, 2, 0, 1, 5
-ANSWER_BARS = [pygame.Rect(22, 100 + 23 * i - 4, 161, 21) for i in range(4)]
-PASS_BTN = pygame.Rect(194, 100, 54, 28)
-QUIT_BTN = pygame.Rect(198, 156, 46, 26)
+TIME_LIMIT = 30000            # milliseconds, 16 off per frame
+SE_ENTER, SE_MOVE, SE_WRONG, SE_RIGHT, SE_PASS, SE_SUSPEND, SE_START, SE_TICK, SE_CARDGET = \
+    2, 0, 1, 9, 12, 4, 15, 11, 5
+BGM_TITLE, BGM_PLAY = 53, 42
 
-INK = (40, 30, 30)
 WHITE = (255, 255, 255)
-GOLD = (255, 214, 120)
+NAVY = (33, 41, 115)
+FRAME = (255, 255, 255)
+
+# Iriya's comments: text, face sheet (1..5)
+MESSAGES = [
+    ('しらない問題。\n浅羽、答えて。', 1),
+    ('前やったとき\nまちがえた。\n落ち着いて。', 1),
+    ('だいじょうぶ。\nこれは練習済。', 2),
+    ('あ、あっ！\nだめだめもう時間\nがない！', 3),
+    ('グリーンライト', 1),
+    ('ビンゴ！', 2),
+    ('へいき。\n練習すれば次は\nできる。', 4),
+    ('タイムアップ。', 4),
+    ('早く早く！', 1),
+    ('ミッション。\n問題は５０。\n浅羽ならきっと\nできる。', 2),
+]
+HELP_TITLE = '電撃イリヤクイズ'
+HELP_TOP = ['■基本ルール', '　４択のクイズが出題されます。正解を', '　タッチしてクイズに答えてください。',
+            '　正解すると次の問題に進めます。', '■タイム', '　３０秒以内に解答しないと、タイム',
+            '　オーバーになります。']
+HELP_BOTTOM = ['■ゲームオーバー', '　不正解を選択するか、タイムオーバーに', '　なるとその時点でゲームオーバーです。']
+
+ANSWER_BOX = [pygame.Rect(0x16, 0x64 + 0x17 * i, 0xa1, 0x17) for i in range(4)]
+PASS_BOX = pygame.Rect(0xbc, 0x60, 0x32, 0x19)
+SUSPEND_BOX = pygame.Rect(0xc5, 9, 0x26, 0x11)
+OK_BOX = pygame.Rect(0x60, 0x90, 0x40, 0x20)
+CLEARED_BOX = pygame.Rect(0x60, 0x80, 0x40, 0x20)
+TITLE_BOX = [pygame.Rect(0x40, 0x20 + 0x30 * i, 0x80, 0x20) for i in range(3)]
+YESNO_BOX = [pygame.Rect(0x58, 0x4c + 0x20 * i, 0x90, 0x18) for i in range(2)]
+BACK_BOX = pygame.Rect(0x70, 0xa0, 0x28, 0x11)
 
 
 def load_questions(raw):
@@ -45,314 +72,443 @@ def load_questions(raw):
 class QuizState(MiniState):
     def __init__(self, app, back):
         super().__init__(app, back)
-        self.game = app.games['iriya1']
-        g = self.game
+        self.game = g = app.games['iriya1']
         self.questions = load_questions(g.rom.read('mini/quiz/quiz.buf'))
-        img = lambda n, rot=False: g.image(f'mini/quiz/quiz_{n}.nnt', rotate=rot)
+        img = lambda n: g.image(f'mini/quiz/quiz_{n}.nnt', rotate=False)
+        sh = lambda n: ObjSheet(g, f'mini/quiz/quiz_{n}.nnt', expanded=True)
         self.backU, self.backD = img('backU'), img('backD')
         self.titleU, self.titleD = img('backtitleU'), img('backtitleD')
-        self.faces = [img(f'face{i}') for i in range(1, 6)]
-        self.asaba = [img(f'vil{i}') for i in range(1, 4)]
-        res = img('res')
-        # pieces of quiz_res (upright sheet): ○ × 全問正解 正解 不正解 パス GAME OVER
-        self.res = {
-            'maru': res.subsurface((0, 0, 64, 62)),
-            'batsu': res.subsurface((0, 64, 64, 64)),
-            'zenmon': res.subsurface((64, 0, 64, 62)),
-            'seikai': res.subsurface((6, 130, 52, 27)),
-            'fuseikai': res.subsurface((1, 162, 59, 27)),
-            'game': res.subsurface((64, 96, 64, 32)),
-            'over': res.subsurface((63, 162, 65, 28)),
-        }
-        btn = img('button')
-        self.btn_pass = (btn.subsurface((0, 0, 54, 28)), btn.subsurface((0, 30, 54, 30)))
-        self.btn_quit = (btn.subsurface((0, 62, 46, 26)), btn.subsurface((0, 94, 46, 26)))
-        self.cardget = img('cardget')
-        self.data = app.minigame.setdefault('quiz', {'cleared': []})
-        self.phase = 'title'
-        self.t = 0
-        self.sel = 0
-        self.title_sel = 0
-        self._new_question = False
+        self.s_button, self.s_res, self.s_moji = sh('button'), sh('res'), sh('moji')
+        self.s_title, self.s_title2, self.s_number = sh('title'), sh('title2'), sh('number')
+        self.s_select, self.s_cardget = sh('selecthion'), sh('cardget')
+        self.s_face = [sh(f'face{i}') for i in range(1, 6)]
+        self.s_vil = [sh(f'vil{i}') for i in range(1, 4)]
+        self.s_ok = ObjSheet(g, 'mini/card/card_button.nnt')
+        n = len(self.questions)
+        d = app.minigame.setdefault('quiz', {})
+        if 'status' not in d or len(d['status']) != n:
+            old = set(d.get('cleared', []))
+            d.clear()
+            d.update(status=[2 if i in old else 0 for i in range(n)], suspend=False, passes=PASSES)
+        self.data = d
+        self.frame = 0
+        self.cursor = 0
+        self.msg = 9
+        self.vil = None
+        self.timer = TIME_LIMIT
+        self.passes = PASSES
+        self.count = 0
         app.audio.set_game(g)
-        app.audio.play_bgm(49, 30)       # BGM_LEMON
+        self.enter_title()
 
-    # ------------------------------------------------------------ state
-    @property
-    def cleared(self):
-        return set(self.data['cleared'])
+    # ------------------------------------------------------------ flow
+    def se(self, sid):
+        self.sfx(sid, self.game)
+
+    def bgm(self, sid):
+        self.app.audio.set_game(self.game)
+        self.app.audio.play_bgm(sid, 0)
+
+    def enter_title(self):
+        st = self.data['status']
+        self.msg = 9
+        self.vil = None
+        self.cursor = 0
+        self.t = 0
+        if self.data.get('done'):
+            self.phase = 'cleared'
+        elif self.data['suspend']:
+            self.phase = 'resume'
+        else:
+            self.phase = 'title'
+        self.bgm(BGM_TITLE)
+
+    def demote(self):
+        """A run is over: the questions answered in it count as practised."""
+        self.data['status'] = [2 if s == 3 else s for s in self.data['status']]
+        self.data['suspend'] = False
+        self.app.save_progress()
 
     def start(self):
-        self.passes = PASSES
-        self.streak = 0
-        self.pool = [i for i in range(len(self.questions)) if i not in self.cleared]
-        self.replay = not self.pool
-        if self.replay:
-            self.pool = list(range(len(self.questions)))
-        random.shuffle(self.pool)
+        if self.data['suspend']:
+            self.passes = self.data.get('passes', PASSES)
+            self.data['suspend'] = False
+        else:
+            self.passes = PASSES
+        self.count = sum(1 for s in self.data['status'] if s == 3)
+        self.cursor = 0
+        self.se(SE_START)
+        self.bgm(BGM_PLAY)
         self.next_question()
 
     def next_question(self):
-        if not self.pool:
-            self.finish_all()
-            return
-        self.qi = self.pool.pop()
+        pool = [i for i, s in enumerate(self.data['status']) if s != 3]
+        self.qi = random.choice(pool)
         q, answers = self.questions[self.qi]
         order = [0, 1, 2, 3]
         random.shuffle(order)
         self.answers = [answers[k] for k in order]
         self.correct = order.index(0)
+        self.qlines = q.split('　')
+        self.qlen = sum(len(l) for l in self.qlines) + len(self.qlines) - 1
+        self.typed = 0
         self.timer = TIME_LIMIT
         self.phase = 'ask'
-        self.choice = None
+        self.pick = None
+        self.pass_lit = False
         self.t = 0
-        self.face = 0
+        self.msg = {1: 1, 2: 2}.get(self.data['status'][self.qi], 0)
+        self.vil = 0
 
-    def answer(self, i):
-        self.choice = i
+    def judge(self, what):
+        """what: answer index, 'pass' or 'time'."""
         self.t = 0
-        if i == self.correct:
-            self.phase = 'right'
-            self.face = 1
-            self.streak += 1
-            self.sfx(SE_SEIKAI, self.game)
-            if self.qi not in self.cleared:
-                self.data['cleared'] = sorted(self.cleared | {self.qi})
-                self.app.save_progress()
+        if what == self.correct:
+            self.result = 'right'
+            self.msg = 5
+            self.se(SE_RIGHT)
+            self.data['status'][self.qi] = 3
+            self.count += 1
+            self.vil = 1
+            self.phase = 'mark'
+        elif what == 'pass':
+            self.passes -= 1
+            self.pass_lit = True
+            self.result = 'pass'
+            self.msg = 4
+            self.se(SE_PASS)
+            self.phase = 'mark'
         else:
-            self.phase = 'wrong'
-            self.face = 3
-            self.sfx(SE_FUSEIKAI, self.game)
+            self.result = 'wrong'
+            self.msg = 7 if what == 'time' else 6
+            self.se(SE_WRONG)
+            self.vil = 2
+            self.data['status'][self.qi] = 1
+            self.demote()
+            self.phase = 'over'
 
-    def use_pass(self):
-        if self.passes <= 0 or self.phase != 'ask':
-            return
-        self.passes -= 1
-        self.pool.insert(0, self.qi)       # it can come back later
-        self.phase = 'passed'
-        self.t = 0
-        self.face = 4
-        self.sfx(SE_MOVE, self.game)
+    def suspend(self):
+        self.se(SE_SUSPEND)
+        self.data['suspend'] = True
+        self.data['passes'] = self.passes
+        self.app.save_progress()
+        self.phase = 'suspended'
 
-    def finish_all(self):
+    def all_clear(self):
         self.phase = 'allclear'
         self.t = 0
-        self.face = 1
-        self.got_card = (not self.replay) and self.app.give_card('iriya1', BONUS_CARD)
-        if self.got_card:
-            self.sfx(SE_CARDGET, self.game)
+        self.got_card = False
+        self.data['suspend'] = False
+        self.app.save_progress()
+        self.bgm(BGM_TITLE)
 
     # ------------------------------------------------------------ input
     def event(self, ev):
-        A = self.A
-        click = None
+        tap = None
         if ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 1:
-            click = self.bottom_pos(ev.lpos)
-        if A.is_back(ev) and self.phase in ('title', 'help'):
-            self.sfx(SE_CANCEL, self.game)
-            if self.phase == 'help':
+            tap = self.bottom_pos(ev.lpos)
+        key = ev.key if ev.type == pygame.KEYDOWN else None
+        up = key in (pygame.K_UP, pygame.K_w)
+        down = key in (pygame.K_DOWN, pygame.K_s)
+        ok = key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_z, pygame.K_KP_ENTER)
+        cancel = key in (pygame.K_ESCAPE, pygame.K_x, pygame.K_BACKSPACE) or \
+            (ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 3)
+        ph = self.phase
+
+        def move(n):
+            if up or down:
+                self.cursor = (self.cursor + (1 if down else -1)) % n
+                self.se(SE_MOVE)
+
+        def hit(boxes):
+            if tap:
+                for i, r in enumerate(boxes):
+                    if r.collidepoint(tap):
+                        return i
+            return None
+
+        if ph == 'title':
+            move(3)
+            i = hit(TITLE_BOX)
+            if i is None and ok:
+                i = self.cursor
+            if i is None and cancel:
+                i = 2
+            if i is not None:
+                self.cursor = i
+                if i == 0:
+                    self.start()
+                elif i == 1:
+                    self.se(SE_ENTER)
+                    self.phase = 'help'
+                else:
+                    self.se(SE_ENTER)
+                    self.leave()
+        elif ph == 'help':
+            if ok or cancel or (tap and BACK_BOX.inflate(8, 8).collidepoint(tap)):
+                self.se(SE_ENTER)
                 self.phase = 'title'
-            else:
+        elif ph == 'resume':
+            move(2)
+            i = hit(YESNO_BOX)
+            if i is None and ok:
+                i = self.cursor
+            if i == 0:
+                self.start()
+            elif i == 1:
+                self.se(SE_ENTER)
+                self.demote()
+                self.enter_title()
+        elif ph == 'cleared':
+            if ok or cancel or (tap and CLEARED_BOX.collidepoint(tap)):
+                self.se(SE_ENTER)
+                self.data['status'] = [0] * len(self.questions)
+                self.data['suspend'] = self.data['done'] = False
+                self.app.save_progress()
+                self.enter_title()
+        elif ph == 'ask':
+            if cancel or (tap and SUSPEND_BOX.collidepoint(tap)):
+                self.suspend()
+                return
+            if self.typed < self.qlen or self.pick is not None:
+                return
+            move(4)
+            i = hit(ANSWER_BOX)
+            if i is not None:
+                self.cursor = self.pick = i          # shown lit for 15 frames, then judged
+                self.t = 0
+            elif ok:
+                self.judge(self.cursor)
+            elif key in (pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4):
+                self.cursor = key - pygame.K_1
+                self.judge(self.cursor)
+            elif (key == pygame.K_p or (tap and PASS_BOX.collidepoint(tap))) and self.passes > 0:
+                self.judge('pass')
+        elif ph == 'suspended':
+            if ok or cancel or (tap and OK_BOX.collidepoint(tap)):
+                self.se(SE_ENTER)
                 self.leave()
-            return
-        if self.phase == 'title':
-            items = 3
-            if ev.type == pygame.KEYDOWN:
-                if ev.key in (pygame.K_UP, pygame.K_w):
-                    self.title_sel = (self.title_sel - 1) % items
-                elif ev.key in (pygame.K_DOWN, pygame.K_s):
-                    self.title_sel = (self.title_sel + 1) % items
-                elif ev.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_z):
-                    self._title_pick(self.title_sel)
-            elif click:
-                for i in range(items):
-                    if ANSWER_BARS[i + 1].collidepoint(click):
-                        self._title_pick(i)
-            return
-        if self.phase == 'help':
-            if click or (ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_z)):
-                self.phase = 'title'
-            return
-        if self.phase == 'ask':
-            if ev.type == pygame.KEYDOWN:
-                if ev.key in (pygame.K_UP, pygame.K_w):
-                    self.sel = (self.sel - 1) % 4
-                elif ev.key in (pygame.K_DOWN, pygame.K_s):
-                    self.sel = (self.sel + 1) % 4
-                elif ev.key in (pygame.K_1, pygame.K_2, pygame.K_3, pygame.K_4):
-                    self.answer(ev.key - pygame.K_1)
-                elif ev.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_z):
-                    self.answer(self.sel)
-                elif ev.key == pygame.K_p:
-                    self.use_pass()
-                elif ev.key in (pygame.K_ESCAPE, pygame.K_x):
-                    self._quit_run()
-            elif ev.type == pygame.MOUSEMOTION:
-                p = self.bottom_pos(ev.lpos)
-                for i, r in enumerate(ANSWER_BARS):
-                    if p and r.collidepoint(p):
-                        self.sel = i
-            elif click:
-                for i, r in enumerate(ANSWER_BARS):
-                    if r.collidepoint(click):
-                        self.answer(i)
-                        return
-                if PASS_BTN.collidepoint(click):
-                    self.use_pass()
-                elif QUIT_BTN.collidepoint(click):
-                    self._quit_run()
-            elif ev.type == pygame.MOUSEBUTTONDOWN and ev.button == 3:
-                self._quit_run()
-            return
-        # result screens: click / key to continue
-        if click or (ev.type == pygame.KEYDOWN and ev.key in (pygame.K_RETURN, pygame.K_SPACE, pygame.K_z)):
-            self._advance_result()
-
-    def _title_pick(self, i):
-        self.sfx(SE_ENTER, self.game)
-        if i == 0:
-            self.start()
-        elif i == 1:
-            self.phase = 'help'
-        else:
-            self.leave()
-
-    def _quit_run(self):
-        self.sfx(SE_CANCEL, self.game)
-        self.phase = 'title'
-
-    def _advance_result(self):
-        if self.t < 20:
-            return
-        if self.phase == 'right' or self.phase == 'passed':
-            self.next_question()
-        elif self.phase == 'wrong':
-            self.phase = 'over'
-            self.t = 0
-        elif self.phase in ('over', 'allclear'):
-            self.phase = 'title'
+        elif ph == 'over':
+            if self.t >= 49 and (tap or ok or cancel):
+                self.enter_title()
+        elif ph == 'allclear':
+            if self.t >= 0x40 and (tap or ok or cancel):
+                self.data['done'] = True         # the next visit starts by resetting everything
+                self.demote()
+                self.enter_title()
 
     def update(self):
+        self.frame += 1
         self.t += 1
-        if self.phase == 'ask':
-            self.timer -= 1
-            if self.timer <= 0:
-                self.answer(-1)
-        elif self.phase in ('right', 'passed') and self.t > 75:
-            self.next_question()
+        ph = self.phase
+        if ph == 'ask':
+            if self.typed < self.qlen:
+                self.typed += 1
+            elif self.pick is not None:
+                if self.t >= 15:
+                    self.judge(self.pick)
+            else:
+                before = self.timer
+                self.timer -= 16
+                if self.timer < 17:
+                    self.timer = 0
+                    self.judge('time')
+                elif self.timer < 5000:
+                    self.msg = 3
+                    if before // 1000 != self.timer // 1000:
+                        self.se(SE_TICK)
+                elif self.timer < 25000:
+                    self.msg = 8
+        elif ph == 'mark' and self.t >= 31:
+            if all(s == 3 for s in self.data['status']):
+                self.all_clear()
+            else:
+                self.next_question()
+        elif ph == 'allclear' and self.t == 0x40:
+            self.got_card = self.app.give_card('iriya1', BONUS_CARD)
+            if self.got_card:
+                self.se(SE_CARDGET)
 
     # ------------------------------------------------------------ drawing
-    def text(self, surf, s, x, y, color=INK, outline=False, align='left'):
+    def text(self, surf, s, x, y, color=WHITE, shadow=None):
+        """Full-width characters take 12 pixels, ASCII ones 6 (the half-width font)."""
         g = self.game
-        idxs = g.text_glyphs(s)
-        w = 12 * len(idxs)
-        if align == 'center':
-            x -= w // 2
-        for i, gi in enumerate(idxs):
-            if gi is None or gi == 614:
-                continue
-            gl = g.glyph(gi, vertical=False)
-            if outline:
-                self.A.Scene._outlined(surf, gl, x + 12 * i, y, color, (0, 0, 0))
+        for ch in s:
+            o = ord(ch)
+            half = o < 0x80 or ch == '･'
+            if half:
+                gl = g.han_glyph(0xa5 if ch == '･' else o) if ch != ' ' else None
             else:
-                surf.blit(self.A.Scene._tinted(gl, color), (x + 12 * i, y))
-        return w
+                gi = g.text_glyphs(ch)[0]
+                gl = g.glyph(gi, vertical=False) if gi is not None and gi != 614 else None
+            if gl is not None:
+                if shadow:
+                    sh = self.A.Scene._tinted(gl, shadow)
+                    for d in ((1, 0), (0, 1), (1, 1)):
+                        surf.blit(sh, (x + d[0], y + d[1]))
+                surf.blit(self.A.Scene._tinted(gl, color), (x, y))
+            x += 6 if half else 12
 
-    def bubble(self, lines):
-        """Iriya's speech bubble on the top screen (x 124..244, y 70..156)."""
-        y = 76 + max(0, (4 - len(lines)) * 8)
-        for ln in lines[:5]:
-            self.text(self.top, ln, 184, y, INK, align='center')
-            y += 16
+    def window(self, surf, r):
+        pygame.draw.rect(surf, NAVY, r)
+        pygame.draw.rect(surf, FRAME, r, 1)
+        pygame.draw.rect(surf, FRAME, r.inflate(-4, -4), 1)
+        for ox, sx in ((r.x, 1), (r.right - 1, -1)):
+            for oy, sy in ((r.y, 1), (r.bottom - 1, -1)):
+                for a in range(2, 6):
+                    for b in range(2, 6):
+                        surf.set_at((ox + sx * a, oy + sy * b), FRAME)
+                for a in range(2, 8):
+                    surf.set_at((ox + sx * 7, oy + sy * a), FRAME)
+                    surf.set_at((ox + sx * a, oy + sy * 7), FRAME)
+
+    def draw_iriya(self):
+        top = self.top
+        text, face = MESSAGES[self.msg]
+        f = self.s_face[face - 1]
+        for k, (x, y) in enumerate(((0, 0x3a), (0x40, 0x3a), (0, 0x7a), (0x40, 0x7a))):
+            top.blit(f.cell(k * 0x1000, 64, 64), (x, y))
+        for k, line in enumerate(text.split('\n')):
+            self.text(top, line, 0x88, 0x50 + 17 * k, NAVY)
+
+    def draw_cursor(self, x, y):
+        self.bottom.blit(self.s_button.cell(0x2000, 32, 32), (x, y))
 
     def draw(self, surf):
         surf.fill((0, 0, 0))
         self.draw_gap(surf)
-        if self.phase in ('title', 'help'):
-            self._draw_title()
-            return
         top, bot = self.top, self.bottom
-        top.blit(self.backU, (0, 0))
-        blink = self.phase == 'ask' and self.t % 200 > 192
-        top.blit(self.faces[4 if blink else self.face], (0, 58))
-        # status: passes left, time gauge, Asaba's reaction
-        self.text(top, str(self.passes), 206, 19, WHITE, outline=True)
-        frac = max(0.0, self.timer / TIME_LIMIT) if self.phase == 'ask' else (self.timer / TIME_LIMIT)
-        pygame.draw.rect(top, (40, 30, 30), (168, 42, 72, 13))
-        col = (90, 220, 120) if frac > 0.5 else (240, 200, 60) if frac > 0.25 else (240, 80, 60)
-        pygame.draw.rect(top, col, (169, 43, int(70 * frac), 11))
-        a = {'right': 1, 'wrong': 2, 'over': 2}.get(self.phase, 0)
-        top.blit(self.asaba[a], (10, 14), (4, 6, 48, 32))
-        self.text(top, f'{len(self.cleared):02d}', 62, 16, WHITE, outline=True)
-        self.text(top, '／50', 62, 31, WHITE, outline=True)
-        # bubble
-        num = f'第{self.streak + 1}問' if self.phase == 'ask' else ''
-        msg = {
-            'ask': [num, 'こたえて', 'ね。'],
-            'right': ['せいかい！', 'すごい。'],
-            'wrong': ['ちがう…。', '', 'こたえは', f'{"①②③④"[self.correct]}'],
-            'passed': ['パスね。'],
-            'over': ['ゲーム', 'オーバー。', f'{self.streak}問', 'せいかい。'],
-            'allclear': ['ぜんぶ', 'せいかい！', 'おめでとう。'],
-        }[self.phase]
-        self.bubble(msg)
-        # bottom: question + answers
-        bot.blit(self.backD, (0, 0))
-        q, _ = self.questions[self.qi]
-        for k, line in enumerate(q.split('　')[:4]):
-            self.text(bot, line, 16, 34 + 14 * k, WHITE, outline=True)
-        for i, ans in enumerate(self.answers):
-            r = ANSWER_BARS[i]
-            hl = (self.phase == 'ask' and i == self.sel) or (self.phase != 'ask' and i == self.correct)
-            if hl:
-                pygame.draw.rect(bot, GOLD if self.phase == 'ask' else (120, 230, 140), r.inflate(2, 0), 1)
-            label = '①②③④'[i] + ans
-            self.text(bot, label[:13], r.x + 6, r.y + 4, GOLD if hl else WHITE, outline=True)
-        bot.blit(self.btn_pass[0 if self.passes else 1], PASS_BTN.topleft)
-        bot.blit(self.btn_quit[0], QUIT_BTN.topleft)
-        # judgement marks
-        if self.phase == 'right':
-            bot.blit(self.res['maru'], (186, 10))
-            top.blit(self.res['seikai'], (140, 160))
-        elif self.phase in ('wrong', 'over'):
-            bot.blit(self.res['batsu'], (186, 10))
-            top.blit(self.res['fuseikai'], (138, 162))
-            if self.phase == 'over':
-                bot.blit(self.res['game'], (SCREEN_W // 2 - 64, 64))
-                bot.blit(self.res['over'], (SCREEN_W // 2 + 2, 66))
-        elif self.phase == 'passed':
-            self.text(bot, 'パス', 218, 30, GOLD, outline=True, align='center')
-        elif self.phase == 'allclear':
-            z = self.res['zenmon']
-            bot.blit(z, (SCREEN_W // 2 - z.get_width() // 2, 40))
-            if self.got_card:
-                bot.blit(self.cardget, (SCREEN_W // 2 - self.cardget.get_width() // 2, 110))
-                self.text(bot, '「それ以外のこと」', SCREEN_W // 2, 150, WHITE, outline=True, align='center')
+        ph = self.phase
+        if ph == 'help':
+            self.draw_help()
+            return
+        if ph in ('title', 'resume', 'cleared'):
+            top.blit(self.titleU, (0, 0))
+            self.draw_iriya()
+            v = self.frame % 64
+            v = v - 0x40 if v > 0x30 else (0x20 - v if v > 0x10 else v)
+            for k in range(4):
+                top.blit(self.s_title.cell(k * 0x1000, 64, 64), (k * 0x40, v // 2))
+            bot.blit(self.titleD, (0, 0))
+            if ph == 'title':
+                for i in range(3):
+                    y = 0x20 + 0x30 * i
+                    bot.blit(self.s_title2.cell(i << 12, 64, 32), (0x40, y))
+                    bot.blit(self.s_title2.cell((i << 12) + 0x800, 64, 32), (0x80, y))
+                self.draw_cursor(0x28, 0x25 + 0x30 * self.cursor)
+            elif ph == 'resume':
+                self.window(bot, pygame.Rect(16, 8, 240, 176))
+                pygame.draw.line(bot, (24, 24, 24), (16, 184), (254, 184))
+                self.text(bot, '中断した時のデータがあります', 0x20, 0x20)
+                self.text(bot, '。再開しますか？', 0x20, 0x31)
+                self.text(bot, '再開する', 0x70, 0x50)
+                self.text(bot, '最初からやり直し', 0x70, 0x70)
+                self.draw_cursor(0x58, 0x4d + 0x20 * self.cursor)
+            else:
+                bot.blit(self.s_res.cell(0x3000, 64, 32), (0x40, 0x48))
+                bot.blit(self.s_res.cell(0x3800, 64, 32), (0x80, 0x48))
+                bot.blit(self.s_ok.cell(0, 64, 32), CLEARED_BOX.topleft)
+            return
 
-    def _draw_title(self):
-        top, bot = self.top, self.bottom
-        top.blit(self.titleU, (0, 0))
-        top.blit(self.faces[0], (0, 58))
-        if self.phase == 'title':
-            self.bubble(['イリヤ', '電撃クイズ', f'{len(self.cleared)}/50', 'せいかい'])
-        else:
-            self.bubble(['４つから', 'えらんでね。', 'まちがえたら', 'おしまい。'])
-        bot.blit(self.titleD, (0, 0))
-        if self.phase == 'help':
-            lines = ['ルール', '', '問題に４択で答えます。',
-                     '１問でもまちがえるか、時間切れ',
-                     'になるとゲームオーバーです。',
-                     f'パスは{PASSES}回まで使えます。',
-                     '正解した問題は記録され、全問',
-                     '正解するとボーナスカードを',
-                     '手に入れられます。']
-            for k, l in enumerate(lines):
-                self.text(bot, l, 18, 22 + 16 * k, GOLD if k == 0 else WHITE, outline=True)
+        # ---- top screen: question number, passes, time, Iriya
+        top.blit(self.backU, (0, 0))
+        self.draw_iriya()
+        mj = self.s_moji
+        top.blit(mj.cell(0, 32, 32), (0x12, 0x10))
+        top.blit(mj.cell(0x400, 32, 32), (0x56, 0x10))
+        n = self.count + 1
+        if ph == 'allclear' or (ph == 'mark' and self.result == 'right'):
+            n -= 1
+        n, x = max(1, n), 0x41
+        while n:
+            top.blit(mj.cell(((n % 10) << 10) + 0x1000, 16, 32), (x, 0x11))
+            n //= 10
+            x -= 16
+        top.blit(mj.cell((max(0, self.passes) << 10) + 0x1000, 16, 32), (0xcc, 0x0b))
+        cs = max(0, self.timer) // 10
+        sec, cc = cs // 100, cs % 100
+        if sec >= 10:
+            top.blit(mj.cell(((sec // 10) << 10) + 0x1200, 16, 32), (0xad, 0x26))
+        top.blit(mj.cell(((sec % 10) << 10) + 0x1200, 16, 32), (0xbd, 0x26))
+        top.blit(mj.cell(0x3a00, 16, 32), (0xcd, 0x26))
+        top.blit(mj.cell(((cc // 10) << 10) + 0x1200, 16, 32), (0xd9, 0x26))
+        top.blit(mj.cell(((cc % 10) << 10) + 0x1200, 16, 32), (0xe9, 0x26))
+
+        # ---- bottom screen
+        bot.blit(self.backD, (0, 0))
+        if ph == 'suspended':
+            self.window(bot, pygame.Rect(8, 8, 240, 176))
+            pygame.draw.line(bot, (24, 24, 24), (8, 184), (246, 184))
+            self.text(bot, '中断しました', 0x1c, 0x20)
+            self.text(bot, '出題の順番が中断前から変更されます', 0x1b, 0x3c)
+            bot.blit(self.s_ok.cell(0, 64, 32), OK_BOX.topleft)
             return
-        for i, label in enumerate(['はじめる', 'あそびかた', 'もどる']):
-            r = ANSWER_BARS[i + 1]
-            hl = i == self.title_sel
-            pygame.draw.rect(bot, (20, 50, 30), r)
-            pygame.draw.rect(bot, GOLD if hl else (140, 180, 140), r, 1)
-            self.text(bot, label, r.centerx, r.y + 4, GOLD if hl else WHITE, outline=True, align='center')
-        self.text(bot, 'イリヤ電撃クイズ', SCREEN_W // 2, 40, GOLD, outline=True, align='center')
+        left = self.typed
+        for k, line in enumerate(self.qlines):
+            self.text(bot, line[:max(0, left)], 0x1a, 0x28 + 17 * k)
+            left -= len(line) + 1
+        done = self.typed >= self.qlen
+        if done:
+            for i, ans in enumerate(self.answers):
+                if self.pick == i:
+                    for k in range(3):
+                        bot.blit(self.s_select.cell(i * 0x1800 + k * 0x800, 64, 32), (0x16 + 0x40 * k, 0x60 + 0x17 * i))
+                self.text(bot, ans, 0x1e, 0x64 + 0x17 * i)
+            self.draw_cursor(6, 0x61 + 0x17 * self.cursor)
+        b = self.s_button
+        bot.blit(b.cell(0x800 if self.pass_lit else 0, 64, 32), (0xbc, 0x60))
+        bot.blit(b.cell(0x1000, 64, 32), (0xc5, 9))
+        if self.vil is not None:
+            v = self.s_vil[self.vil]
+            bot.blit(v.cell(0, 64, 64), (0xbc, 0x7a))
+            bot.blit(v.cell(0x1000, 32, 16), (0xbc, 0xba))
+            bot.blit(v.cell(0x1200, 32, 16), (0xdc, 0xba))
+        r = self.s_res
+        if ph == 'ask' and done and self.pick is None and self.timer <= 5999:
+            d = self.timer // 1000
+            bot.blit(self.s_number.cell(d * 0x1000, 64, 64), (0x60, 0x40 + (self.timer % 1000) // 20))
+        elif ph == 'mark':
+            y = 0x40 + 29 - self.t
+            if self.result == 'right':
+                bot.blit(r.cell(0, 64, 64), (0x2a, y))
+                bot.blit(r.cell(0x2000, 64, 32), (0x6a, y + 0x1a))
+            else:
+                bot.blit(r.cell(0x4000, 64, 32), (0x2a, y))
+                bot.blit(r.cell(0x5000, 64, 32), (0x6a, y))
+        elif ph == 'over':
+            y = 0x5d - self.t
+            if self.t < 79:
+                bot.blit(r.cell(0x1000, 64, 64), (0x2a, y))
+                bot.blit(r.cell(0x2800, 64, 32), (0x6a, y + 0x1a))
+            if self.t >= 49:
+                self.draw_banner(0x4800, 0x5800, self.t - 49)
+        elif ph == 'allclear':
+            self.draw_banner(0x3000, 0x3800, self.t)
+            if self.got_card:
+                x = max(100, 261 - 16 * (self.t - 0x40))     # slides in from the right
+                for k in range(4):
+                    bot.blit(self.s_cardget.cell(k * 0x400, 32, 32), (x + 32 * k, 0x80))
+
+    def draw_banner(self, a, b, t):
+        if t < 0x40:
+            y = 0x80 + (0x20 - t) * 2
+        else:
+            m = t % 64
+            y = 0x40 + (0x40 - m if m > 0x20 else m)
+        self.bottom.blit(self.s_res.cell(a, 64, 32), (0x2a, y))
+        self.bottom.blit(self.s_res.cell(b, 64, 32), (0x6a, y))
+
+    def draw_help(self):
+        top, bot = self.top, self.bottom
+        top.fill((107, 148, 189))
+        top.fill((189, 214, 239), (0, 0, 256, 6))
+        self.text(top, HELP_TITLE, 0x98 - 10 * len(HELP_TITLE), 8)
+        self.window(top, pygame.Rect(0, 24, 256, 178))        # one window across both screens
+        self.window(bot, pygame.Rect(0, -10, 256, 202))
+        for k, l in enumerate(HELP_TOP):
+            self.text(top, l, 0xc, 0x20 + 17 * k)
+        for k, l in enumerate(HELP_BOTTOM):
+            self.text(bot, l, 0xc, 0x10 + 17 * k)
+        pygame.draw.rect(bot, (107, 148, 189), (112, 160, 41, 19))
+        pygame.draw.rect(bot, FRAME, (112, 160, 41, 19), 1)
+        self.text(bot, '戻る', 120, 163, WHITE, shadow=(24, 24, 24))

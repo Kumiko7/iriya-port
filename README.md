@@ -267,31 +267,35 @@ Reproduced from the original data:
   and the same two pages.
 - The mini-games, under ミニゲーム on the title screen. They're played on two
   stacked screens like a normally held DS.
-  - **イリヤ電撃クイズ (I):**
+  - **イリヤ電撃クイズ (I):** a re-creation of the DS screens, flow and
+    timings from the game code:
     - All 50 questions from the ROM, with answers shuffled.
+    - 30 seconds per question, 5 passes, Iriya's comments, 中断 and resume.
     - Cleared questions are remembered between plays, as in the original.
     - Clearing all 50 gives 「それ以外のこと」.
-    - Iriya's lines and the 20-second time limit are my own.
-  - **電撃カード大戦 (I):** the rules come from the game code and its
-    built-in rule text:
-    - Decks of 20 cards, hands of 4, and 3000 HP.
+  - **電撃カード大戦 (I):** the DS screens, rules, CPU and fight animation,
+    taken from the game code and its built-in rule text:
+    - ひとりプレイ against the CPU. 対戦プレイ needs DS wireless and does
+      nothing here.
+    - A 40-card pile from your collection, with the cards marked under
+      カード選択 going in first. Hands of 4 and 3000 HP.
     - 熱血 / 泣き / 萌え as rock-paper-scissors with +200 for the winning
       attribute.
     - COMBO plays 3 cards of one attribute at 3× the strongest.
     - Each loser takes (attacker Pt − own Pt) damage.
-    - You play against 1–3 CPU players. The CPU strategy is my own.
-    - It unlocks once you own 20 battle cards, and you build your deck under
-      デッキ編成.
-  - **BARCAP‑S06 (I):** the enemy flight scripts, formations, firing, score
-    table and death bursts are interpreted straight from `barcap0N.dat` and
-    the ARM9 code.
+    - Places score 10 / 5 Pt, carried over while you keep pressing OK.
+    - It unlocks once you own 20 battle cards. Esc asks whether to quit
+      the match.
+    - The カード選択 screen is simpler than the DS card list it stands in for.
+  - **BARCAP‑S06 (I):** played with the DS held sideways, as on the DS:
+    the left page is Iriya and Asaba with the status panel, the right page
+    the field. Screens, 3D camera, sprites, enemy scripts, formations,
+    scoring, shield and ranking all come from the game code and
+    `mini/shoot/*`.
     - Click enemies to lock on (up to 8), then fire homing missiles with
-      ↑ / W / right-click.
-    - A new 1st place in the ranking gives the 「あとがき」 card.
-    - Esc / P pauses, with つづける, back to the game's title, or back to the
-      mini-game list.
-    - Shield count, missile behaviour, the screen layout and the starting
-      ranking scores are my own choices.
+      ↑ / W / X / right-click. ← / → move the Black Manta.
+    - Esc / P pauses (CONTINUE / QUIT), as the DS's START button does.
+    - A new 1st place in the 6-place ranking gives the 「あとがき」 card.
   - **PARACAP‑S07 (II):** the dual-screen Black Manta / Iriya shooter.
     - It uses the original stage maps, enemy placements, per-stage unit lists,
       sprites, items, bosses and help pages.

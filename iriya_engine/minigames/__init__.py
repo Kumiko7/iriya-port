@@ -108,3 +108,40 @@ class PauseMenu:
             bottom.blit(box, r.topleft)
             pygame.draw.rect(bottom, (255, 214, 120) if i == self.sel else (168, 200, 236), r, 1)
             text(bottom, label, r.centerx, r.y + 6, (255, 214, 120) if i == self.sel else (255, 255, 255), 'center')
+
+
+class ObjSheet:
+    """A DS OBJ sheet (.nnt): the pixels of each sprite are stored as 8x8 tiles in
+    row-major order starting at a byte offset, exactly as the games address them.
+    Some 16-colour sheets are expanded to one byte per pixel by the game before
+    use; pass expanded=True for those so that offsets count pixels."""
+
+    def __init__(self, game, path, expanded=False):
+        from .. import nnt
+        import numpy as np
+        d = game.rom.read(path)
+        hd = nnt.header(d)
+        self.pal = nnt.palette(d, hd['poff'], hd['psize'])
+        raw = np.frombuffer(d, dtype=np.uint8, count=hd['isize'], offset=hd['ioff'])
+        self.bpp = 4 if hd['psize'] <= 32 else 8
+        self.px = nnt._unpack4(raw) if self.bpp == 4 else raw
+        self.unit = 2 if (self.bpp == 4 and not expanded) else 1
+        self._cells = {}
+
+    def cell(self, off, w, h, pal_base=0):
+        """Sprite of w x h pixels whose data starts at byte offset off."""
+        key = (off, w, h, pal_base)
+        s = self._cells.get(key)
+        if s is None:
+            import numpy as np
+            p = off * self.unit
+            px = self.px[p:p + w * h]
+            if px.size < w * h:
+                px = np.concatenate([px, np.zeros(w * h - px.size, np.uint8)])
+            idx = px.reshape(h // 8, w // 8, 8, 8).transpose(0, 2, 1, 3).reshape(h, w)
+            rgb = self.pal[np.minimum(idx.astype(np.int32) + pal_base, len(self.pal) - 1)]
+            a = np.where(idx == 0, 0, 255).astype(np.uint8)
+            rgba = np.dstack([rgb, a])
+            s = pygame.image.frombuffer(rgba.tobytes(), (w, h), 'RGBA').convert_alpha()
+            self._cells[key] = s
+        return s
