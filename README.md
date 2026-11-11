@@ -20,7 +20,8 @@ runtime: scripts, art, fonts and music all come from them.
 
 ## Running
 
-You need Python 3.10+ with `pygame` and `numpy`:
+You need Python 3.10+ with `pygame` and `numpy` (and `unicorn` for the
+PARACAP‑S07 mini-game):
 
 ```bash
 pip install -r requirements.txt
@@ -297,13 +298,18 @@ Reproduced from the original data:
     - Esc / P pauses (CONTINUE / QUIT), as the DS's START button does.
     - A new 1st place in the 6-place ranking gives the 「あとがき」 card.
   - **PARACAP‑S07 (II):** the dual-screen Black Manta / Iriya shooter.
-    - It uses the original stage maps, enemy placements, per-stage unit lists,
-      sprites, items, bosses and help pages.
-    - The Manta flies the sky stage on the top screen; Iriya runs and jumps
-      through the ground stage on the bottom screen. Transform between them
-      with C, bomb with V. Esc / P opens the same pause menu.
-    - Enemy and boss movement patterns are my own, because the ROM stores
-      them only as code.
+    Unlike the other mini-games it isn't reimplemented: the shooter's own
+    code is booted from your ROM on a CPU emulator ([unicorn](https://www.unicorn-engine.org/)),
+    and its screens are drawn from the emulated video memory. It plays
+    exactly as on the DS: stages, enemies, bosses, scoring, menus and help.
+    - Keys: arrows / WASD = ✚, Z / Space = A (shot, hold to charge),
+      X = B (jump), C = X (transform), V = Y (bomb), Enter = START. Click
+      the bottom screen to touch it (menus, the BOM button).
+    - Esc / P opens the port's pause menu. The game's own EXIT returns to the
+      mini-game list.
+    - The ranking is kept in `%APPDATA%\IriyaPort\paracap.sav` (the DS
+      save memory the shooter writes).
+    - Without the `unicorn` package the menu entry shows a message instead.
 
 ## Corrected text (本文)
 
@@ -385,7 +391,7 @@ Not reproduced:
 packaging\build.bat
 ```
 
-- It makes a private venv in `build/venv`, installs pygame, numpy and
+- It makes a private venv in `build/venv`, installs pygame, numpy, unicorn and
   PyInstaller from PyPI, and builds `dist/IriyaPort/` with `packaging/build.py`.
 - Python and the libraries are bundled, so the target PC needs nothing
   installed. Copy the whole `IriyaPort` folder and run `IriyaPort.exe`.

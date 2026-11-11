@@ -112,7 +112,7 @@ class Audio:
         self.se = [_Voice(pygame.mixer.Channel(1 + i)) for i in range(SE_CHANNELS)]
         self.ui = pygame.mixer.Channel(SE_CHANNELS + 1)
         self.bgm_volume = 0.8
-        self.se_volume = 0.9
+        self.se_volume = 0.8
         self._cache = {}
         self.game = None
         self.muted = False

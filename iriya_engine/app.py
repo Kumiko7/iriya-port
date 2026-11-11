@@ -33,7 +33,7 @@ DEFAULT_SETTINGS = {
     'fast_fx': True,        # 演出速度 速い: quicker scroll / dissolve, script waits and fades at half time
     'auto_frames': 30,      # auto mode: frames after a message (DS: 10 / 30 / 50, a new save starts at 30); -1 = by length
     'bgm_volume': 0.8,
-    'se_volume': 0.9,
+    'se_volume': 0.8,
     'scale': 3,
     'fullscreen': False,
     'smooth': False,
@@ -1011,7 +1011,7 @@ class MiniMenuState(State):
                       ('電撃カード大戦', 'cards', True),
                       ('ＢＡＲＣＡＰ－Ｓ０６', 'barcap', True)]
         if 'iriya2' in app.games:
-            items.append(('ブラックマンタ（ＩＩ）', 'manta', True))
+            items.append(('ＰＡＲＡＣＡＰ－Ｓ０７', 'paracap', True))
         items.append(('もどる', 'back', True))
         self.menu = Menu(app, items, RIGHT + PAGE_W // 2, 60, 22, 'center', 170)
 
@@ -1033,9 +1033,9 @@ class MiniMenuState(State):
         elif v == 'barcap':
             from .minigames.barcap import BarcapState
             app.goto(BarcapState(app, self.back))
-        elif v == 'manta':
-            from .minigames.manta import MantaState
-            app.goto(MantaState(app, self.back))
+        elif v == 'paracap':
+            from .minigames.paracap import ParacapState
+            app.goto(ParacapState(app, self.back))
 
     def draw(self, surf):
         surf.fill((14, 22, 46))

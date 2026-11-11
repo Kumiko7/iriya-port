@@ -2,13 +2,14 @@
 # Run it through packaging/build.py, which also copies your data/ folder in.
 import os
 
-from PyInstaller.utils.hooks import collect_submodules
+from PyInstaller.utils.hooks import collect_dynamic_libs, collect_submodules
 
 ROOT = os.path.dirname(SPECPATH)
 
 a = Analysis(
     [os.path.join(ROOT, 'iriya.py')],
     pathex=[ROOT],
+    binaries=collect_dynamic_libs('unicorn'),            # unicorn.dll for the PARACAP-S07 shooter
     hiddenimports=collect_submodules('iriya_engine'),
     excludes=['tkinter', 'PIL', 'torch', 'matplotlib', 'scipy', 'pandas', 'IPython', 'pytest'],
     noarchive=False,
