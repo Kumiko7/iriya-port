@@ -7,7 +7,7 @@ from .hires import HiresText, font_label, list_japanese_fonts
 
 class OptionsState:
     KEYS = ['text', 'fx', 'auto', 'script', 'bgm', 'bgmset', 'se', 'scale', 'full', 'smooth', 'art', 'hires',
-            'font', 'back']
+            'font', 'hook', 'back']
     HIRES_ROW = KEYS.index('hires')
     FONT_ROW = KEYS.index('font')
     BACK_ROW = KEYS.index('back')
@@ -55,6 +55,7 @@ class OptionsState:
             ('画質', ('高画質' if s.get('art', 'hd') == 'hd' else '原画') if self.app.hd_ready else '原画のみ'),
             ('高解像度文字', ('オン' if s.get('hires_text') else 'オフ') if self.app.hires.ok else 'フォントなし'),
             ('フォント', font + '▼'),
+            ('テキストフック', 'オン' if s.get('texthook') else 'オフ'),
             ('戻る', ''),
         ]
 
@@ -99,6 +100,8 @@ class OptionsState:
             s['art'] = 'original' if s.get('art', 'hd') == 'hd' else 'hd'
         elif key == 'hires':
             s['hires_text'] = not s.get('hires_text')
+        elif key == 'hook':
+            s['texthook'] = not s.get('texthook')
         elif i == self.FONT_ROW:
             self._open_combo()
             return

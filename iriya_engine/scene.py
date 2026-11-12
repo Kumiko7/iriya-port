@@ -231,6 +231,8 @@ class Scene:
         self.bgm_state = 0          # 0 none, 1 prepared by 96, 2 faded in by 90
         self.bgm_master = 1.0
         self.mute_audio = False     # true while fast-forwarding to a bookmark
+        self.hook_glyphs = []       # text typed since the last click wait (テキストフック)
+        self.on_text = None         # called with that text at each click wait
         self.scroll_mode = False    # staff roll: lines rise up the page as rows
         self.scroll_frames = 23     # frames per column in scroll mode
         self.scroll_t = 0
@@ -342,6 +344,8 @@ class Scene:
             self.columns.append(Column())
         self.columns[-1].glyphs.append(idx)
         self._text_dirty = True
+        if self.on_text is not None and not self.mute_audio:
+            self.hook_glyphs.append(idx)
         if self._seg_mark and idx != 614:
             self._seg_mark = False
             self.seg_starts.append((self.line_id, self.clicks_in_line))
@@ -386,6 +390,11 @@ class Scene:
 
     def text_wait(self, op):
         self.waiting = op
+        if self.hook_glyphs:
+            text = ''.join(self.hook_char(g) for g in self.hook_glyphs).strip('　 ')
+            self.hook_glyphs = []
+            if text and not self.fast:          # not while skipping
+                self.on_text(text)
         self.instant = False
         self.click_glyph_t = 0
 
@@ -406,6 +415,11 @@ class Scene:
             self.clear_fx = ('slide' if op == 0x49 else 'fade', t)
             return n
         return 0
+
+    def hook_char(self, g):
+        if g < 0x10000 and 0x2000 <= g < 0x2300:     # half-width / 縦中横 slots
+            return chr(g & 0xFF)
+        return self.game.font.char(g)
 
     def skip_reveal(self):
         self.instant = True

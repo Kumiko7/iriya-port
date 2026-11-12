@@ -151,6 +151,12 @@ that has kana and kanji (Japanese fonts first) and shows a live sample of the
 one under the cursor. Turn it off with オプション → 高解像度文字 to get the
 original 12px DS bitmap font. Menus still use the DS font.
 
+**Texthooker (テキストフック, off by default):** turn on オプション →
+テキストフック and each new piece of story text goes to the clipboard as it
+finishes typing, one entry per click, for a clipboard texthooker page (with
+Yomitan or similar for lookups). Nothing is copied while skipping or when a
+bookmark is loaded.
+
 **Upscaled art (高画質):** the backgrounds, event pictures, face windows, card
 pictures and title screens can be replaced with 4× AI-upscaled versions made
 from your own ROMs. Story scenes are then drawn at the window's resolution.
@@ -439,6 +445,7 @@ packaging\build.bat
   - `cards.py` / `cardlist.py`: keyword cards and the card list
   - `hires.py`: high-res text
   - `options.py`: the options screen
+  - `clipboard.py`: the テキストフック clipboard copy
   - `alt_bgm.py`: the alternative (ひまわり) soundtrack: track mapping and playback
   - `bonus.py` / `bonus_script.py`: the light-novel bonus chapters (EPUB reader,
     staging, script compiler)

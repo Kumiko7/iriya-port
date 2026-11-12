@@ -41,6 +41,7 @@ DEFAULT_SETTINGS = {
     'bgm_set': 'ds',        # 'ds' = the games' own music, 'himawari' = the alternative soundtrack
     'art': 'hd',            # 'hd' = upscaled art (when built with tools/upscale_assets.py), 'original'
     'script': 'corrected',  # 本文: 'corrected' = typos and cuts fixed from the EPUBs (correct.py), 'ds'
+    'texthook': False,      # テキストフック: copy each new piece of text to the clipboard (for texthookers)
 }
 TEXT_SPEEDS = [('瞬間', 0.0), ('とても速い', 1.0), ('速い', 2.0), ('原作', 4.0), ('遅い', 6.0)]
 AUTO_SPEEDS = [('速い', 10), ('普通', 30), ('遅い', 50), ('文字数', -1)]
@@ -146,6 +147,12 @@ class App:
     def _save_json(self, name, data):
         text = json.dumps(data, ensure_ascii=False, indent=1)
         paths.write_file(os.path.join(self.ddir, name), text.encode('utf-8'))
+
+    def hook_text(self, text):
+        """テキストフック: the scene calls this at each click wait with the new text."""
+        if self.settings.get('texthook'):
+            from .clipboard import copy
+            copy(text)
 
     def save_settings(self):
         self._save_json('settings.json', self.settings)
@@ -457,6 +464,7 @@ class Session:
             app.audio.stop_all()
         self.scene = Scene(self.game, app.audio, app.settings)
         self.scene.chapter = chap
+        self.scene.on_text = app.hook_text
         self.prog = Program(self.game.script(chap))
         self.corrected = False
         co = getattr(self.game, 'corrector', None)
