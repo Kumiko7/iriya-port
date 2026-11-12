@@ -1,7 +1,8 @@
 """Copy text to the system clipboard (the テキストフック option, for texthookers).
 
-Uses SDL's own SDL_SetClipboardText (UTF-8, every platform) from the SDL library
-pygame has already loaded; on Windows it falls back to the Win32 clipboard."""
+On Windows this uses the Win32 clipboard directly: the packaged build has two
+SDL2.dll copies, and SDL_SetClipboardText from the one pygame doesn't use fails.
+Elsewhere it uses SDL's SDL_SetClipboardText (UTF-8) from pygame's SDL library."""
 import ctypes
 import ctypes.util
 import glob
@@ -66,18 +67,22 @@ def copy(text):
     global _set, _tried
     if not _tried:
         _tried = True
-        try:
-            _set = _load_sdl()
-        except Exception:
-            _set = None
-        if _set is None and sys.platform == 'win32':
+        if sys.platform == 'win32':
             _set = _win32
+        else:
+            try:
+                _set = _load_sdl()
+            except Exception:
+                _set = None
         if _set is None:
             log.warning('no clipboard available for the text hook')
     if _set is None:
         return False
     try:
-        return _set(text)
+        if _set(text):
+            return True
+        log.warning('clipboard: copy failed')
+        return False
     except Exception as e:
         log.warning('clipboard: %s', e)
         return False
