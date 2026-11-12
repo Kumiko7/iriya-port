@@ -4,6 +4,8 @@ A PC port of the [*Iriya no Sora* DS games](https://vndb.org/v4694).
 
 Adds native text rendering, upscaled art, the bonus LN chapters inserted in, and an alternate BGM soundtrack, all toggleable with the original format.
 
+The bonus chapters, both the originally LN-only and DS-only ones, are available from the index menu.
+
 Download from the [Releases](https://github.com/Kumiko7/iriya-port/releases) page.
 
 ## Below, development details:
