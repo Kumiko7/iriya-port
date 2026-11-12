@@ -20,6 +20,26 @@ runtime: scripts, art, fonts and music all come from them.
 
 ![Game I, prologue, with high-res text and upscaled art](docs/screenshot.png)
 
+### Story content
+
+In もくじ order. **LN only** chapters need the Dengeki Bunko EPUBs in
+`data/epub/` (see [Light-novel bonus chapters](#light-novel-bonus-chapters)).
+
+| Game | Chapter | In |
+|---|---|---|
+| I | 第三種接近遭遇, ラブレター, 正しい原チャリの盗み方・前編/後編, 十八時四十七分三十二秒・前編/後編 | DS and LN (vols. 1–2) |
+| I | スタッフロール | DS only |
+| I | あとがき | DS only (written for the DS) |
+| I | それ以外のことについて言えば、 | DS only |
+| I | 番外編・そんなことだから (vol. 1), 番外編・死体を洗え (vol. 2) | LN only |
+| I | 文庫版あとがき・その１, その２ | LN only |
+| II | 無銭飲食列伝, 水前寺応答せよ・前編/後編, 夏休みふたたび・前編/後編, 最後の道, 南の島, エピローグ | DS and LN (vols. 3–4) |
+| II | スタッフロール (between エピローグ１ and ２) | DS only |
+| II | 番外編・ＥＳＰの冬 | DS and LN (vol. 3) |
+| II | グラウンド・ゼロ | DS only |
+| II | あとがき | DS only (written for the DS) |
+| II | 文庫版あとがき・その３, その４ | LN only |
+
 ## Running
 
 You need Python 3.10+ with `pygame` and `numpy` (and `unicorn` for the
